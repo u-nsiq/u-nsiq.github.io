@@ -1,10 +1,10 @@
 ---
 title: "깃 페이지 첫 포스팅 및 양식 알아보기"
 date: 2025-02-13 02:03:00 +0900
-categories: [Tutorial, GitHubPages]
-tags: [Chirpy, Jekyll, Markdown]
+categories: [Blog, Chirpy]
+tags: [chirpy, jekyll, markdown]
 math: true
-pin: true
+pin: false
 toc: true
 comments: true
 ---

@@ -16,7 +16,7 @@ timezone: Asia/Seoul
 
 title: 허접한 저장소 # the main title
 
-tagline: Until do dead-end. # it will display as the subtitle
+tagline: 일단 기록하자. # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   log of study, projects, and so on.
@@ -35,7 +35,7 @@ social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
   name: Junsik Kim
-  email: wnstlr0830@kw.ac.kr # change to your email address
+  email: wnstlr0830@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
     # - https://twitter.com/username # change to your Twitter homepage
@@ -98,7 +98,7 @@ theme_mode: # [light | dark]
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: /assets/img/chickenCookie.png # 프로필 사진 링크
+avatar: /assets/img/egg.png # 프로필 사진 링크
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.

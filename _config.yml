@@ -1,165 +1,105 @@
-# The Site Configuration
+#====================================================
+# 사이트 기본 설정
+#====================================================
 
-# Import the theme
 theme: jekyll-theme-chirpy
+lang: en # 블로그 UI 언어 설정 (en: 영어, ko: 한국어)
+timezone: Asia/Seoul # 서울 시간대
 
-# The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
-# If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
-# otherwise, the layout language will use the default value of 'en'.
-lang: en
+#====================================================
+# SEO (검색엔진 최적화) 및 사이트 정보
+#====================================================
 
-# Change to your timezone › https://kevinnovak.github.io/Time-Zone-Picker
-timezone:
+title: J-unsiq # 브라우저 탭에 표시될 메인 제목
+tagline: 일단 기록하자. # 제목 아래에 표시될 부제목
+description: >- # 검색엔진과 RSS 피드에 표시될 사이트 설명
+  log of study, projects, and so on.
+url: "https://u-nsiq.github.io" # '/'로 끝나지 않는 본인 블로그의 전체 주소
 
-# jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
-# ↓ --------------------------
-
-title: Chirpy # the main title
-
-tagline: A text-focused Jekyll theme # it will display as the subtitle
-
-description: >- # used by seo meta and the atom feed
-  A minimal, responsive and feature-rich Jekyll theme for technical writing.
-
-# Fill in the protocol & hostname for your site.
-# E.g. 'https://username.github.io', note that it does not end with a '/'.
-url: ""
-
+# GitHub 및 소셜 정보
 github:
-  username: github_username # change to your GitHub username
-
+  username: u-nsiq # 본인 GitHub 사용자 이름
 twitter:
-  username: twitter_username # change to your Twitter username
+  username: # 본인 Twitter 사용자 이름 (사용 안하면 비워두기)
 
 social:
-  # Change to your full name.
-  # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: your_full_name
-  email: example@domain.com # change to your email address
+  name: Junsik Kim # 포스트의 기본 저자명 및 푸터의 저작권자로 표시될 이름
+  email: wnstlr0830@gmail.com # 연락받을 이메일 주소
   links:
-    # The first element serves as the copyright owner's link
-    - https://twitter.com/username # change to your Twitter homepage
-    - https://github.com/username # change to your GitHub homepage
-    # Uncomment below to add more social links
-    # - https://www.facebook.com/username
-    # - https://www.linkedin.com/in/username
+    # 첫 번째 링크는 푸터의 저작권자 이름에 연결됩니다.
+    - https://github.com/u-nsiq # 본인 GitHub 프로필 주소
+    # - https://twitter.com/username # 다른 소셜 링크 추가 가능
 
-# Site Verification Settings
+# 구글 서치콘솔, 네이버 서치어드바이저 등 사이트 소유권 확인용 코드
 webmaster_verifications:
-  google: # fill in your Google verification code
-  bing: # fill in your Bing verification code
-  alexa: # fill in your Alexa verification code
-  yandex: # fill in your Yandex verification code
-  baidu: # fill in your Baidu verification code
-  facebook: # fill in your Facebook verification code
+  google: # 여기에 구글 소유권 확인 코드 입력
+  bing:
+  naver: # 네이버 서치어드바이저용 코드는 이렇게 직접 추가 가능
 
-# ↑ --------------------------
-# The end of `jekyll-seo-tag` settings
+#====================================================
+# 분석 및 꾸미기
+#====================================================
 
-# Web Analytics Settings
+# 구글 애널리틱스 설정
 analytics:
   google:
-    id: # fill in your Google Analytics ID
-  goatcounter:
-    id: # fill in your GoatCounter ID
-  umami:
-    id: # fill in your Umami ID
-    domain: # fill in your Umami domain
-  matomo:
-    id: # fill in your Matomo ID
-    domain: # fill in your Matomo domain
-  cloudflare:
-    id: # fill in your Cloudflare Web Analytics token
-  fathom:
-    id: # fill in your Fathom Site ID
+    id: G-5RBEHWCSHR # 본인의 구글 애널리틱스 ID
 
-# Page views settings
-pageviews:
-  provider: # now only supports 'goatcounter'
+# 사이드바 프로필 사진
+avatar: /assets/img/egg.png
 
-# Prefer color scheme setting.
-#
-# Note: Keep empty will follow the system prefer color by default,
-# and there will be a toggle to switch the theme between dark and light
-# on the bottom left of the sidebar.
-#
-# Available options:
-#
-#     light — Use the light color scheme
-#     dark — Use the dark color scheme
-#
-theme_mode: # [light | dark]
+# 소셜 미디어에 링크 공유 시 표시될 기본 대표 이미지
+# 예시: /assets/img/social-preview.png
+social_preview_image: /assets/img/egg.png
 
-# The CDN endpoint for media resources.
-# Notice that once it is assigned, the CDN url
-# will be added to all media resources (site avatar, posts' images, audio and video files) paths starting with '/'
-#
-# e.g. 'https://cdn.com'
-cdn:
-
-# the avatar on sidebar, support local or CORS resources
-avatar:
-
-# The URL of the site-wide social preview image used in SEO `og:image` meta tag.
-# It can be overridden by a customized `page.image` in front matter.
-social_preview_image: # string, local or CORS resources
-
-# boolean type, the global switch for TOC in posts.
+# 포스트 우측에 목차(TOC)를 전역으로 활성화
 toc: true
 
+# 테마 색상 모드 설정
+# 비워두면: 시스템 설정에 따르며, 좌측 하단에 다크/라이트 전환 토글이 생김
+# 'light' 또는 'dark'로 고정 가능
+theme_mode:
+
+#====================================================
+# 댓글 기능 설정 (Giscus)
+#====================================================
+
 comments:
-  # Global switch for the post-comment system. Keeping it empty means disabled.
-  provider: # [disqus | utterances | giscus]
-  # The provider options are as follows:
-  disqus:
-    shortname: # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
-  # utterances settings › https://utteranc.es/
-  utterances:
-    repo: # <gh-username>/<repo>
-    issue_term: # < url | pathname | title | ...>
-  # Giscus options › https://giscus.app
+  provider: giscus
   giscus:
-    repo: # <gh-username>/<repo>
-    repo_id:
-    category:
-    category_id:
-    mapping: # optional, default to 'pathname'
-    strict: # optional, default to '0'
-    input_position: # optional, default to 'bottom'
-    lang: # optional, default to the value of `site.lang`
-    reactions_enabled: # optional, default to the value of `1`
+    repo: u-nsiq/u-nsiq.github.io # 댓글이 저장될 GitHub 저장소
+    repo_id: R_kgDON4Nvew # Giscus 설정 시 발급받은 repo_id
+    category: Announcements
+    category_id: DIC_kwDON4Nvec4C8b0 # Giscus 설정 시 발급받은 category_id
+    mapping: pathname # 포스트 주소를 기준으로 댓글을 매칭
+    strict: 0
+    input_position: bottom # 댓글 입력창 위치 (top|bottom)
+    lang: ko # Giscus UI 언어
+    reactions_enabled: 1 # '좋아요' 같은 반응 기능 사용 (1: 사용, 0: 미사용)
 
-# Self-hosted static assets, optional › https://github.com/cotes2020/chirpy-static-assets
-assets:
-  self_host:
-    enabled: # boolean, keep empty means false
-    # specify the Jekyll environment, empty means both
-    # only works if `assets.self_host.enabled` is 'true'
-    env: # [development | production]
+#====================================================
+# 고급 기능 설정
+#====================================================
 
+# PWA(프로그레시브 웹 앱) 기능 활성화 (모바일에서 '홈 화면에 추가' 등 가능)
 pwa:
-  enabled: true # The option for PWA feature (installable)
+  enabled: true
   cache:
-    enabled: true # The option for PWA offline cache
-    # Paths defined here will be excluded from the PWA cache.
-    # Usually its value is the `baseurl` of another website that
-    # shares the same domain name as the current website.
-    deny_paths:
-      # - "/example"  # URLs match `<SITE_URL>/example/*` will not be cached by the PWA
+    enabled: true
 
+# 메인 페이지에 표시될 포스트 수
 paginate: 10
 
-# The base URL of your site
+# 사이트의 기본 경로. username.github.io 형태의 블로그는 항상 ""로 비워둬야 함.
 baseurl: ""
 
-# ------------ The following options are not recommended to be modified ------------------
+# --- (주의) 아래 설정은 특별한 이유가 없다면 수정하지 마세요. --- #
 
 kramdown:
   footnote_backlink: "&#8617;&#xfe0e;"
   syntax_highlighter: rouge
-  syntax_highlighter_opts: # Rouge Options › https://github.com/jneen/rouge#full-options
+  syntax_highlighter_opts:
     css_class: highlight
-    # default_lang: console
     span:
       line_numbers: false
     block:
@@ -173,14 +113,12 @@ collections:
 
 defaults:
   - scope:
-      path: "" # An empty string here means all files in the project
+      path: ""
       type: posts
     values:
       layout: post
-      comments: true # Enable comments in posts.
-      toc: true # Display TOC column in posts.
-      # DO NOT modify the following parameter unless you are confident enough
-      # to update the code of all other post links in this project.
+      comments: true
+      toc: true
       permalink: /posts/:title/
   - scope:
       path: _drafts
@@ -188,7 +126,7 @@ defaults:
       comments: false
   - scope:
       path: ""
-      type: tabs # see `site.collections`
+      type: tabs
     values:
       layout: page
       permalink: /:title/
@@ -212,7 +150,6 @@ exclude:
   - tools
   - README.md
   - LICENSE
-  - purgecss.js
   - "*.config.js"
   - "package*.json"
 

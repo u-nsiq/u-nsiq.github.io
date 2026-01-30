@@ -130,7 +130,7 @@ const config: QuartzConfig = {
       Plugin.Static(),
       Plugin.Favicon(), // 파비콘 생성
       Plugin.NotFoundPage(), // 404 에러 페이지 생성
-      Plugin.CustomOgImages(), // SNS 공유 이미지 생성
+      // Plugin.CustomOgImages(), // SNS 공유 이미지 생성
     ],
   },
 }

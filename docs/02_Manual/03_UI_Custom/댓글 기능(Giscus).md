@@ -16,7 +16,7 @@ Giscus를 쓰려면 깃허브 저장소가 다음 조건을 만족해야 합니�
 직접 코드를 짤 필요 없이, [Giscus 홈페이지](https://giscus.app/ko)에서 설정을 생성하면 됩니다.
 
 1.  **저장소 입력:** `사용자명/저장소명` (예: `u-nsiq/quartz-blog`) 입력.
-2.  **카테고리 선택:** **"Announcements"**를 추천합니다. (글과 댓글이 1:1로 잘 매칭됩니다.)
+2.  **카테고리 선택:** **"Announcements"** 를 추천합니다. (글과 댓글이 1:1로 잘 매칭됩니다.)
 3.  **결과 확인:** 화면 아래로 내리면 **`repo-id`** 와 **`category-id`** 가 생성된 것을 볼 수 있습니다. 이 **두 가지 값**을 복사해 두세요.
 
 > **⚠️ 주의:** `<script>` 태그 전체를 복사할 필요는 없습니다. ID 값만 있으면 됩니다.
@@ -72,3 +72,24 @@ comments: false
 
 블로그 테마에 맞춰 댓글창 테마도 자동으로 바뀝니다. 만약 커스텀 테마를 쓰고 싶다면 `themeUrl`, `lightTheme`, `darkTheme` 옵션을 사용할 수 있습니다.
 
+---
+
+**26/1/30 Giscus 코드**
+
+```
+<script src="https://giscus.app/client.js"
+        data-repo="u-nsiq/u-nsiq.github.io"
+        data-repo-id="R_kgDOREaiJg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOREaiJs4C1pbd"
+        data-mapping="url"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="ko"
+        crossorigin="anonymous"
+        async>
+</script>
+```

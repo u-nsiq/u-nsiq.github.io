@@ -51,8 +51,8 @@ const config: QuartzConfig = {
           name: "Schibsted Grotesk",
           weights: [700, 900],
         },
-        header: "Pretendard Variable", // 제목(Header)용 폰트
-        body: "Pretendard Variable",     // 본문(Body)용 폰트
+        header: "Noto Sans KR", // 제목(Header)용 폰트
+        body: "Noto Sans KR",     // 본문(Body)용 폰트
         code: "IBM Plex Mono",       // 코드 블록(Code)용 폰트
       },
 
@@ -130,7 +130,7 @@ const config: QuartzConfig = {
       Plugin.Static(),
       Plugin.Favicon(), // 파비콘 생성
       Plugin.NotFoundPage(), // 404 에러 페이지 생성
-      // Plugin.CustomOgImages(), // (빌드 속도를 위해 주석 처리됨) SNS 공유 이미지 생성
+      Plugin.CustomOgImages(), // SNS 공유 이미지 생성
     ],
   },
 }

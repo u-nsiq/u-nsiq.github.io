@@ -99,10 +99,10 @@ const config: QuartzConfig = {
       }),
       Plugin.SyntaxHighlighting({
         theme: {
-          light: "github-light",
-          dark: "github-dark",
+          light: "catppuccin-latte",
+          dark: "catppuccin-frappe",
         },
-        keepBackground: false,
+        keepBackground: true, // 코드 블록 배경색 유지
       }),
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }), // 옵시디언 전용 문법 지원 (Callout 등)
       Plugin.GitHubFlavoredMarkdown(), // 깃허브 스타일 마크다운 지원 (Table 등)
@@ -110,6 +110,7 @@ const config: QuartzConfig = {
       Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }), // [[WikiLink]] 처리 방식 설정
       Plugin.Description(), // SEO용 설명 생성
       Plugin.Latex({ renderEngine: "katex" }), // 수식(LaTeX) 렌더링 (KaTeX 사용)
+      Plugin.HardLineBreaks(), // 마크다운 내 줄바꿈을 강제 적용합니다.
     ],
     
     // Filters: 조건에 맞지 않는 페이지를 제외합니다.

@@ -2,7 +2,7 @@
 title: Junsik.io
 ---
 
-## Junsik Kim
+## Hello, I'm Junsik Kim
 
 > A senior undergraduate student in Software Engineering, with a focus on data mining and AI model optimization.
 >

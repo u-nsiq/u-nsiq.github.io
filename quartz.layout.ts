@@ -80,15 +80,13 @@ export const defaultContentPageLayout: PageLayout = {
       },
     }),
 
-    Component.Spacer(), // 빈 공간 (사이드바 맨 아래 여백)
-
-    Component.RecentNotes({
-      title: "Recent Notes", // 제목
-      limit: 5,          // 최대 표시할 글 개수
-      showTags: false,    // 태그 표시 여부
-    }),
+    // Component.RecentNotes({
+    //   title: "Recent Notes",
+    //   limit: 5,
+    //   showTags: false,
+    // }),
   ],
-  
+
   // 오른쪽 사이드바 (Right Sidebar)
   right: [
     // Component.Graph(), // 지식 그래프 (점과 선으로 연결된 모습)
@@ -134,15 +132,13 @@ export const defaultListPageLayout: PageLayout = {
       },
     }),
 
-    Component.Spacer(), // 빈 공간 (사이드바 맨 아래 여백)
-
-    Component.RecentNotes({
-      title: "Recent Notes", // 제목
-      limit: 5,          // 최대 표시할 글 개수
-      showTags: false,    // 태그 표시 여부
-    }),
+    // Component.RecentNotes({
+    //   title: "Recent Notes",
+    //   limit: 5,
+    //   showTags: false,
+    // }),
   ],
-  
+
   // 오른쪽 사이드바 (목록 페이지는 보통 오른쪽을 비워둠)
   right: [],
 }

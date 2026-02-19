@@ -67,7 +67,7 @@ export const defaultContentPageLayout: PageLayout = {
     Component.Explorer({
       title: "Menu", // 제목
       folderClickBehavior: "link", // 폴더 클릭 시 해당 폴더의 설명 페이지(index.md)로 이동
-      folderDefaultState: "open", // 처음부터 폴더를 열어서 내용을 보여줌 (글이 많아지면 "collapsed"로 변경)
+      folderDefaultState: "collapsed", // 처음부터 폴더를 열어서 내용을 보여줌 (open/collapsed)
       useSavedState: true, // 사용자가 이전에 열고 닫은 상태를 기억
       
       // 이모지 추가

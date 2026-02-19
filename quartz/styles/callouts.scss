@@ -8,6 +8,7 @@
   padding: 0 1rem;
   overflow-y: hidden;
   box-sizing: border-box;
+  box-shadow: 0 0 0 1.75px color-mix(in srgb, var(--color) 20%, transparent);
 
   & > .callout-content {
     display: grid;
@@ -145,10 +146,11 @@
 
 .callout-title {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 5px;
   padding: 1rem 0;
   color: var(--color);
+  font-size: 1.125rem;
 
   --icon-size: 18px;
 

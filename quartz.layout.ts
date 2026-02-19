@@ -65,7 +65,7 @@ export const defaultContentPageLayout: PageLayout = {
     }),
     
     Component.Explorer({
-      title: "Menu", // 제목
+      title: "Posts", // 제목
       folderClickBehavior: "link", // 폴더 클릭 시 해당 폴더의 설명 페이지(index.md)로 이동
       folderDefaultState: "collapsed", // 처음부터 폴더를 열어서 내용을 보여줌 (open/collapsed)
       useSavedState: true, // 사용자가 이전에 열고 닫은 상태를 기억
@@ -119,7 +119,7 @@ export const defaultListPageLayout: PageLayout = {
       ],
     }),
     Component.Explorer({
-      title: "Menu", // 제목 통일
+      title: "Posts", // 제목 통일
       folderClickBehavior: "link", // 클릭 동작 통일
       folderDefaultState: "open", // 상태 통일
       useSavedState: true,

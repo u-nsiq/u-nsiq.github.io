@@ -1,5 +1,5 @@
 ---
-title: Machine Learning
+title: ML
 ---
 
 학부 '기계학습' 강의 내용을 정리한 시리즈입니다.

@@ -2,7 +2,13 @@
 title: Junsik.io
 ---
 
-안녕하세요, **김준식**입니다. 데이터 마이닝과 인공지능 모델 최적화에 관심을 두고 있는 소프트웨어학부 학생입니다.
+## Junsik Kim
+
+> A senior undergraduate student in Software Engineering, with a focus on data mining and AI model optimization.
+>
+> Gained hands-on research experience in healthcare process mining at Data Analytics Lab, working with MIMIC-IV clinical data for event abstraction and log quality analysis. Currently working on a capstone project involving computer vision model compression (QAT) for edge deployment.
+>
+> Interested in bridging the gap between deep learning theory and practical, resource-efficient applications.
 
 이 블로그에는 두 종류의 글이 올라옵니다.
 

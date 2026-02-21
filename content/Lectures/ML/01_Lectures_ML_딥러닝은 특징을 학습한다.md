@@ -1,12 +1,7 @@
 ---
-title: 딥러닝과 특징 학습
+title: 딥러닝은 특징을 학습한다
 date: 2026-02-19
 draft: false
-tags:
-  - ML
-  - feature-learning
-  - end-to-end-learning
-  - DMLP
 ---
 
 > [!info] NOTICE

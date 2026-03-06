@@ -2,26 +2,18 @@
 title: Junsik.io
 ---
 
-## Hello, I'm Junsik Kim
+# Hello, I'm Junsik Kim
 
-> A senior undergraduate student in Software Engineering, with a focus on data mining and AI model optimization.
->
-> Gained hands-on research experience in healthcare process mining at Data Analytics Lab, working with MIMIC-IV clinical data for event abstraction and log quality analysis. Currently working on a capstone project involving computer vision model compression (QAT) for edge deployment.
->
-> Interested in bridging the gap between deep learning theory and practical, resource-efficient applications.
-
-이 블로그에는 두 종류의 글이 올라옵니다.
-
-- **Lecture Notes** — 전공 강의에서 배운 내용을 복습하며 정리한 학습 기록
-- **Personal Posts** — 연구, 프로젝트, 공부 과정에서 얻은 인사이트를 풀어 쓴 글
+> 🎓 **Kwangwoon University** | B.S. in Software Engineering (2023.03 - 2027.02 Expected)
+> 🔬 **Data Analytics Lab** | Undergraduate Researcher (2025.06 - 2026.02)
 
 ---
 
-## 📌 Information
+> [!abstract] 🌱 Notes (Digital Garden)
+> **공부하며 쌓아가는 개념 노트**입니다. 지식의 파편을 연결하는 과정이기에 미완성된 글도 자유롭게 공개합니다.
 
-- 🎓 **Kwangwoon University** | B.S. in Software Engineering (2023.03 - 2027.02 Expected)
-- 🔬 **Data Analytics Lab** | Undergraduate Researcher (2025.07 - 2026.02)
-- 💻 [GitHub](https://github.com/u-nsiq) | 🔗 [LinkedIn](https://linkedin.com/in/u-nsiq) | 📧 wnstlr0830@gmail.com
+> [!note] 📝 Posts
+> **주제별로 정리된 기록**입니다. 학습 기록, 프로젝트 기록 및 회고, 논문 리뷰 등 정제된 생각들을 담습니다.
 
 ---
 
@@ -30,20 +22,28 @@ title: Junsik.io
 - **Artificial Intelligence** — Deep Learning, Computer Vision, Model Quantization
 - **Data Science & Process Mining** — Healthcare Data Analysis, Event Abstraction
 
----
+## 📂 Explore
 
-## 📂 Archive
-
-- 📚 [**Lectures**](./Lectures) — 전공 강의 내용을 정리한 학습 기록
-- 🔬 [**Research**](./Research) — 연구 활동 및 논문 리뷰
-- 🛠️ [**Projects**](./Projects) — 프로젝트 과정과 회고
+- 🌱 [**Notes**](./Notes)
+- 📝 [**Posts**](./Posts) 
+    - [Studies](./Posts/Studies) | [Projects](./Posts/Projects) | [Research](./Posts/Research)
 
 ---
 
 ## 🚀 Selected Projects
 
-- **Multimodal AI Quantization for Edge Devices** | Capstone Design, 2025.01 - Present
-  - 엣지 디바이스 배포를 위한 컴퓨터 비전 모델 경량화(QAT) 연구
-- **Clinical Data Analysis via Process Mining** | Data Analytics Lab, 2025.06 - 2026.02
+- **Quantization for Computer Vision** | *Capstone Design, 2026.01 - Present*
+  - Researching **QAT** techniques to optimize deep learning model inference on CPUs.
+  - CPU 환경 내 딥러닝 모델 추론 최적화를 위한 양자화 인식 학습(QAT) 기법 연구
+- **XAI-based Generative Image Detection** | *KW-VIP Project, 2026.03 - Present*
+  - Developing an **XAI-based classifier** to determine the authenticity of AI-generated images.
+  - XAI 기법을 활용한 생성형 AI 이미지의 진위 여부 판별 분류기 개발
+- **Clinical Data Analysis via Process Mining** | *Data Analytics Lab, 2025.06 - 2026.02*
   - MIMIC-IV 임상 데이터 기반 이벤트 추상화 및 그룹화 전략 설계
   - 학술 문헌 기반 데이터 필터링 룰셋 및 품질 벤치마크 구현
+
+---
+
+## 📌 Contact
+
+- 💻 [GitHub](https://github.com/u-nsiq) | 🔗 [LinkedIn](https://linkedin.com/in/u-nsiq) | 📧 wnstlr0830@gmail.com

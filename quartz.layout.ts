@@ -65,7 +65,7 @@ export const defaultContentPageLayout: PageLayout = {
     }),
     
     Component.Explorer({
-      title: "Posts", // 제목
+      title: "Explorer", // 제목
       folderClickBehavior: "link", // 폴더 클릭 시 해당 폴더의 설명 페이지(index.md)로 이동
       folderDefaultState: "collapsed", // 처음부터 폴더를 열어서 내용을 보여줌 (open/collapsed)
       useSavedState: true, // 사용자가 이전에 열고 닫은 상태를 기억
@@ -80,16 +80,16 @@ export const defaultContentPageLayout: PageLayout = {
       },
     }),
 
-    // Component.RecentNotes({
-    //   title: "Recent Notes",
-    //   limit: 5,
-    //   showTags: false,
-    // }),
+    Component.RecentNotes({
+      title: "Recent Notes",
+      limit: 5,
+      showTags: false,
+    }),
   ],
 
   // 오른쪽 사이드바 (Right Sidebar)
   right: [
-    // Component.Graph(), // 지식 그래프 (점과 선으로 연결된 모습)
+    Component.Graph(), // 지식 그래프 (점과 선으로 연결된 모습)
     Component.DesktopOnly(Component.TableOfContents()), // 목차 (TOC) - 데스크톱에서만 보임
     Component.Backlinks(), // 백링크 (이 글을 언급하고 있는 다른 글들 목록)
   ],
@@ -119,7 +119,7 @@ export const defaultListPageLayout: PageLayout = {
       ],
     }),
     Component.Explorer({
-      title: "Posts", // 제목 통일
+      title: "Explorer", // 제목 통일
       folderClickBehavior: "link", // 클릭 동작 통일
       folderDefaultState: "open", // 상태 통일
       useSavedState: true,
@@ -132,11 +132,11 @@ export const defaultListPageLayout: PageLayout = {
       },
     }),
 
-    // Component.RecentNotes({
-    //   title: "Recent Notes",
-    //   limit: 5,
-    //   showTags: false,
-    // }),
+    Component.RecentNotes({
+      title: "Recent Notes",
+      limit: 5,
+      showTags: false,
+    }),
   ],
 
   // 오른쪽 사이드바 (목록 페이지는 보통 오른쪽을 비워둠)

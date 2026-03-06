@@ -50,6 +50,16 @@ export default (() => {
             )}
           </>
         )}
+        {cfg.theme.fontOrigin === "local" && (
+          <>
+            {/* Pretendard (header, body) */}
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" />
+            {/* Schibsted Grotesk (title) */}
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@700;900&display=swap" />
+            {/* IBM Plex Mono (code) */}
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" />
+          </>
+        )}
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 

@@ -41,18 +41,18 @@ const config: QuartzConfig = {
     // 2. 디자인 및 테마 설정 (Theme)
     // -------------------------------------------------
     theme: {
-      fontOrigin: "googleFonts", // 폰트를 가져올 출처
-      
-      cdnCaching: true, // true면 Google CDN을 사용해 폰트를 빠르게 로딩합니다. false면 폰트를 다운로드해 호스팅합니다.
-      
-      // 폰트 설정 (Google Fonts 이름 그대로 입력)
+      fontOrigin: "local", // "local": Quartz가 폰트를 자동 로딩하지 않음. custom.scss에서 CDN으로 직접 불러옴.
+
+      cdnCaching: true,
+
+      // fontOrigin: "local"이므로 아래 이름은 custom.scss에서 불러오는 font-family와 일치시킨다.
       typography: {
-        title: { // 사이트 제목용 폰트
+        title: { // 사이트 제목용 폰트 (custom.scss에서 Google Fonts CDN으로 로드)
           name: "Schibsted Grotesk",
           weights: [700, 900],
         },
-        header: "Noto Sans KR", // 제목(Header)용 폰트
-        body: "Noto Sans KR",     // 본문(Body)용 폰트
+        header: "Pretendard", // 제목(Header)용 폰트
+        body: "Pretendard",     // 본문(Body)용 폰트
         code: "IBM Plex Mono",       // 코드 블록(Code)용 폰트
       },
 

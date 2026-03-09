@@ -36,7 +36,7 @@ const config: QuartzConfig = {
     
     // 페이지 목록에 표시할 날짜의 기준입니다.
     // 값: 'created'(생성일), 'modified'(수정일), 'published'(발행일) 중 선택
-    defaultDateType: "modified",
+    defaultDateType: "created",
     
     // 2. 디자인 및 테마 설정 (Theme)
     // -------------------------------------------------
@@ -95,7 +95,7 @@ const config: QuartzConfig = {
     transformers: [
       Plugin.FrontMatter(), // 문서 맨 앞의 YAML Frontmatter를 파싱합니다.
       Plugin.CreatedModifiedDate({
-        priority: ["frontmatter", "git", "filesystem"], // 날짜를 가져오는 우선순위 설정
+        priority: ["frontmatter"], // frontmatter date/modified 필드만 사용. 수동 관리.
       }),
       Plugin.SyntaxHighlighting({
         theme: {

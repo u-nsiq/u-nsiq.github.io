@@ -84,6 +84,13 @@ export const defaultContentPageLayout: PageLayout = {
       title: "Recent Notes",
       limit: 5,
       showTags: false,
+      filter: (f) => !!f.slug?.startsWith("Notes/") && !f.slug?.endsWith("index"),
+    }),
+    Component.RecentNotes({
+      title: "Recent Posts",
+      limit: 5,
+      showTags: false,
+      filter: (f) => !!f.slug?.startsWith("Posts/") && !f.slug?.endsWith("index"),
     }),
   ],
 
@@ -136,6 +143,13 @@ export const defaultListPageLayout: PageLayout = {
       title: "Recent Notes",
       limit: 5,
       showTags: false,
+      filter: (f) => !!f.slug?.startsWith("Notes/") && !f.slug?.endsWith("index"),
+    }),
+    Component.RecentNotes({
+      title: "Recent Posts",
+      limit: 5,
+      showTags: false,
+      filter: (f) => !!f.slug?.startsWith("Posts/") && !f.slug?.endsWith("index"),
     }),
   ],
 

@@ -26,11 +26,24 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
   function ContentMetadata({ cfg, fileData, displayClass }: QuartzComponentProps) {
     const text = fileData.text
 
+    if (fileData.slug?.endsWith("index")) {
+      return null
+    }
+
     if (text) {
       const segments: (string | JSX.Element)[] = []
 
       if (fileData.dates) {
-        segments.push(<Date date={getDate(cfg, fileData)!} locale={cfg.locale} />)
+        const created = fileData.dates.created
+        const modified = fileData.dates.modified
+        if (created) {
+          segments.push(<span>Created <Date date={created} locale={cfg.locale} /></span>)
+        }
+        if (modified && (!created || modified.toISOString() !== created.toISOString())) {
+          segments.push(<span>Modified <Date date={modified} locale={cfg.locale} /></span>)
+        } else if (!created && modified) {
+          segments.push(<Date date={modified} locale={cfg.locale} />)
+        }
       }
 
       // Display reading time if enabled

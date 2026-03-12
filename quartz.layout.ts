@@ -96,7 +96,7 @@ export const defaultContentPageLayout: PageLayout = {
 
   // 오른쪽 사이드바 (Right Sidebar)
   right: [
-    Component.Graph(), // 지식 그래프 (점과 선으로 연결된 모습)
+    Component.Graph({ showTags: false }), // 지식 그래프 (점과 선으로 연결된 모습)
     Component.DesktopOnly(Component.TableOfContents()), // 목차 (TOC) - 데스크톱에서만 보임
     Component.Backlinks(), // 백링크 (이 글을 언급하고 있는 다른 글들 목록)
   ],

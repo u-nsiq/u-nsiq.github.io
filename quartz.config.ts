@@ -122,7 +122,7 @@ const config: QuartzConfig = {
       Plugin.ComponentResources(), // CSS, JS 등 리소스 생성
       Plugin.ContentPage(), // 실제 콘텐츠 페이지 생성
       Plugin.FolderPage(), // 폴더 인덱스 페이지 생성
-      Plugin.TagPage(), // 태그 목록 페이지 생성
+      // Plugin.TagPage(), // 태그는 상태 표시 전용 — 태그 페이지 불필요
       Plugin.ContentIndex({
         enableSiteMap: true, // 사이트맵 생성 (SEO)
         enableRSS: true,     // RSS 피드 생성

@@ -10,8 +10,8 @@ sync_notes.py
 import shutil
 from pathlib import Path
 
-PERMANENT = Path(r"C:\Users\junsik\Sync_Obsidian\myObsidian\20_Permanent")
-NOTES     = Path(r"C:\Users\junsik\Git\myGitpage\content\Notes")
+PERMANENT = Path(r"C:\Users\junsik\01_Notes\Sync_Obsidian\myObsidian\20_Permanent")
+NOTES     = Path(r"C:\Users\junsik\02_Projects\Blog\myGitpage\content\Notes")
 
 
 def sync_notes() -> None:

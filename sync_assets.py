@@ -15,9 +15,9 @@ import re
 import shutil
 from pathlib import Path
 
-VAULT_ASSETS   = Path(r"C:\Users\junsik\Sync_Obsidian\myObsidian\90_Assets")
-QUARTZ_ASSETS  = Path(r"C:\Users\junsik\Git\myGitpage\content\assets")
-QUARTZ_CONTENT = Path(r"C:\Users\junsik\Git\myGitpage\content")
+VAULT_ASSETS   = Path(r"C:\Users\junsik\01_Notes\Sync_Obsidian\myObsidian\90_Assets")
+QUARTZ_ASSETS  = Path(r"C:\Users\junsik\02_Projects\Blog\myGitpage\content\assets")
+QUARTZ_CONTENT = Path(r"C:\Users\junsik\02_Projects\Blog\myGitpage\content")
 
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"}
 

@@ -1,5 +1,6 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import { SimpleSlug } from "./quartz/util/path"
 
 // 1. 모든 페이지에 공통으로 적용되는 레이아웃 (Shared)
 // --------------------------------------------------
@@ -81,14 +82,9 @@ export const defaultContentPageLayout: PageLayout = {
     }),
 
     Component.RecentNotes({
-      title: "Recent Notes",
-      limit: 5,
-      showTags: false,
-      filter: (f) => !!f.slug?.startsWith("Notes/") && !f.slug?.endsWith("index"),
-    }),
-    Component.RecentNotes({
       title: "Recent Posts",
-      limit: 5,
+      limit: 2,
+      linkToMore: "Posts" as SimpleSlug,
       showTags: false,
       filter: (f) => !!f.slug?.startsWith("Posts/") && !f.slug?.endsWith("index"),
     }),
@@ -143,14 +139,9 @@ export const defaultListPageLayout: PageLayout = {
     }),
 
     Component.RecentNotes({
-      title: "Recent Notes",
-      limit: 5,
-      showTags: false,
-      filter: (f) => !!f.slug?.startsWith("Notes/") && !f.slug?.endsWith("index"),
-    }),
-    Component.RecentNotes({
       title: "Recent Posts",
-      limit: 5,
+      limit: 2,
+      linkToMore: "Posts" as SimpleSlug,
       showTags: false,
       filter: (f) => !!f.slug?.startsWith("Posts/") && !f.slug?.endsWith("index"),
     }),

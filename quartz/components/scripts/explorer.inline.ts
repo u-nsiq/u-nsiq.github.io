@@ -8,6 +8,7 @@ interface ParsedOptions {
   folderClickBehavior: "collapse" | "link"
   folderDefaultState: "collapsed" | "open"
   useSavedState: boolean
+  stateOverrides: Record<string, boolean>
   sortFn: (a: FileTrieNode, b: FileTrieNode) => number
   filterFn: (node: FileTrieNode) => boolean
   mapFn: (node: FileTrieNode) => void
@@ -79,6 +80,11 @@ function toggleFolder(evt: MouseEvent) {
   localStorage.setItem("fileTree", stringifiedFileTree)
 }
 
+function countFiles(node: FileTrieNode): number {
+  if (!node.isFolder) return 1
+  return node.children.reduce((sum, child) => sum + countFiles(child), 0)
+}
+
 function createFileNode(currentSlug: FullSlug, node: FileTrieNode): HTMLLIElement {
   const template = document.getElementById("template-file") as HTMLTemplateElement
   const clone = template.content.cloneNode(true) as DocumentFragment
@@ -115,6 +121,11 @@ function createFolderNode(
     folderContainer.classList.add("active")
   }
 
+  const fileCount = countFiles(node)
+  const countSpan = document.createElement("span")
+  countSpan.className = "folder-count"
+  countSpan.textContent = String(fileCount)
+
   if (opts.folderClickBehavior === "link") {
     // Replace button with link for link behavior
     const button = titleContainer.querySelector(".folder-button") as HTMLElement
@@ -124,9 +135,11 @@ function createFolderNode(
     a.className = "folder-title"
     a.textContent = node.displayName
     button.replaceWith(a)
+    titleContainer.appendChild(countSpan)
   } else {
     const span = titleContainer.querySelector(".folder-title") as HTMLElement
     span.textContent = node.displayName
+    titleContainer.appendChild(countSpan)
   }
 
   // if the saved state is collapsed or the default state is collapsed
@@ -159,10 +172,18 @@ async function setupExplorer(currentSlug: FullSlug) {
 
   for (const explorer of allExplorers) {
     const dataFns = JSON.parse(explorer.dataset.dataFns || "{}")
+    const rawOverrides: Record<string, "collapsed" | "open"> = JSON.parse(
+      explorer.dataset.stateOverrides || "{}",
+    )
+    const stateOverrides: Record<string, boolean> = {}
+    for (const [path, state] of Object.entries(rawOverrides)) {
+      stateOverrides[path] = state === "collapsed"
+    }
     const opts: ParsedOptions = {
       folderClickBehavior: (explorer.dataset.behavior || "collapse") as "collapse" | "link",
       folderDefaultState: (explorer.dataset.collapsed || "collapsed") as "collapsed" | "open",
       useSavedState: explorer.dataset.savestate === "true",
+      stateOverrides,
       order: dataFns.order || ["filter", "map", "sort"],
       sortFn: new Function("return " + (dataFns.sortFn || "undefined"))(),
       filterFn: new Function("return " + (dataFns.filterFn || "undefined"))(),
@@ -199,10 +220,13 @@ async function setupExplorer(currentSlug: FullSlug) {
     const folderPaths = trie.getFolderPaths()
     currentExplorerState = folderPaths.map((path) => {
       const previousState = oldIndex.get(path)
+      const defaultCollapsed =
+        opts.stateOverrides[path] !== undefined
+          ? opts.stateOverrides[path]
+          : opts.folderDefaultState === "collapsed"
       return {
         path,
-        collapsed:
-          previousState === undefined ? opts.folderDefaultState === "collapsed" : previousState,
+        collapsed: previousState === undefined ? defaultCollapsed : previousState,
       }
     })
 
@@ -291,12 +315,22 @@ document.addEventListener("nav", async (e: CustomEventMap["nav"]) => {
 })
 
 window.addEventListener("resize", function () {
-  // Desktop explorer opens by default, and it stays open when the window is resized
-  // to mobile screen size. Applies `no-scroll` to <html> in this edge case.
-  const explorer = document.querySelector(".explorer")
-  if (explorer && !explorer.classList.contains("collapsed")) {
+  const explorer = document.querySelector(".explorer") as HTMLElement | null
+  if (!explorer) return
+
+  const mobileExplorer = explorer.querySelector(".mobile-explorer") as HTMLElement | null
+  const isMobile = mobileExplorer?.checkVisibility() ?? false
+
+  if (isMobile) {
+    // Entering mobile mode: collapse explorer to prevent unexpected fullscreen overlay
+    if (!explorer.classList.contains("collapsed")) {
+      explorer.classList.add("collapsed")
+      explorer.setAttribute("aria-expanded", "false")
+      document.documentElement.classList.remove("mobile-no-scroll")
+    }
+  } else if (!explorer.classList.contains("collapsed")) {
+    // Desktop explorer open: keep no-scroll in case overlay edge case occurs
     document.documentElement.classList.add("mobile-no-scroll")
-    return
   }
 })
 

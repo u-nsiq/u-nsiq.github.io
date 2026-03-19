@@ -1,6 +1,5 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
-import { SimpleSlug } from "./quartz/util/path"
 
 // 1. 모든 페이지에 공통으로 적용되는 레이아웃 (Shared)
 // --------------------------------------------------
@@ -68,26 +67,42 @@ export const defaultContentPageLayout: PageLayout = {
     Component.Explorer({
       title: "Explorer", // 제목
       folderClickBehavior: "link", // 폴더 클릭 시 해당 폴더의 설명 페이지(index.md)로 이동
-      folderDefaultState: "collapsed", // 처음부터 폴더를 열어서 내용을 보여줌 (open/collapsed)
+      folderDefaultState: "collapsed", // 기본: 모든 폴더 접힘
       useSavedState: true, // 사용자가 이전에 열고 닫은 상태를 기억
-      
-      // 이모지 추가
+      folderStateOverrides: {
+        "Notes": "collapsed", // Notes 폴더: 접힘
+        "Posts": "open",      // Posts 폴더만 열림 (하위는 folderDefaultState에 따라 접힘)
+      },
+
+      // 폴더 우선, 파일은 최신 frontmatter date 기준 내림차순, 폴더끼리는 알파벳순
+      sortFn: (a, b) => {
+        if (a.isFolder !== b.isFolder) return a.isFolder ? -1 : 1
+        if (!a.isFolder && !b.isFolder) {
+          const aDate = a.data?.date ? new Date(a.data.date).getTime() : 0
+          const bDate = b.data?.date ? new Date(b.data.date).getTime() : 0
+          if (aDate !== bDate) return bDate - aDate
+        }
+        return a.displayName.localeCompare(b.displayName, undefined, { numeric: true, sensitivity: "base" })
+      },
+
       mapFn: (node) => {
         if (node.isFolder) {
-          node.displayName = "📁 " + node.displayName
-        } else {
-          node.displayName = "📄 " + node.displayName
+          let count = 0
+          const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000
+          const stack = [...node.children]
+          while (stack.length > 0) {
+            const n = stack.pop()
+            if (!n) continue
+            if (!n.isFolder && n.data?.date && new Date(n.data.date).getTime() >= cutoff) {
+              count++
+            }
+            stack.push(...n.children)
+          }
+          node.displayName = "📁 " + node.displayName + (count > 0 ? ` (+${count})` : "")
         }
       },
     }),
 
-    Component.RecentNotes({
-      title: "Recent Posts",
-      limit: 2,
-      linkToMore: "Posts" as SimpleSlug,
-      showTags: false,
-      filter: (f) => !!f.slug?.startsWith("Posts/") && !f.slug?.endsWith("index"),
-    }),
   ],
 
   // 오른쪽 사이드바 (Right Sidebar)
@@ -127,24 +142,42 @@ export const defaultListPageLayout: PageLayout = {
     Component.Explorer({
       title: "Explorer", // 제목 통일
       folderClickBehavior: "link", // 클릭 동작 통일
-      folderDefaultState: "open", // 상태 통일
+      folderDefaultState: "collapsed", // 기본: 모든 폴더 접힘
       useSavedState: true,
+      folderStateOverrides: {
+        "Notes": "collapsed",
+        "Posts": "open",
+      },
+
+      // 폴더 우선, 파일은 최신 frontmatter date 기준 내림차순, 폴더끼리는 알파벳순
+      sortFn: (a, b) => {
+        if (a.isFolder !== b.isFolder) return a.isFolder ? -1 : 1
+        if (!a.isFolder && !b.isFolder) {
+          const aDate = a.data?.date ? new Date(a.data.date).getTime() : 0
+          const bDate = b.data?.date ? new Date(b.data.date).getTime() : 0
+          if (aDate !== bDate) return bDate - aDate
+        }
+        return a.displayName.localeCompare(b.displayName, undefined, { numeric: true, sensitivity: "base" })
+      },
+
       mapFn: (node) => {
         if (node.isFolder) {
-          node.displayName = "📁 " + node.displayName
-        } else {
-          node.displayName = "📄 " + node.displayName
+          let count = 0
+          const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000
+          const stack = [...node.children]
+          while (stack.length > 0) {
+            const n = stack.pop()
+            if (!n) continue
+            if (!n.isFolder && n.data?.date && new Date(n.data.date).getTime() >= cutoff) {
+              count++
+            }
+            stack.push(...n.children)
+          }
+          node.displayName = "📁 " + node.displayName + (count > 0 ? ` (+${count})` : "")
         }
       },
     }),
 
-    Component.RecentNotes({
-      title: "Recent Posts",
-      limit: 2,
-      linkToMore: "Posts" as SimpleSlug,
-      showTags: false,
-      filter: (f) => !!f.slug?.startsWith("Posts/") && !f.slug?.endsWith("index"),
-    }),
   ],
 
   // 오른쪽 사이드바 (목록 페이지는 보통 오른쪽을 비워둠)

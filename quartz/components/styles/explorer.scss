@@ -131,6 +131,11 @@ button.desktop-explorer {
       opacity: 0.75;
       pointer-events: all;
 
+      &:hover {
+        color: var(--tertiary);
+        opacity: 1;
+      }
+
       &.active {
         opacity: 1;
         color: var(--tertiary);
@@ -201,6 +206,14 @@ button.desktop-explorer {
       pointer-events: none;
     }
   }
+}
+
+.folder-count {
+  font-size: 0.7rem;
+  color: var(--darkgray);
+  margin-left: 0.35rem;
+  font-weight: normal;
+  flex-shrink: 0;
 }
 
 .folder-icon {

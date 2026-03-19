@@ -46,4 +46,4 @@ title: Junsik.io
 
 ## 📌 Contact
 
-- 💻 [GitHub](https://github.com/u-nsiq) | 🔗 [LinkedIn](https://linkedin.com/in/u-nsiq) | 📧 wnstlr0830@gmail.com
+- 💻 [GitHub](https://github.com/u-nsiq) | 📧 wnstlr0830@gmail.com

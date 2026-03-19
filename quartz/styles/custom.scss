@@ -1,3 +1,8 @@
 @use "./base.scss";
 
 // put your custom CSS here!
+
+// Explorer: 파일 항목 폰트 크기 (폴더 0.95rem보다 살짝 작게)
+.explorer-content ul li > a {
+  font-size: 0.75rem;
+}

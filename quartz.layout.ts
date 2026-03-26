@@ -88,7 +88,7 @@ export const defaultContentPageLayout: PageLayout = {
       mapFn: (node) => {
         if (node.isFolder) {
           let count = 0
-          const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000
+          const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000
           const stack = [...node.children]
           while (stack.length > 0) {
             const n = stack.pop()

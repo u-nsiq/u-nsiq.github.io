@@ -61,28 +61,28 @@ const config: QuartzConfig = {
       colors: {
         // [Velocity Style]
         lightMode: {
-          light: "#ffffff",       // 배경: 깨끗한 화이트 (스크린샷의 종이 질감)
+          light: "#FAFAFA",       // 배경: Velocity 오프화이트
           lightgray: "#e0e0e0",   // 테두리: 아주 은은한 회색
           gray: "#d1d1d1",        // 그래프 선
           darkgray: "#3b3b3b",    // 본문: 스크린샷처럼 너무 검지 않은, 부드러운 진회색
           dark: "#202020",        // 제목: 깔끔한 검정
           secondary: "#7797C0",   
-          tertiary: "#4a5a75",    // 링크 호버 (조금 더 진한 슬레이트)
+          tertiary: "#4A6FA5",    // 링크 호버
           highlight: "rgba(108, 122, 150, 0.15)", // 형광펜: 포인트 컬러의 연한 버전
-          textHighlight: "#fff23688", // 마크다운 강조
+          textHighlight: "#CCE9FF", // 마크다운 강조 (Velocity blue, H=208°)
         },
 
         // [Nord Style]
         darkMode: {
-          light: "#23272e",
-          lightgray: "#393639",
-          gray: "#646464",
+          light: "#2E3440",
+          lightgray: "#4C566A",
+          gray: "#7B8A9A",
           darkgray: "#d4d4d4",
           dark: "#ebebec",
           secondary: "#61afef",
-          tertiary: "#98c379",
+          tertiary: "#81A1C1",    // 링크 호버 (Nord9)
           highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#b3aa0288",
+          textHighlight: "rgba(117, 170, 226, 0.35)", // 마크다운 강조 (Nord blue)
         },
       },
     },

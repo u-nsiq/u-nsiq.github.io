@@ -26,7 +26,7 @@ title: Junsik.io
 
 - 🌱 [**Notes**](./Notes)
 - 📝 [**Posts**](./Posts) 
-    - [Studies](./Posts/Studies) | [Projects](./Posts/Projects) | [Research](./Posts/Research)
+    - [Lectures](./Posts/Lectures) | [Paper Review](./Posts/Paper-Review) | [Lab Intern](./Posts/Lab-Intern) | [Projects](./Posts/Projects)
 
 ---
 

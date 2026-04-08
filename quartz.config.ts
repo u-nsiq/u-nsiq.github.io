@@ -51,8 +51,8 @@ const config: QuartzConfig = {
           name: "Schibsted Grotesk",
           weights: [700, 900],
         },
-        header: "Pretendard", // 제목(Header)용 폰트
-        body: "Pretendard",     // 본문(Body)용 폰트
+        header: "Pretendard Variable", // 제목(Header)용 폰트
+        body: "Pretendard Variable",     // 본문(Body)용 폰트
         code: "IBM Plex Mono",       // 코드 블록(Code)용 폰트
       },
 

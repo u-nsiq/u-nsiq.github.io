@@ -24,6 +24,14 @@ function toggleToc(this: HTMLElement) {
   content.classList.toggle("collapsed")
 }
 
+// [커스텀] panel-open 드로어 토글 (mobile-toc 버튼 전용)
+function toggleTocPanel(this: HTMLElement) {
+  const tocEl = this.closest(".toc") as HTMLElement
+  if (!tocEl) return
+  tocEl.classList.toggle("panel-open")
+}
+// [커스텀 끝]
+
 function setupToc() {
   for (const toc of document.getElementsByClassName("toc")) {
     const button = toc.querySelector(".toc-header")
@@ -31,11 +39,27 @@ function setupToc() {
     if (!button || !content) return
     button.addEventListener("click", toggleToc)
     window.addCleanup(() => button.removeEventListener("click", toggleToc))
+
+    // [커스텀] mobile-toc 버튼 이벤트 바인딩
+    const mobileTocBtn = toc.querySelector("button.mobile-toc") as HTMLElement | null
+    if (mobileTocBtn) {
+      mobileTocBtn.addEventListener("click", toggleTocPanel)
+      window.addCleanup(() => mobileTocBtn.removeEventListener("click", toggleTocPanel))
+    }
   }
 }
 
 document.addEventListener("nav", () => {
   setupToc()
+
+  // [커스텀] 페이지 이동 시 panel-open 드로어 닫기
+  for (const toc of document.getElementsByClassName("toc")) {
+    const mobileTocBtn = toc.querySelector("button.mobile-toc") as HTMLElement | null
+    if (mobileTocBtn?.checkVisibility()) {
+      toc.classList.remove("panel-open")
+    }
+  }
+  // [커스텀 끝]
 
   // update toc entry highlighting
   observer.disconnect()

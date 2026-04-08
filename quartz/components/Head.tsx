@@ -53,7 +53,7 @@ export default (() => {
         {cfg.theme.fontOrigin === "local" && (
           <>
             {/* Pretendard (header, body) */}
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.min.css" />
             {/* Schibsted Grotesk (title) */}
             <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@700;900&display=swap" />
             {/* IBM Plex Mono (code) */}

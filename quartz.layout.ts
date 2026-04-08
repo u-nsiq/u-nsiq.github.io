@@ -60,7 +60,6 @@ export const defaultContentPageLayout: PageLayout = {
           grow: true, // 남은 공간을 검색창이 꽉 채우도록 설정
         },
         { Component: Component.Darkmode() }, // 다크모드/라이트모드 토글 버튼
-        { Component: Component.ReaderMode() }, // 리더 모드 (글에만 집중하는 모드)
       ],
     }),
     
@@ -87,18 +86,7 @@ export const defaultContentPageLayout: PageLayout = {
 
       mapFn: (node) => {
         if (node.isFolder) {
-          let count = 0
-          const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000
-          const stack = [...node.children]
-          while (stack.length > 0) {
-            const n = stack.pop()
-            if (!n) continue
-            if (!n.isFolder && n.data?.date && new Date(n.data.date).getTime() >= cutoff) {
-              count++
-            }
-            stack.push(...n.children)
-          }
-          node.displayName = "📁 " + node.displayName + (count > 0 ? ` (+${count})` : "")
+          node.displayName = "📁 " + node.displayName
         }
       },
     }),
@@ -111,7 +99,7 @@ export const defaultContentPageLayout: PageLayout = {
       localGraph: { showTags: false },
       globalGraph: { showTags: false },
     }), // 지식 그래프 (점과 선으로 연결된 모습)
-    Component.DesktopOnly(Component.TableOfContents()), // 목차 (TOC) - 데스크톱에서만 보임
+    Component.TableOfContents(), // 목차 (TOC)
     Component.Backlinks(), // 백링크 (이 글을 언급하고 있는 다른 글들 목록)
   ],
 }
@@ -162,18 +150,7 @@ export const defaultListPageLayout: PageLayout = {
 
       mapFn: (node) => {
         if (node.isFolder) {
-          let count = 0
-          const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000
-          const stack = [...node.children]
-          while (stack.length > 0) {
-            const n = stack.pop()
-            if (!n) continue
-            if (!n.isFolder && n.data?.date && new Date(n.data.date).getTime() >= cutoff) {
-              count++
-            }
-            stack.push(...n.children)
-          }
-          node.displayName = "📁 " + node.displayName + (count > 0 ? ` (+${count})` : "")
+          node.displayName = "📁 " + node.displayName
         }
       },
     }),

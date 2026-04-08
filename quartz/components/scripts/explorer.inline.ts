@@ -38,6 +38,15 @@ function toggleExplorer(this: HTMLElement) {
   }
 }
 
+// [커스텀] panel-open 드로어 토글 (mobile-explorer 버튼 전용)
+// collapsed와 분리하여 zoom/resize 이벤트에 영향받지 않도록 함
+function toggleExplorerPanel(this: HTMLElement) {
+  const nearestExplorer = this.closest(".explorer") as HTMLElement
+  if (!nearestExplorer) return
+  nearestExplorer.classList.toggle("panel-open")
+}
+// [커스텀 끝]
+
 function toggleFolder(evt: MouseEvent) {
   evt.stopPropagation()
   const target = evt.target as MaybeHTMLElement
@@ -84,6 +93,15 @@ function countFiles(node: FileTrieNode): number {
   if (!node.isFolder) return 1
   return node.children.reduce((sum, child) => sum + countFiles(child), 0)
 }
+
+// [커스텀] 최근 7일 이내 date가 갱신된 파일 수 재귀 카운트
+function countRecentFiles(node: FileTrieNode, cutoff: number): number {
+  if (!node.isFolder) {
+    return (node.data?.date && new Date(node.data.date).getTime() >= cutoff) ? 1 : 0
+  }
+  return node.children.reduce((sum, child) => sum + countRecentFiles(child, cutoff), 0)
+}
+// [커스텀 끝]
 
 function createFileNode(currentSlug: FullSlug, node: FileTrieNode): HTMLLIElement {
   const template = document.getElementById("template-file") as HTMLTemplateElement
@@ -141,6 +159,16 @@ function createFolderNode(
     span.textContent = node.displayName
     titleContainer.appendChild(countSpan)
   }
+
+  // [커스텀] 최근 7일 이내 업데이트 파일 수 배지 (있을 때만 표시)
+  const recentCount = countRecentFiles(node, Date.now() - 7 * 24 * 60 * 60 * 1000)
+  if (recentCount > 0) {
+    const recentSpan = document.createElement("span")
+    recentSpan.className = "folder-count-recent"
+    recentSpan.textContent = `+${recentCount}`
+    titleContainer.appendChild(recentSpan)
+  }
+  // [커스텀 끝]
 
   // if the saved state is collapsed or the default state is collapsed
   const isCollapsed =
@@ -261,8 +289,10 @@ async function setupExplorer(currentSlug: FullSlug) {
       "explorer-toggle",
     ) as HTMLCollectionOf<HTMLElement>
     for (const button of explorerButtons) {
-      button.addEventListener("click", toggleExplorer)
-      window.addCleanup(() => button.removeEventListener("click", toggleExplorer))
+      // [커스텀] mobile 버튼은 panel-open 토글, desktop 버튼은 기존 collapsed 토글
+      const handler = (button as HTMLElement).dataset.mobile === "true" ? toggleExplorerPanel : toggleExplorer
+      button.addEventListener("click", handler)
+      window.addCleanup(() => button.removeEventListener("click", handler))
     }
 
     // Set up folder click handlers
@@ -297,42 +327,46 @@ document.addEventListener("nav", async (e: CustomEventMap["nav"]) => {
   const currentSlug = e.detail.url
   await setupExplorer(currentSlug)
 
-  // if mobile hamburger is visible, collapse by default
+  // [커스텀] 페이지 이동 시 panel-open 드로어 닫기 (원본: collapsed 추가 → panel-open 제거로 변경)
   for (const explorer of document.getElementsByClassName("explorer")) {
     const mobileExplorer = explorer.querySelector(".mobile-explorer")
     if (!mobileExplorer) return
 
-    if (mobileExplorer.checkVisibility()) {
-      explorer.classList.add("collapsed")
-      explorer.setAttribute("aria-expanded", "false")
-
-      // Allow <html> to be scrollable when mobile explorer is collapsed
+    if ((mobileExplorer as HTMLElement).checkVisibility()) {
+      explorer.classList.remove("panel-open")
       document.documentElement.classList.remove("mobile-no-scroll")
     }
 
     mobileExplorer.classList.remove("hide-until-loaded")
   }
+  // [커스텀 끝]
 })
 
+// [커스텀] resize 핸들러: panel-open 드로어는 zoom/resize에 반응하지 않음
+// 원본은 모바일 진입 시 collapsed 추가 → 드로어가 zoom에 닫히는 문제 있어 비움
 window.addEventListener("resize", function () {
-  const explorer = document.querySelector(".explorer") as HTMLElement | null
-  if (!explorer) return
+  // intentionally empty: panel-open state is managed only by button clicks and nav events
+})
 
-  const mobileExplorer = explorer.querySelector(".mobile-explorer") as HTMLElement | null
-  const isMobile = mobileExplorer?.checkVisibility() ?? false
+// [커스텀] 오버레이(배경) 클릭 시 드로어 닫기
+// 클릭 target이 .sidebar.left/.right 바깥이면 해당 패널 닫음
+document.addEventListener("click", (e) => {
+  const target = e.target as HTMLElement
+  const leftSidebar = document.querySelector(".sidebar.left")
+  const rightSidebar = document.querySelector(".sidebar.right")
 
-  if (isMobile) {
-    // Entering mobile mode: collapse explorer to prevent unexpected fullscreen overlay
-    if (!explorer.classList.contains("collapsed")) {
-      explorer.classList.add("collapsed")
-      explorer.setAttribute("aria-expanded", "false")
-      document.documentElement.classList.remove("mobile-no-scroll")
+  if (leftSidebar && !leftSidebar.contains(target)) {
+    for (const explorer of document.getElementsByClassName("explorer")) {
+      explorer.classList.remove("panel-open")
     }
-  } else if (!explorer.classList.contains("collapsed")) {
-    // Desktop explorer open: keep no-scroll in case overlay edge case occurs
-    document.documentElement.classList.add("mobile-no-scroll")
+  }
+  if (rightSidebar && !rightSidebar.contains(target)) {
+    for (const toc of document.getElementsByClassName("toc")) {
+      toc.classList.remove("panel-open")
+    }
   }
 })
+// [커스텀 끝]
 
 function setFolderState(folderElement: HTMLElement, collapsed: boolean) {
   return collapsed ? folderElement.classList.remove("open") : folderElement.classList.add("open")

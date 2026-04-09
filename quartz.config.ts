@@ -21,8 +21,7 @@ const config: QuartzConfig = {
     // 방문자 통계 도구 설정
     // 사용하지 않으려면 null로 설정하세요. (예: analytics: null)
     // 구글, Plausible, Umami 등을 지원합니다.
-    analytics: null,
-    // {provider: 'google', tagId: '<your-google-tag>', // Google Analytics 설정 예시},
+    analytics: { provider: 'google', tagId: 'G-PX97HG0GD5' },
     
     locale: "en-US", // 날짜 형식 및 다국어 처리에 사용될 지역 설정입니다.
     

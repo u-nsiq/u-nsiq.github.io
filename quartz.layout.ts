@@ -73,9 +73,15 @@ export const defaultContentPageLayout: PageLayout = {
         "Posts": "open",      // Posts 폴더만 열림 (하위는 folderDefaultState에 따라 접힘)
       },
 
-      // 폴더 우선, 파일은 최신 frontmatter date 기준 내림차순, 폴더끼리는 알파벳순
+      // 폴더 우선, 파일은 최신 frontmatter date 기준 내림차순, 폴더끼리는 알파벳순 (단 Posts > Notes 고정)
       sortFn: (a, b) => {
         if (a.isFolder !== b.isFolder) return a.isFolder ? -1 : 1
+        if (a.isFolder && b.isFolder) {
+          const folderOrder: Record<string, number> = { "Posts": 0, "Notes": 1 }
+          const aOrder = folderOrder[a.slugSegment] ?? 99
+          const bOrder = folderOrder[b.slugSegment] ?? 99
+          if (aOrder !== bOrder) return aOrder - bOrder
+        }
         if (!a.isFolder && !b.isFolder) {
           const aDate = a.data?.date ? new Date(a.data.date).getTime() : 0
           const bDate = b.data?.date ? new Date(b.data.date).getTime() : 0
@@ -137,9 +143,15 @@ export const defaultListPageLayout: PageLayout = {
         "Posts": "open",
       },
 
-      // 폴더 우선, 파일은 최신 frontmatter date 기준 내림차순, 폴더끼리는 알파벳순
+      // 폴더 우선, 파일은 최신 frontmatter date 기준 내림차순, 폴더끼리는 알파벳순 (단 Posts > Notes 고정)
       sortFn: (a, b) => {
         if (a.isFolder !== b.isFolder) return a.isFolder ? -1 : 1
+        if (a.isFolder && b.isFolder) {
+          const folderOrder: Record<string, number> = { "Posts": 0, "Notes": 1 }
+          const aOrder = folderOrder[a.slugSegment] ?? 99
+          const bOrder = folderOrder[b.slugSegment] ?? 99
+          if (aOrder !== bOrder) return aOrder - bOrder
+        }
         if (!a.isFolder && !b.isFolder) {
           const aDate = a.data?.date ? new Date(a.data.date).getTime() : 0
           const bDate = b.data?.date ? new Date(b.data.date).getTime() : 0

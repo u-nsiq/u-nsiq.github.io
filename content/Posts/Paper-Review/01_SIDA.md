@@ -53,7 +53,7 @@ draft: false
 - **Detection(탐지)** — 이미지 전체를 보고 real인지 fake인지 판별하는 task. 본질적으로 이미지 ==분류(Classification)== 문제다.
 - **Localization(위치 추정)** — 이미지의 일부가 tampered(부분 조작)됐을 때, 조작된 영역이 픽셀 단위로 어디인지 마스크로 찾아내는 task. 이미지 ==분할(Segmentation)== 문제에 해당한다.
 
-![[image-undefined-x306-y342.png]]
+![[image-undefined-x306-y342.png|600]]
 > *Figure 1. 기존 방법(a, b)과 SIDA(c)의 비교*
 
 Figure 1이 이 구도를 잘 보여준다.
@@ -86,7 +86,7 @@ ForgeryNet, DeepFakeFace, DFFD 같은 대표적인 데이터셋들이 이 흐름
 
 이들은 데이터 규모, 생성 방식의 다양성, 세부 annotation 측면에서 발전을 이뤘지만, 논문은 SID-Set이 ==소셜 미디어 데이터에 특화==되어 있고, 최신 ==SOTA 생성 모델을 활용==했으며, 훨씬 ==포괄적이고 다양한 annotation을 제공==한다는 점에서 차별화된다고 설명한다.
 
-![[image-2-x315-y601.png]]
+![[image-2-x315-y601.png|600]]
 > *Table 1. 기존 딥페이크 데이터셋들과 SID-Set의 비교. Multiclasses / Masks / Explanation 세 컬럼에 SID-Set만 모두 해당된다.*
 
 Table 1에서 직접 확인할 수 있는 건 레이블 구성의 차이다.
@@ -399,7 +399,7 @@ LGrad의 경우 Tampered F1은 높지만 전체 Accuracy는 낮은데, 이게 �
 특히 SIDA의 베이스라인인 LISA를 SID-Set으로 fine-tuning한 버전과 비교해서도 SIDA가 앞서는데, 이에 대해 논문은 LISA가 일반적인 분할 능력은 뛰어나지만 딥페이크의 미묘한 조작을 탐지하는 데 필요한 특화 구조가 없어서 fine-tuning 효과가 제한된다고 분석한다.
 즉, `<DET>` 토큰과 Attention Module을 추가한 SIDA의 아키텍처 설계 자체가 유효했음을 보여준다.
 
-![[image-7-x52-y191.png]]
+![[image-7-x52-y191.png|500]]
 > _Table 3. SID-Set Localization 성능 비교. `*`는 훈련 코드를 이용할 수 없어 사전학습 가중치를 그대로 사용한 모델._
 
 MVSS-Net과 HIFI-Net은 `*` 표시가 되어 있어, 재학습 없이 원래 가중치로만 테스트했다.
@@ -411,7 +411,7 @@ MVSS-Net과 HIFI-Net은 `*` 표시가 되어 있어, 재학습 없이 원래 가
 실제 소셜미디어에서 이미지는 업로드 과정에서 JPEG 압축, 크기 조정, 노이즈 등 화질 열화가 발생한다.
 탐지 모델이 이런 열화를 조작으로 오해하거나, 반대로 진짜 조작된 픽셀 단서를 놓칠 수 있다. 논문은 열화 데이터로 명시적으로 학습하지 않았음에도 SIDA가 이런 조건에서 안정적인 성능을 보인다고 주장한다.
 
-![[image-7-x318-y310.png]]
+![[image-7-x318-y310.png|500]]
 > _Table 4. 6가지 화질 열화 조건에서 SIDA 성능. JPEG 압축(quality 70, 80), Resize(0.5, 0.75배), Gaussian Noise(분산 5, 10)._
 
 원본 SIDA-7B 기준(마지막 행)과 비교하면, 6가지 열화 조건 모두에서 수치가 소폭 하락하긴 하지만 급격히 무너지지 않는다. Gaussian Noise 분산 10이 가장 성능 하락이 크고, Resize 0.75가 가장 영향이 적다.
@@ -423,7 +423,7 @@ SID-Set에서만 잘 되면 데이터셋 과적합일 수 있다.
 논문은 완전히 다른 외부 벤치마크인 DMimage 데이터셋에서 SIDA를 테스트해서 일반화 능력을 검증한다.
 비교 대상 모델들은 모두 원래 사전학습 가중치와 하이퍼파라미터 그대로 사용했고, SIDA가 가장 높은 성능을 달성했다.
 
-![[image-8-x53-y560.png]]
+![[image-8-x53-y560.png|500]]
 > _Table 5. DMimage 벤치마크에서 탐지 성능 비교._
 
 SID-Set으로 학습한 SIDA가 전혀 다른 데이터셋에서도 SOTA를 달성했다는 게 핵심이다.
@@ -435,7 +435,7 @@ SID-Set으로 학습한 SIDA가 전혀 다른 데이터셋에서도 SOTA를 달�
 Attention Module이 실제로 효과가 있는지 검증하기 위해 두 가지 변형을 실험했다.
 Attention Module을 완전히 제거한 버전(w/o Attention)과, Attention 대신 FC Layer로 대체한 버전(FC)이다.
 
-![[image-8-x57-y421.png]]
+![[image-8-x57-y421.png|500]]
 > _Table 6. Attention Module 유무에 따른 성능 비교._
 
 FC와 w/o Attention 모두 SIDA 대비 Detection과 Localization 성능이 하락한다.
@@ -443,7 +443,7 @@ FC와 w/o Attention 모두 SIDA 대비 Detection과 Localization 성능이 하�
 
 ### 5.7 Qualitative Results (Figure 6)
 
-![[image-8-x309-y274.png]]
+![[image-8-x309-y274.png|500]]
 > _Figure 6. SIDA의 시각적 결과. (a) 성공 사례: 원본 이미지에서 조작된 영역을 빨간 마스크로 정확하게 표시. (b) 실패 사례: Ground Truth 마스크(흑백)와 SIDA가 예측한 마스크가 불일치._
 
 성공 사례에서는 object replacement와 partial tampered 이미지 모두에서 조작 영역을 정확하게 찾아낸다.

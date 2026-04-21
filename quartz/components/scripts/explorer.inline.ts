@@ -47,6 +47,13 @@ function toggleExplorerPanel(this: HTMLElement) {
 }
 // [커스텀 끝]
 
+// [커스텀] link 모드: 폴더 제목 <a> 클릭 시 navigate 대신 토글
+function toggleFolderFromLink(evt: MouseEvent) {
+  evt.preventDefault()
+  toggleFolder(evt)
+}
+// [커스텀 끝]
+
 function toggleFolder(evt: MouseEvent) {
   evt.stopPropagation()
   const target = evt.target as MaybeHTMLElement
@@ -167,6 +174,21 @@ function createFolderNode(
     recentSpan.className = "folder-count-recent"
     recentSpan.textContent = `+${recentCount}`
     titleContainer.appendChild(recentSpan)
+  }
+  // [커스텀 끝]
+
+  // [커스텀] link 모드: hover 시 나타나는 index.md 링크 아이콘
+  // <span> 래퍼로 감싸 div > a CSS 셀렉터 충돌 방지
+  if (opts.folderClickBehavior === "link") {
+    const wrap = document.createElement("span")
+    wrap.className = "folder-link-icon-wrap"
+    const linkIcon = document.createElement("a")
+    linkIcon.href = resolveRelative(currentSlug, folderPath)
+    linkIcon.dataset.for = folderPath
+    linkIcon.title = "인덱스 페이지로 이동"
+    linkIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`
+    wrap.appendChild(linkIcon)
+    titleContainer.appendChild(wrap)
   }
   // [커스텀 끝]
 
@@ -305,6 +327,18 @@ async function setupExplorer(currentSlug: FullSlug) {
         window.addCleanup(() => button.removeEventListener("click", toggleFolder))
       }
     }
+
+    // [커스텀] link 모드: 폴더 제목 클릭은 토글 (navigate 차단)
+    if (opts.folderClickBehavior === "link") {
+      const folderTitleLinks = explorer.querySelectorAll(
+        ".folder-title",
+      ) as NodeListOf<HTMLElement>
+      for (const link of folderTitleLinks) {
+        link.addEventListener("click", toggleFolderFromLink)
+        window.addCleanup(() => link.removeEventListener("click", toggleFolderFromLink))
+      }
+    }
+    // [커스텀 끝]
 
     const folderIcons = explorer.getElementsByClassName(
       "folder-icon",

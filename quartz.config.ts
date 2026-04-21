@@ -81,7 +81,7 @@ const config: QuartzConfig = {
           secondary: "#61afef",
           tertiary: "#81A1C1",    // 링크 호버 (Nord9)
           highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "rgba(117, 170, 226, 0.35)", // 마크다운 강조 (Nord blue)
+          textHighlight: "rgba(255, 214, 0, 0.55)", // 마크다운 강조 (yellow)
         },
       },
     },

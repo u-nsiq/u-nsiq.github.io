@@ -209,7 +209,7 @@ button.desktop-explorer {
 }
 
 .folder-count {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--darkgray);
   margin-left: 0.35rem;
   font-weight: normal;
@@ -217,10 +217,16 @@ button.desktop-explorer {
 }
 
 .folder-count-recent {
-  font-size: 0.65rem;
-  color: var(--secondary);
-  margin-left: 0.2rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.3rem;
+  padding: 0 0.3rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--light);
+  background-color: var(--secondary);
+  border-radius: 999px;
+  line-height: 1.5;
   flex-shrink: 0;
 }
 
@@ -239,6 +245,33 @@ li:has(> .folder-outer:not(.open)) > .folder-container > svg {
 
 .folder-icon:hover {
   color: var(--tertiary);
+}
+
+.folder-link-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.3rem;
+  opacity: 0.4;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+
+  & > a {
+    display: inline-flex;
+    align-items: center;
+    color: var(--darkgray);
+
+    svg {
+      pointer-events: none;
+    }
+
+    &:hover {
+      color: var(--tertiary);
+    }
+  }
+}
+
+.folder-container:hover .folder-link-icon-wrap {
+  opacity: 0.8;
 }
 
 .explorer {

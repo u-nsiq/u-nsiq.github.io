@@ -55,8 +55,8 @@
     top: 0;
     left: -320px;                            // 기본: off-screen 왼쪽
     width: 320px;
-    height: 100dvh;
-    overflow-y: auto;
+    height: 100dvh !important;
+    overflow-y: auto !important;
     z-index: 200;
     background-color: var(--light);
     padding: 4rem 1.5rem 2rem 1.5rem !important;
@@ -64,6 +64,7 @@
     flex-direction: column !important;
     gap: 1.2rem !important;
     align-items: flex-start !important;
+    margin: 0 !important;
     transition: left 200ms ease;
   }
 
@@ -109,6 +110,24 @@
 
   .explorer button.desktop-explorer {
     display: none !important;
+  }
+
+  // MobileOnly(Spacer): 원래 가로 헤더 레이아웃용 → 드로어(세로)에서 보이면 flex: 1로 공간 다 차지
+  .page > #quartz-body .sidebar.left .mobile-only {
+    display: none !important;
+  }
+
+  // Explorer 컨테이너: $mobile(800px) 조건 충돌 방지
+  // 줌 인 시 뷰포트가 800px 아래로 내려가면 explorer.scss가 .explorer { flex: 0 0 34px; overflow: hidden }을 적용해
+  // 드로어 내 콘텐츠가 잘리는 문제를 덮어씀
+  .page > #quartz-body .sidebar.left .explorer {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    order: 0 !important;
+    align-self: stretch !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
   }
 
   // Explorer 콘텐츠: mobile 모드의 full-screen overlay CSS를 무력화
@@ -206,6 +225,37 @@
 }
 
 // ================================================================
+// § 1-B. $MOBILE 충돌 리셋 (< 800px, 줌 인 시 진입)
+//
+//   Quartz $mobile 브레이크포인트(800px)는 드로어 브레이크포인트(1200px)보다 좁아서
+//   줌 인으로 CSS 픽셀 뷰포트가 800px 아래로 내려가면 base.scss / explorer.scss의
+//   $mobile 스타일이 추가로 발동한다. 드로어 레이아웃을 지키기 위해 전부 덮어씀.
+// ================================================================
+@media (max-width: 799px) {
+  // 사이드바: row 전환·gap 제거·height 해제 등 $mobile 스타일 리셋
+  .page > #quartz-body .sidebar.left {
+    flex-direction: column !important;
+    gap: 1.2rem !important;
+    align-items: flex-start !important;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    padding: 4rem 1.5rem 2rem 1.5rem !important;
+    margin: 0 !important;
+  }
+
+  // Explorer 컨테이너: order·flex·overflow $mobile 스타일 리셋
+  .page > #quartz-body .sidebar.left .explorer {
+    order: 0 !important;
+    flex: 1 1 auto !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    align-self: stretch !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+// ================================================================
 // § 2. CONTENT STYLES
 // ================================================================
 
@@ -244,10 +294,13 @@ article ul > li:has(> ol)::after {
 :not(pre) > code {
   color: rgb(233, 49, 58);
 }
+:root[saved-theme="dark"] :not(pre) > code {
+  color: rgb(255, 110, 110);
+}
 
 // 마크다운 하이라이트(==text==): font-weight 600
 .text-highlight { font-weight: 600; }
-:root[saved-theme="dark"] .text-highlight { color: var(--dark); }
+:root[saved-theme="dark"] .text-highlight { color: #1a1a1a; font-weight: 600; }
 
 // 텍스트 선택 색상 오버라이드
 ::selection { background: rgba(0, 0, 0, 0.12); color: var(--darkgray); }

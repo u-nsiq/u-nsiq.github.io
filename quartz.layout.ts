@@ -90,11 +90,6 @@ export const defaultContentPageLayout: PageLayout = {
         return a.displayName.localeCompare(b.displayName, undefined, { numeric: true, sensitivity: "base" })
       },
 
-      mapFn: (node) => {
-        if (node.isFolder) {
-          node.displayName = "📁 " + node.displayName
-        }
-      },
     }),
 
   ],
@@ -160,11 +155,6 @@ export const defaultListPageLayout: PageLayout = {
         return a.displayName.localeCompare(b.displayName, undefined, { numeric: true, sensitivity: "base" })
       },
 
-      mapFn: (node) => {
-        if (node.isFolder) {
-          node.displayName = "📁 " + node.displayName
-        }
-      },
     }),
 
   ],

@@ -4,33 +4,27 @@ title: Junsik.io
 
 # Hello, I'm Junsik Kim
 
-> 🎓 **Kwangwoon University** | B.S. in Software Engineering (2023.03 - 2027.02 Expected)
-> 🔬 **Data Analytics Lab** | Undergraduate Researcher (2025.07 - 2026.02)
+> **Kwangwoon University** | *B.S. in Software Engineering (2023.03 - 2027.02 Expected)*
+> **Data Analytics Lab** | *Undergraduate Researcher (2025.07 - 2026.02)*
 
 ---
 
-> [!abstract] 🌱 Notes (Digital Garden)
-> **공부하며 쌓아가는 개념 노트**입니다. 지식의 파편을 연결하는 과정이기에 미완성된 글도 자유롭게 공개합니다.
+## Blog Category
 
-> [!note] 📝 Posts
-> **주제별로 정리된 기록**입니다. 학습 기록, 프로젝트 기록 및 회고, 논문 리뷰 등 정제된 생각들을 담습니다.
+📝 **Posts** | *Polished articles on projects, research and technical insights.*
 
----
-
-## 🔭 Interests
-
-- **Artificial Intelligence** — Deep Learning, Computer Vision, Model Quantization
-- **Data Science & Process Mining** — Healthcare Data Analysis, Event Abstraction
-
-## 📂 Explore
-
-- 🌱 [**Notes**](./Notes)
-- 📝 [**Posts**](./Posts) 
-    - [Lectures](./Posts/Lectures) | [Paper Review](./Posts/Paper-Review) | [Lab Intern](./Posts/Lab-Intern) | [Projects](./Posts/Projects)
+🌱 **Notes** | *A digital garden of atomic, permanent notes for my learning journey.*
 
 ---
 
-## 🚀 Selected Projects
+## Interests
+
+- **Artificial Intelligence** | *Deep Learning, Computer Vision, Model Quantization*
+- **Data Science & Process Mining** | *Healthcare Data Analysis, Event Abstraction*
+
+---
+
+## Selected Projects
 
 - **Quantization for Computer Vision** | *Capstone Design, 2026.01 - Present*
   - Researching **QAT** techniques to optimize deep learning model inference on CPUs.
@@ -44,6 +38,6 @@ title: Junsik.io
 
 ---
 
-## 📌 Contact
+## Contact
 
-- 💻 [GitHub](https://github.com/u-nsiq) | 📧 wnstlr0830@gmail.com
+- [GitHub](https://github.com/u-nsiq) | wnstlr0830@gmail.com

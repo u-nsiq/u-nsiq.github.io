@@ -2,6 +2,7 @@
 title: "Part 06. eICU-CRD Extension과 Dataset Generalization"
 date: 2026-04-10
 modified: 2026-04-28
+draft: false
 ---
 
 ## 들어가며

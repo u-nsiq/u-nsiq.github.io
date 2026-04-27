@@ -2,6 +2,7 @@
 title: "Part 05. Clinical Event Log Validation과 해석 한계"
 date: 2026-04-07
 modified: 2026-04-28
+draft: false
 ---
 
 ## 들어가며

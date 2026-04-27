@@ -2,6 +2,7 @@
 title: "Part 03. Admission Window 기반 Baseline Event Log 구축"
 date: 2026-03-31
 modified: 2026-04-28
+draft: false
 ---
 
 ## 들어가며

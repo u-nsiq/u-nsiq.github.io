@@ -2,6 +2,7 @@
 title: "Part 02. MIMIC-IV EHR Table의 Event Log Schema 설계"
 date: 2026-03-27
 modified: 2026-04-28
+draft: false
 ---
 
 ## 들어가며

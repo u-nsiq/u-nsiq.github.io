@@ -2,6 +2,7 @@
 title: "Part 04. Activity Abstraction과 Analysis View 구성"
 date: 2026-04-03
 modified: 2026-04-28
+draft: false
 ---
 
 ## 들어가며

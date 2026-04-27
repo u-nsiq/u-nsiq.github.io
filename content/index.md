@@ -26,15 +26,16 @@ title: Junsik.io
 
 ## Selected Projects
 
-- **Quantization for Computer Vision** | *Capstone Design, 2026.01 - Present*
+- **Quantization-Aware Training for CPU-Based Deep Learning Inference** | *Capstone Design, 2026.01 - Present*
   - Researching **QAT** techniques to optimize deep learning model inference on CPUs.
   - CPU 환경 내 딥러닝 모델 추론 최적화를 위한 양자화 인식 학습(QAT) 기법 연구
-- **XAI-based Generative Image Detection** | *KW-VIP Project, 2026.03 - Present*
-  - Developing an **XAI-based classifier** to determine the authenticity of AI-generated images.
-  - XAI 기법을 활용한 생성형 AI 이미지의 진위 여부 판별 분류기 개발
-- **Clinical Data Analysis via Process Mining** | *Data Analytics Lab, 2025.07 - 2026.02*
-  - MIMIC-IV 임상 데이터 기반 이벤트 추상화 및 그룹화 전략 설계
-  - 학술 문헌 기반 데이터 필터링 룰셋 및 품질 벤치마크 구현
+- **Survey on LMM-Based Explainable Fake Image Detection** | *KW-VIP Project, 2026.03 - Present*
+  - Conducting a survey on explainable fake image detection, comparing traditional XAI techniques with Large Multimodal Model-based approaches.
+  - 설명 가능한 합성 이미지 탐지에 대한 조사 및 기존의 XAI 기법과 LMM 기반 접근법 비교
+- **Clinical Event Log Construction for Process Mining** | *Data Analytics Lab, 2025.07 - 2026.02*
+  - Analyzed MIMIC-IV clinical records to design event abstraction and grouping strategies for optimized process modeling
+  -  Established a high-integrity event log baseline by implementing data filtering rules and quality benchmarks from academic literature.
+
 
 ---
 

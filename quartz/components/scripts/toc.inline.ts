@@ -1,3 +1,13 @@
+import { togglePanel, closeAllPanels } from "./_drawer"
+
+// ════════════════════════════════════════════════════════════════
+// CUSTOM CHANGES INDEX  (마커: [커스텀] / [커스텀 끝])
+//   1. toggleTocPanel       — 드로어 토글 (← _drawer.ts.togglePanel)
+//   2. mobile-toc 버튼 바인딩 (setupToc)
+//   3. nav 리스너: panel-open close (← _drawer.ts.closeAllPanels)
+//   ※ overlay click 핸들러는 explorer.inline.ts에서 일괄 등록(_drawer.ts).
+// ════════════════════════════════════════════════════════════════
+
 const observer = new IntersectionObserver((entries) => {
   for (const entry of entries) {
     const slug = entry.target.id
@@ -26,9 +36,7 @@ function toggleToc(this: HTMLElement) {
 
 // [커스텀] panel-open 드로어 토글 (mobile-toc 버튼 전용)
 function toggleTocPanel(this: HTMLElement) {
-  const tocEl = this.closest(".toc") as HTMLElement
-  if (!tocEl) return
-  tocEl.classList.toggle("panel-open")
+  togglePanel(this, ".toc")
 }
 // [커스텀 끝]
 
@@ -53,12 +61,16 @@ document.addEventListener("nav", () => {
   setupToc()
 
   // [커스텀] 페이지 이동 시 panel-open 드로어 닫기
+  // checkVisibility() 가드: desktop에선 mobile 버튼이 숨겨져 있으므로 닫기 작업 스킵
+  let shouldClose = false
   for (const toc of document.getElementsByClassName("toc")) {
     const mobileTocBtn = toc.querySelector("button.mobile-toc") as HTMLElement | null
     if (mobileTocBtn?.checkVisibility()) {
-      toc.classList.remove("panel-open")
+      shouldClose = true
+      break
     }
   }
+  if (shouldClose) closeAllPanels(".toc")
   // [커스텀 끝]
 
   // update toc entry highlighting

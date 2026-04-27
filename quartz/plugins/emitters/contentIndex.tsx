@@ -144,6 +144,9 @@ export const ContentIndex: QuartzEmitterPlugin<Partial<Options>> = (opts) => {
           // actually uses it. we only keep it in the index as we need it
           // for the RSS feed
           delete content.description
+          // [커스텀] 원본은 여기서 `delete content.date`도 수행하지만 삭제하지 않음 —
+          // explorer.inline.ts의 sortFn(날짜 내림차순) 및 countRecentFiles(+N 배지)가
+          // 클라이언트에서 date 필드를 필요로 함.
           return [slug, content]
         }),
       )

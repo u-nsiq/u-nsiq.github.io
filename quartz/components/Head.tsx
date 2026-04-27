@@ -50,16 +50,29 @@ export default (() => {
             )}
           </>
         )}
+        {/* [커스텀] fontOrigin: "local" 분기 — Quartz 기본 googleFonts 대신 직접 CDN <link> 삽입.
+            Pretendard는 jsDelivr Variable, Schibsted/IBM Plex는 Google Fonts CSS2.
+            Variable 폰트 사용 중이므로 quartz.config.ts의 wght 옵션은 무시됨. */}
         {cfg.theme.fontOrigin === "local" && (
           <>
             {/* Pretendard (header, body) */}
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.min.css" />
+            <link
+              rel="stylesheet"
+              href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.min.css"
+            />
             {/* Schibsted Grotesk (title) */}
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@700;900&display=swap" />
+            <link
+              rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@700;900&display=swap"
+            />
             {/* IBM Plex Mono (code) */}
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" />
+            <link
+              rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap"
+            />
           </>
         )}
+        {/* [커스텀 끝] */}
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 

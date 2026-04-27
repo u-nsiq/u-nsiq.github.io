@@ -33,7 +33,8 @@ export default ((opts?: Partial<Options>) => {
     const id = `toc-${numTocs++}`
     return (
       <div class={classNames(displayClass, "toc")}>
-        <button type="button" class="mobile-toc">
+        {/* [커스텀] 모바일 TOC 버튼 — toc.inline.ts에서 .panel-open 토글 / 관련 SCSS: _drawer.scss §1.5 */}
+        <button type="button" class="mobile-toc" aria-label="목차 열기" aria-expanded="false" aria-controls={id}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

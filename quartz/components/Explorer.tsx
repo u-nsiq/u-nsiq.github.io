@@ -16,6 +16,7 @@ export interface Options {
   folderDefaultState: "collapsed" | "open"
   folderClickBehavior: "collapse" | "link"
   useSavedState: boolean
+  // [커스텀] folderStateOverrides — quartz.layout.ts에서 폴더별 초기 상태(open/collapsed) 지정
   folderStateOverrides?: Record<string, "collapsed" | "open">
   sortFn: (a: FileTrieNode, b: FileTrieNode) => number
   filterFn: (node: FileTrieNode) => boolean
@@ -82,6 +83,8 @@ export default ((userOpts?: Partial<Options>) => {
           type="button"
           class="explorer-toggle mobile-explorer hide-until-loaded"
           data-mobile={true}
+          aria-label="탐색기 열기"
+          aria-expanded="false"
           aria-controls={id}
         >
           <svg
@@ -134,8 +137,8 @@ export default ((userOpts?: Partial<Options>) => {
             <div class="folder-container">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="12"
-                height="12"
+                width="16"
+                height="16"
                 viewBox="5 8 14 8"
                 fill="none"
                 stroke="currentColor"

@@ -17,6 +17,8 @@ $tablet: "(min-width: #{map.get($breakpoints, mobile)}) and (max-width: #{map.ge
 $desktop: "(min-width: #{map.get($breakpoints, desktop)})";
 
 $pageWidth: #{map.get($breakpoints, mobile)};
+// $sidePanelWidth / $leftPanelWidth는 _drawer-vars.scss의
+// $drawer-width-right / $drawer-width-left와 일치 유지해야 한다.
 $sidePanelWidth: 320px;
 $leftPanelWidth: 320px;
 $topSpacing: 6rem;

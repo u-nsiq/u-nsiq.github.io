@@ -1,0 +1,270 @@
+@use "./_drawer-vars.scss" as *;
+
+// ================================================================
+// § 1. DRAWER LAYOUT — Non-desktop (max-width: $drawer-breakpoint)
+//
+//   데스크탑(≥1200px) 미만에서 양쪽 사이드바를 off-screen 고정 패널로
+//   전환하고, 각 버튼으로 슬라이드 인/아웃 토글한다.
+//
+//   - 왼쪽: Explorer (햄버거 버튼, .panel-open 클래스로 제어)
+//   - 오른쪽: TOC + Graph + Backlinks (TOC 버튼, .panel-open으로 제어)
+//   - .panel-open 상태는 nav(페이지 이동) 시 자동 초기화
+//   - 관련 JS: explorer.inline.ts, toc.inline.ts (그리고 _drawer.ts)
+//   - 관련 TSX: TableOfContents.tsx (mobile-toc 버튼 추가)
+//
+// SCSS 변수는 _drawer-vars.scss 참고.
+// ================================================================
+
+// ── 드로어 버튼 mixin ───────────────────────────────────────────
+// 좌·우 버튼 CSS 중복 제거. position만 좌/우로 다르고 나머지는 동일.
+@mixin drawer-button($side, $icon-selector) {
+  display: flex !important;
+  position: fixed !important;
+  top: $drawer-button-offset;
+  #{$side}: $drawer-button-offset;
+  z-index: $drawer-z-button;
+  padding: $drawer-button-padding !important;
+  background-color: var(--light) !important;
+  border: 1px solid var(--lightgray) !important;
+  border-radius: $drawer-button-radius;
+  box-shadow: $drawer-button-shadow;
+  transition:
+    background-color $drawer-transition-button,
+    border-color $drawer-transition-button;
+
+  #{$icon-selector} {
+    stroke: var(--darkgray);
+    transition: stroke $drawer-transition-button;
+  }
+  &:hover {
+    background-color: var(--lightgray) !important;
+    border-color: var(--gray) !important;
+  }
+}
+
+// 패널 열림 상태(.panel-open)일 때 버튼 색상 반전 — "활성" 표시
+@mixin drawer-button-active($icon-selector) {
+  background-color: var(--secondary) !important;
+  border-color: var(--secondary) !important;
+  #{$icon-selector} {
+    stroke: var(--light);
+  }
+  &:hover {
+    background-color: var(--tertiary) !important;
+    border-color: var(--tertiary) !important;
+  }
+}
+
+// 드로어 버튼 기본값: 데스크탑에서 숨김
+.toc button.mobile-toc {
+  display: none;
+}
+
+@media (max-width: $drawer-breakpoint) {
+  // §1.1 ── 오버레이: 드로어 열릴 때 배경 어둡게 ──────────────────
+  // body::after를 반투명 딤 레이어로 사용. 클릭은 _drawer.ts에서 처리.
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: $drawer-z-overlay;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity $drawer-transition-overlay;
+  }
+  body:has(.explorer.panel-open)::after,
+  body:has(.toc.panel-open)::after {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  // §1.2 ── 그리드: 단일 컬럼 (사이드바 그리드 영역 제거) ─────────
+  .page > #quartz-body {
+    grid-template-columns: auto;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "grid-header"
+      "grid-center"
+      "grid-footer";
+    padding: 0 2rem;
+  }
+
+  // §1.3 ── Explorer 드로어 (왼쪽) ────────────────────────────────
+  .page > #quartz-body .sidebar.left {
+    position: fixed !important;
+    top: 0;
+    left: -$drawer-width-left; // 기본: off-screen 왼쪽
+    width: $drawer-width-left;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    z-index: $drawer-z-panel;
+    background-color: var(--light);
+    padding: $drawer-panel-padding !important;
+    box-shadow: 2px 0 $drawer-panel-shadow rgba(0, 0, 0, 0.12);
+    flex-direction: column !important;
+    gap: 1.2rem !important;
+    align-items: flex-start !important;
+    margin: 0 !important;
+    transition: left $drawer-transition-slide;
+  }
+
+  // .explorer.panel-open 시 슬라이드 인
+  .page > #quartz-body .sidebar.left:has(.explorer.panel-open) {
+    left: 0;
+  }
+
+  // 햄버거 버튼: viewport 좌상단 고정
+  // position:fixed 부모(no transform) 안이어도 viewport 기준으로 배치됨
+  .explorer button.mobile-explorer {
+    @include drawer-button("left", ".lucide-menu");
+  }
+
+  // 패널 열림 상태: 버튼 색상 반전으로 "활성" 표시
+  .explorer.panel-open button.mobile-explorer {
+    @include drawer-button-active(".lucide-menu");
+  }
+
+  .explorer button.desktop-explorer {
+    display: none !important;
+  }
+
+  // §1.4 ── 왼쪽 드로어 — Explorer 컨테이너 리셋 ──────────────────
+  // MobileOnly(Spacer): 원래 가로 헤더 레이아웃용 → 드로어(세로)에서 보이면 flex: 1로 공간 다 차지
+  .page > #quartz-body .sidebar.left .mobile-only {
+    display: none !important;
+  }
+
+  // Explorer 컨테이너: $mobile(800px) 조건 충돌 방지
+  // 줌 인 시 뷰포트가 800px 아래로 내려가면 explorer.scss가
+  // .explorer { flex: 0 0 34px; overflow: hidden }을 적용해
+  // 드로어 내 콘텐츠가 잘리는 문제를 덮어씀
+  .page > #quartz-body .sidebar.left .explorer {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    order: 0 !important;
+    align-self: stretch !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  // Explorer 콘텐츠: mobile 모드의 full-screen overlay CSS를 무력화
+  // (explorer.scss @media($mobile) .explorer-content {
+  //   position: absolute; transform: translateX(-100vw) })
+  .page > #quartz-body .sidebar.left .explorer-content {
+    position: static !important;
+    transform: none !important;
+    visibility: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: calc(100dvh - 8rem) !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+    background: transparent !important;
+    transition: none !important;
+    z-index: auto !important;
+  }
+
+  // §1.5 ── TOC 드로어 (오른쪽) ───────────────────────────────────
+  .page > #quartz-body .sidebar.right {
+    position: fixed !important;
+    top: 0;
+    right: -$drawer-width-right; // 기본: off-screen 오른쪽
+    width: $drawer-width-right;
+    height: 100dvh;
+    overflow-y: auto;
+    z-index: $drawer-z-panel;
+    background-color: var(--light);
+    padding: $drawer-panel-padding !important;
+    box-shadow: -2px 0 $drawer-panel-shadow rgba(0, 0, 0, 0.12);
+    flex-direction: column !important;
+    gap: 1.2rem !important;
+    align-items: stretch !important;
+    transition: right $drawer-transition-slide;
+
+    // base.scss 비데스크탑: > * { flex: 1; max-height: 24rem } 무력화
+    & > * {
+      max-height: none !important;
+      width: 100%;
+    }
+
+    // §1.6 ── TOC fold 애니메이션 복원 ─────────────────────────────
+    // base.scss > * { flex: 1 }이 toc.scss { flex: 0 0.5 auto }를 덮어쓰므로
+    // 명시적으로 재선언
+    & > .toc {
+      flex: 0 0.5 auto;
+      &:has(button.toc-header.collapsed) {
+        flex: 0 1 1.4rem;
+      }
+    }
+  }
+
+  // .toc.panel-open 시 슬라이드 인
+  .page > #quartz-body .sidebar.right:has(.toc.panel-open) {
+    right: 0;
+  }
+
+  // base.scss 비데스크탑: .sidebar.right > .toc { display: none } 덮어쓰기
+  .page > #quartz-body .sidebar.right .toc {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  // TOC 버튼: viewport 우상단 고정
+  .toc button.mobile-toc {
+    @include drawer-button("right", "svg");
+  }
+
+  // 패널 열림 상태: 버튼 색상 반전으로 "활성" 표시
+  .toc.panel-open button.mobile-toc {
+    @include drawer-button-active("svg");
+  }
+}
+
+// ================================================================
+// § 1-B. $MOBILE 충돌 리셋 (max-width: $drawer-mobile-collision)
+//
+//   Quartz $mobile 브레이크포인트(800px)는 드로어 브레이크포인트(1200px)보다
+//   좁아서, 줌 인으로 CSS 픽셀 뷰포트가 800px 아래로 내려가면 base.scss /
+//   explorer.scss의 $mobile 스타일이 추가로 발동한다. 드로어 레이아웃을
+//   지키기 위해 전부 덮어씀.
+//
+//   ※ 이 블록은 §1과 일부 규칙이 중복되지만, !important 캐스케이드 우위를
+//      위해 의도적으로 재선언. 최적화 목적으로 제거하지 말 것.
+// ================================================================
+@media (max-width: $drawer-mobile-collision) {
+  // 사이드바: row 전환·gap 제거·height 해제 등 $mobile 스타일 리셋
+  .page > #quartz-body .sidebar.left {
+    flex-direction: column !important;
+    gap: 1.2rem !important;
+    align-items: flex-start !important;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    padding: $drawer-panel-padding !important;
+    margin: 0 !important;
+  }
+
+  // Explorer 컨테이너: order·flex·overflow $mobile 스타일 리셋
+  .page > #quartz-body .sidebar.left .explorer {
+    order: 0 !important;
+    flex: 1 1 auto !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    align-self: stretch !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+// ================================================================
+// § prefers-reduced-motion: 슬라이드/페이드 트랜지션 비활성화
+// ================================================================
+@media (prefers-reduced-motion: reduce) {
+  body::after,
+  .page > #quartz-body .sidebar.left,
+  .page > #quartz-body .sidebar.right {
+    transition: none !important;
+  }
+}

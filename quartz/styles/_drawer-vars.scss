@@ -1,0 +1,33 @@
+// ============================================================
+// Drawer 시스템 전용 SCSS 변수
+// _drawer.scss에서만 import 됨. 단일 출처(single source of truth).
+//
+// 폭 변수는 quartz/styles/variables.scss의 $leftPanelWidth/
+// $sidePanelWidth와 일치 유지해야 한다.
+// ============================================================
+
+// 브레이크포인트 ── max-width 기반
+$drawer-breakpoint: 1199px; // 이 값 이하에서 드로어 모드 진입
+$drawer-mobile-collision: 799px; // Quartz $mobile(800px) 누수 방어
+
+// 드로어 폭
+$drawer-width-left: 320px;
+$drawer-width-right: 320px;
+
+// z-index 스택 (낮음 → 높음)
+$drawer-z-overlay: 199;
+$drawer-z-panel: 200;
+$drawer-z-button: 201;
+
+// 트랜지션
+$drawer-transition-slide: 200ms ease; // 패널 슬라이드
+$drawer-transition-overlay: 200ms ease; // 오버레이 페이드
+$drawer-transition-button: 150ms ease; // 버튼 hover/state
+
+// 버튼·패널 치수
+$drawer-button-offset: 1rem;
+$drawer-button-padding: 6px;
+$drawer-button-radius: 6px;
+$drawer-button-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+$drawer-panel-padding: 4rem 1.5rem 2rem 1.5rem;
+$drawer-panel-shadow: 12px; // box-shadow blur radius

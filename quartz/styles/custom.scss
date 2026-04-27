@@ -1,293 +1,41 @@
+@use "./variables.scss" as *;
 @use "./base.scss";
+@use "./_drawer.scss"; // §1 / §1-B 드로어 시스템
 
 // ================================================================
-// § 1. DRAWER LAYOUT — Non-desktop (< 1200px)
-//
-//   데스크탑(≥1200px) 미만에서 양쪽 사이드바를 off-screen 고정
-//   패널로 전환하고, 각 버튼으로 슬라이드 인/아웃 토글한다.
-//
-//   - 왼쪽: Explorer (hamburger button, panel-open 클래스로 제어)
-//   - 오른쪽: TOC + Graph + Backlinks (TOC 버튼, panel-open 클래스로 제어)
-//   - panel-open 상태는 nav(페이지 이동) 시 자동 초기화
-//   - 관련 JS: explorer.inline.ts, toc.inline.ts
-//   - 관련 TSX: TableOfContents.tsx (mobile-toc 버튼 추가)
+// TABLE OF CONTENTS
+//   §1   드로어 레이아웃 시스템     → _drawer.scss
+//   §2   Article 콘텐츠 스타일      ↓
+//   §3   Explorer item 인터랙션    ↓
 // ================================================================
 
-// 드로어 버튼 기본값: 데스크탑에서 숨김
-.toc button.mobile-toc {
-  display: none;
+// ================================================================
+// § 2. ARTICLE CONTENT STYLES
+// ================================================================
+
+// 본문 폰트 굵기: Pretendard Variable의 450 무게(기본보다 살짝 가볍게)
+// strong은 700으로 올려 본문(450)과 명확한 대비.
+article {
+  font-weight: 450;
+}
+article strong {
+  font-weight: 700;
 }
 
-@media (max-width: 1199px) {
-
-  // ── 오버레이: 드로어 열릴 때 배경 어둡게 ─────────────────────────
-  // body::after를 반투명 딤 레이어로 사용. 클릭은 JS에서 처리(explorer.inline.ts).
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    z-index: 199;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 200ms ease;
-  }
-  body:has(.explorer.panel-open)::after,
-  body:has(.toc.panel-open)::after {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  // ── 그리드: 단일 컬럼 (사이드바 그리드 영역 제거) ────────────────
-  .page > #quartz-body {
-    grid-template-columns: auto;
-    grid-template-rows: auto auto auto;
-    grid-template-areas:
-      "grid-header"
-      "grid-center"
-      "grid-footer";
-    padding: 0 2rem;
-  }
-
-  // ── Explorer 드로어 (왼쪽) ──────────────────────────────────────
-  .page > #quartz-body .sidebar.left {
-    position: fixed !important;
-    top: 0;
-    left: -340px;                            // 기본: off-screen 왼쪽
-    width: 340px;
-    height: 100dvh !important;
-    overflow-y: auto !important;
-    z-index: 200;
-    background-color: var(--light);
-    padding: 4rem 1.5rem 2rem 1.5rem !important;
-    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.12);
-    flex-direction: column !important;
-    gap: 1.2rem !important;
-    align-items: flex-start !important;
-    margin: 0 !important;
-    transition: left 200ms ease;
-  }
-
-  // .explorer.panel-open 시 슬라이드 인
-  .page > #quartz-body .sidebar.left:has(.explorer.panel-open) {
-    left: 0;
-  }
-
-  // 햄버거 버튼: viewport 좌상단 고정
-  // position:fixed 부모(no transform) 안이어도 viewport 기준으로 배치됨
-  .explorer button.mobile-explorer {
-    display: flex !important;
-    position: fixed !important;
-    top: 1rem;
-    left: 1rem;
-    z-index: 201;
-    padding: 6px !important;
-    background-color: var(--light) !important;
-    border: 1px solid var(--lightgray) !important;
-    border-radius: 6px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 150ms ease, border-color 150ms ease;
-    .lucide-menu {
-      stroke: var(--darkgray);
-      transition: stroke 150ms ease;
-    }
-    &:hover {
-      background-color: var(--lightgray) !important;
-      border-color: var(--gray) !important;
-    }
-  }
-
-  // 패널 열림 상태: 버튼 색상 반전으로 "활성" 표시
-  .explorer.panel-open button.mobile-explorer {
-    background-color: var(--secondary) !important;
-    border-color: var(--secondary) !important;
-    .lucide-menu { stroke: var(--light); }
-    &:hover {
-      background-color: var(--tertiary) !important;
-      border-color: var(--tertiary) !important;
-    }
-  }
-
-  .explorer button.desktop-explorer {
-    display: none !important;
-  }
-
-  // MobileOnly(Spacer): 원래 가로 헤더 레이아웃용 → 드로어(세로)에서 보이면 flex: 1로 공간 다 차지
-  .page > #quartz-body .sidebar.left .mobile-only {
-    display: none !important;
-  }
-
-  // Explorer 컨테이너: $mobile(800px) 조건 충돌 방지
-  // 줌 인 시 뷰포트가 800px 아래로 내려가면 explorer.scss가 .explorer { flex: 0 0 34px; overflow: hidden }을 적용해
-  // 드로어 내 콘텐츠가 잘리는 문제를 덮어씀
-  .page > #quartz-body .sidebar.left .explorer {
-    flex: 1 1 auto !important;
-    height: auto !important;
-    overflow-y: auto !important;
-    order: 0 !important;
-    align-self: stretch !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-  }
-
-  // Explorer 콘텐츠: mobile 모드의 full-screen overlay CSS를 무력화
-  // (explorer.scss @media($mobile) .explorer-content { position: absolute; transform: translateX(-100vw) })
-  .page > #quartz-body .sidebar.left .explorer-content {
-    position: static !important;
-    transform: none !important;
-    visibility: visible !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    max-height: calc(100dvh - 8rem) !important;
-    overflow-y: auto !important;
-    padding: 0 !important;
-    background: transparent !important;
-    transition: none !important;
-    z-index: auto !important;
-  }
-
-  // ── TOC 드로어 (오른쪽) ─────────────────────────────────────────
-  .page > #quartz-body .sidebar.right {
-    position: fixed !important;
-    top: 0;
-    right: -320px;                           // 기본: off-screen 오른쪽
-    width: 320px;
-    height: 100dvh;
-    overflow-y: auto;
-    z-index: 200;
-    background-color: var(--light);
-    padding: 4rem 1.5rem 2rem 1.5rem !important;
-    box-shadow: -2px 0 12px rgba(0, 0, 0, 0.12);
-    flex-direction: column !important;
-    gap: 1.2rem !important;
-    align-items: stretch !important;
-    transition: right 200ms ease;
-
-    // base.scss 비데스크탑: > * { flex: 1; max-height: 24rem } 무력화
-    & > * {
-      max-height: none !important;
-      width: 100%;
-    }
-
-    // toc.scss fold 애니메이션 복원
-    // base.scss > * { flex: 1 }이 toc.scss { flex: 0 0.5 auto }를 덮어쓰므로 명시적으로 재선언
-    & > .toc {
-      flex: 0 0.5 auto;
-      &:has(button.toc-header.collapsed) { flex: 0 1 1.4rem; }
-    }
-  }
-
-  // .toc.panel-open 시 슬라이드 인
-  .page > #quartz-body .sidebar.right:has(.toc.panel-open) {
-    right: 0;
-  }
-
-  // base.scss 비데스크탑: .sidebar.right > .toc { display: none } 덮어쓰기
-  .page > #quartz-body .sidebar.right .toc {
-    display: flex !important;
-    flex-direction: column;
-  }
-
-  // TOC 버튼: viewport 우상단 고정
-  .toc button.mobile-toc {
-    display: flex !important;
-    position: fixed !important;
-    top: 1rem;
-    right: 1rem;
-    z-index: 201;
-    padding: 6px !important;
-    background-color: var(--light) !important;
-    border: 1px solid var(--lightgray) !important;
-    border-radius: 6px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 150ms ease, border-color 150ms ease;
-    svg {
-      stroke: var(--darkgray);
-      transition: stroke 150ms ease;
-    }
-    &:hover {
-      background-color: var(--lightgray) !important;
-      border-color: var(--gray) !important;
-    }
-  }
-
-  // 패널 열림 상태: 버튼 색상 반전으로 "활성" 표시
-  .toc.panel-open button.mobile-toc {
-    background-color: var(--secondary) !important;
-    border-color: var(--secondary) !important;
-    svg { stroke: var(--light); }
-    &:hover {
-      background-color: var(--tertiary) !important;
-      border-color: var(--tertiary) !important;
-    }
-  }
+// [[내부 링크]] (a.internal): 라이트모드에서 secondary(#7797C0)는
+// 흰 배경 대비 부족 → var(--dark)로 교체하면
+// 라이트(#202020)/다크(#ebebec) 모두 가독성 확보.
+article a.internal {
+  color: var(--dark);
 }
 
-// ================================================================
-// § 1-B. $MOBILE 충돌 리셋 (< 800px, 줌 인 시 진입)
-//
-//   Quartz $mobile 브레이크포인트(800px)는 드로어 브레이크포인트(1200px)보다 좁아서
-//   줌 인으로 CSS 픽셀 뷰포트가 800px 아래로 내려가면 base.scss / explorer.scss의
-//   $mobile 스타일이 추가로 발동한다. 드로어 레이아웃을 지키기 위해 전부 덮어씀.
-// ================================================================
-@media (max-width: 799px) {
-  // 사이드바: row 전환·gap 제거·height 해제 등 $mobile 스타일 리셋
-  .page > #quartz-body .sidebar.left {
-    flex-direction: column !important;
-    gap: 1.2rem !important;
-    align-items: flex-start !important;
-    height: 100dvh !important;
-    overflow-y: auto !important;
-    padding: 4rem 1.5rem 2rem 1.5rem !important;
-    margin: 0 !important;
-  }
-
-  // Explorer 컨테이너: order·flex·overflow $mobile 스타일 리셋
-  .page > #quartz-body .sidebar.left .explorer {
-    order: 0 !important;
-    flex: 1 1 auto !important;
-    height: auto !important;
-    overflow-y: auto !important;
-    align-self: stretch !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-  }
+// 마크다운 하이라이트(==text==): font-weight 600
+.text-highlight {
+  font-weight: 600;
 }
-
-// ================================================================
-// § 2. CONTENT STYLES
-// ================================================================
-
-// Explorer: 파일 항목 — 폰트 크기 + hover 배경 하이라이트
-// display:block으로 링크 클릭 영역을 항목 너비 전체로 확장
-.explorer-content ul li > a {
-  font-size: 0.75rem;
-  display: block;
-  padding: 0.1rem 0.25rem;
-  border-radius: 3px;
-  transition: background-color 100ms ease;
-  &:hover, &.active {
-    background-color: var(--highlight);
-  }
-}
-
-// 항목 간 여백 (구분선 대신 spacing으로 구분)
-.explorer-content ul li {
-  margin-bottom: 0.1rem;
-}
-
-// Bulleted list: indent guide (Obsidian 스타일)
-article ul > li { position: relative; }
-article ul > li:has(> ul)::after,
-article ul > li:has(> ol)::after {
-  content: '';
-  position: absolute;
-  left: -0.75em;
-  top: 1.4em;
-  bottom: 0;
-  width: 1px;
-  background-color: var(--lightgray);
+:root[saved-theme="dark"] .text-highlight {
+  color: #1a1a1a;
+  font-weight: 600;
 }
 
 // Inline code: 빨간색 (Velocity 스타일)
@@ -298,24 +46,71 @@ article ul > li:has(> ol)::after {
   color: rgb(255, 110, 110);
 }
 
-// 마크다운 하이라이트(==text==): font-weight 600
-.text-highlight { font-weight: 600; }
-:root[saved-theme="dark"] .text-highlight { color: #1a1a1a; font-weight: 600; }
-
 // 텍스트 선택 색상 오버라이드
-::selection { background: rgba(0, 0, 0, 0.12); color: var(--darkgray); }
-:root[saved-theme="dark"] ::selection { background: rgba(255, 255, 255, 0.15); color: var(--darkgray); }
-
-// 본문 폰트 굵기: 450(Variable) — base.scss strong 기본 600에서 700으로 올려 구분 명확하게
-article {
-  font-weight: 450;
+::selection {
+  background: rgba(0, 0, 0, 0.12);
+  color: var(--darkgray);
 }
-article strong {
-  font-weight: 700;
+:root[saved-theme="dark"] ::selection {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--darkgray);
 }
 
-// 본문 내 [[내부 링크]] (a.internal): 라이트모드에서 secondary(#7797C0)가
-// 흰 배경에 대비 부족. var(--dark)로 교체하면 라이트(#202020)/다크(#ebebec) 모두 가독성 확보.
-article a.internal {
-  color: var(--dark);
+// Bulleted + Numbered list: indent guide (Obsidian 스타일 — 중첩 목록 왼쪽 세로 라인)
+article ul > li,
+article ol > li {
+  position: relative;
+}
+article ul > li:has(> ul)::after,
+article ul > li:has(> ol)::after,
+article ol > li:has(> ol)::after,
+article ol > li:has(> ul)::after {
+  content: "";
+  position: absolute;
+  left: -0.75em;
+  top: 1.4em;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--lightgray);
+}
+
+// ================================================================
+// § 3. EXPLORER ITEM 인터랙션
+// ================================================================
+
+// Explorer: 파일 항목 — 폰트 크기 + hover 배경 하이라이트
+// display:block으로 링크 클릭 영역을 항목 너비 전체로 확장
+.explorer-content ul li > a {
+  font-size: 0.75rem;
+  display: block;
+  padding: 0.1rem 0.25rem;
+  border-radius: 3px;
+  transition: background-color 100ms ease;
+  &:hover,
+  &.active {
+    background-color: var(--highlight);
+  }
+}
+
+// 항목 간 여백 (구분선 대신 spacing으로 구분)
+.explorer-content ul li {
+  margin-bottom: 0.1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .explorer-content ul li > a {
+    transition: none !important;
+  }
+}
+
+// ================================================================
+// § 4. SIDEBAR LAYOUT
+// ================================================================
+
+// 최근 노트를 데스크톱 좌측 사이드바 하단에 고정
+// .sidebar.left는 flex-direction: column; height: 100vh → margin-top: auto로 하단 밀착
+@media all and not ($mobile) {
+  .sidebar.left > .recent-notes {
+    margin-top: auto;
+  }
 }

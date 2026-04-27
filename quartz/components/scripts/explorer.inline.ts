@@ -1,6 +1,18 @@
 import { FileTrieNode } from "../../util/fileTrie"
 import { FullSlug, resolveRelative, simplifySlug } from "../../util/path"
 import { ContentDetails } from "../../plugins/emitters/contentIndex"
+import { togglePanel, closeAllPanels, registerOverlayClickHandler } from "./_drawer"
+
+// ════════════════════════════════════════════════════════════════
+// CUSTOM CHANGES INDEX  (마커: [커스텀] / [커스텀 끝])
+//   1. toggleExplorerPanel             — 드로어 토글 (← _drawer.ts.togglePanel)
+//   2. mobile vs desktop 버튼 바인딩 (setupExplorer)
+//   3. nav 리스너: panel-open close (← _drawer.ts.closeAllPanels)
+//   4. resize 리스너: 의도적 no-op
+//   5. overlay click: _drawer.ts.registerOverlayClickHandler에 위임
+//   6. recentSlugs: RecentNotes 기준 폴더 빨간 dot
+//   7. folder-title-link: index.md 보유 폴더 제목을 링크로 교체
+// ════════════════════════════════════════════════════════════════
 
 type MaybeHTMLElement = HTMLElement | undefined
 
@@ -39,18 +51,9 @@ function toggleExplorer(this: HTMLElement) {
 }
 
 // [커스텀] panel-open 드로어 토글 (mobile-explorer 버튼 전용)
-// collapsed와 분리하여 zoom/resize 이벤트에 영향받지 않도록 함
+// .collapsed와 분리하여 zoom/resize 이벤트에 영향받지 않도록 함
 function toggleExplorerPanel(this: HTMLElement) {
-  const nearestExplorer = this.closest(".explorer") as HTMLElement
-  if (!nearestExplorer) return
-  nearestExplorer.classList.toggle("panel-open")
-}
-// [커스텀 끝]
-
-// [커스텀] link 모드: 폴더 제목 <a> 클릭 시 navigate 대신 토글
-function toggleFolderFromLink(evt: MouseEvent) {
-  evt.preventDefault()
-  toggleFolder(evt)
+  togglePanel(this, ".explorer")
 }
 // [커스텀 끝]
 
@@ -101,12 +104,13 @@ function countFiles(node: FileTrieNode): number {
   return node.children.reduce((sum, child) => sum + countFiles(child), 0)
 }
 
-// [커스텀] 최근 7일 이내 date가 갱신된 파일 수 재귀 카운트
-function countRecentFiles(node: FileTrieNode, cutoff: number): number {
-  if (!node.isFolder) {
-    return (node.data?.date && new Date(node.data.date).getTime() >= cutoff) ? 1 : 0
-  }
-  return node.children.reduce((sum, child) => sum + countRecentFiles(child, cutoff), 0)
+// [커스텀] 날짜 내림차순 상위 N개 파일 포함 폴더에 dot 표시
+// RecentNotes 표시 개수(3)와 별개 — dot은 더 넓은 범위를 커버
+const DOT_LIMIT = 3
+
+function hasRecentFile(node: FileTrieNode, recentSlugs: Set<string>): boolean {
+  if (!node.isFolder) return recentSlugs.has(node.slug as string)
+  return node.children.some((child) => hasRecentFile(child, recentSlugs))
 }
 // [커스텀 끝]
 
@@ -130,6 +134,7 @@ function createFolderNode(
   currentSlug: FullSlug,
   node: FileTrieNode,
   opts: ParsedOptions,
+  recentSlugs: Set<string>,
 ): HTMLLIElement {
   const template = document.getElementById("template-folder") as HTMLTemplateElement
   const clone = template.content.cloneNode(true) as DocumentFragment
@@ -162,35 +167,30 @@ function createFolderNode(
     button.replaceWith(a)
     titleContainer.appendChild(countSpan)
   } else {
-    const span = titleContainer.querySelector(".folder-title") as HTMLElement
-    span.textContent = node.displayName
+    // [커스텀] index.md 있는 폴더: 제목을 링크로 교체 / 없는 폴더: 버튼(토글) 유지
+    if (node.data !== undefined) {
+      const button = titleContainer.querySelector(".folder-button") as HTMLElement
+      const a = document.createElement("a")
+      a.href = resolveRelative(currentSlug, folderPath)
+      a.dataset.for = folderPath
+      a.className = "folder-title-link"
+      a.textContent = node.displayName
+      button.replaceWith(a)
+    } else {
+      const span = titleContainer.querySelector(".folder-title") as HTMLElement
+      span.textContent = node.displayName
+    }
+    // [커스텀 끝]
     titleContainer.appendChild(countSpan)
+    // [커스텀] RecentNotes 기준 빨간 dot
+    if (hasRecentFile(node, recentSlugs)) {
+      const dot = document.createElement("span")
+      dot.className = "folder-recent-dot"
+      dot.setAttribute("aria-label", "최근 업데이트 포함")
+      titleContainer.appendChild(dot)
+    }
+    // [커스텀 끝]
   }
-
-  // [커스텀] 최근 7일 이내 업데이트 파일 수 배지 (있을 때만 표시)
-  const recentCount = countRecentFiles(node, Date.now() - 7 * 24 * 60 * 60 * 1000)
-  if (recentCount > 0) {
-    const recentSpan = document.createElement("span")
-    recentSpan.className = "folder-count-recent"
-    recentSpan.textContent = `+${recentCount}`
-    titleContainer.appendChild(recentSpan)
-  }
-  // [커스텀 끝]
-
-  // [커스텀] link 모드: hover 시 나타나는 index.md 링크 아이콘
-  // <span> 래퍼로 감싸 div > a CSS 셀렉터 충돌 방지
-  if (opts.folderClickBehavior === "link") {
-    const wrap = document.createElement("span")
-    wrap.className = "folder-link-icon-wrap"
-    const linkIcon = document.createElement("a")
-    linkIcon.href = resolveRelative(currentSlug, folderPath)
-    linkIcon.dataset.for = folderPath
-    linkIcon.title = "인덱스 페이지로 이동"
-    linkIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`
-    wrap.appendChild(linkIcon)
-    titleContainer.appendChild(wrap)
-  }
-  // [커스텀 끝]
 
   // if the saved state is collapsed or the default state is collapsed
   const isCollapsed =
@@ -209,7 +209,7 @@ function createFolderNode(
 
   for (const child of node.children) {
     const childNode = child.isFolder
-      ? createFolderNode(currentSlug, child, opts)
+      ? createFolderNode(currentSlug, child, opts, recentSlugs)
       : createFileNode(currentSlug, child)
     ul.appendChild(childNode)
   }
@@ -251,6 +251,21 @@ async function setupExplorer(currentSlug: FullSlug) {
     const entries = [...Object.entries(data)] as [FullSlug, ContentDetails][]
     const trie = FileTrieNode.fromEntries(entries)
 
+    // [커스텀] 날짜 내림차순 상위 DOT_LIMIT개 slug Set
+    // index 페이지(폴더 노드로 흡수됨)는 빌드 타임 날짜로 항상 상위에 오므로 제외
+    const recentSlugs = new Set(
+      [...Object.entries(data)]
+        .filter(([slug]) => slug !== "index" && !slug.endsWith("/index"))
+        .sort(([, a], [, b]) => {
+          const aDate = a.date ? new Date(a.date).getTime() : 0
+          const bDate = b.date ? new Date(b.date).getTime() : 0
+          return bDate - aDate
+        })
+        .slice(0, DOT_LIMIT)
+        .map(([slug]) => slug),
+    )
+    // [커스텀 끝]
+
     // Apply functions in order
     for (const fn of opts.order) {
       switch (fn) {
@@ -287,7 +302,7 @@ async function setupExplorer(currentSlug: FullSlug) {
     const fragment = document.createDocumentFragment()
     for (const child of trie.children) {
       const node = child.isFolder
-        ? createFolderNode(currentSlug, child, opts)
+        ? createFolderNode(currentSlug, child, opts, recentSlugs)
         : createFileNode(currentSlug, child)
 
       fragment.appendChild(node)
@@ -312,7 +327,8 @@ async function setupExplorer(currentSlug: FullSlug) {
     ) as HTMLCollectionOf<HTMLElement>
     for (const button of explorerButtons) {
       // [커스텀] mobile 버튼은 panel-open 토글, desktop 버튼은 기존 collapsed 토글
-      const handler = (button as HTMLElement).dataset.mobile === "true" ? toggleExplorerPanel : toggleExplorer
+      const handler =
+        (button as HTMLElement).dataset.mobile === "true" ? toggleExplorerPanel : toggleExplorer
       button.addEventListener("click", handler)
       window.addCleanup(() => button.removeEventListener("click", handler))
     }
@@ -327,18 +343,6 @@ async function setupExplorer(currentSlug: FullSlug) {
         window.addCleanup(() => button.removeEventListener("click", toggleFolder))
       }
     }
-
-    // [커스텀] link 모드: 폴더 제목 클릭은 토글 (navigate 차단)
-    if (opts.folderClickBehavior === "link") {
-      const folderTitleLinks = explorer.querySelectorAll(
-        ".folder-title",
-      ) as NodeListOf<HTMLElement>
-      for (const link of folderTitleLinks) {
-        link.addEventListener("click", toggleFolderFromLink)
-        window.addCleanup(() => link.removeEventListener("click", toggleFolderFromLink))
-      }
-    }
-    // [커스텀 끝]
 
     const folderIcons = explorer.getElementsByClassName(
       "folder-icon",
@@ -361,45 +365,27 @@ document.addEventListener("nav", async (e: CustomEventMap["nav"]) => {
   const currentSlug = e.detail.url
   await setupExplorer(currentSlug)
 
-  // [커스텀] 페이지 이동 시 panel-open 드로어 닫기 (원본: collapsed 추가 → panel-open 제거로 변경)
+  // [커스텀] 페이지 이동 시 panel-open 드로어 닫기 (원본: collapsed 추가 → panel-open 제거)
+  // checkVisibility() 가드: desktop에선 mobile 버튼이 숨겨져 있으므로 닫기 작업 스킵
   for (const explorer of document.getElementsByClassName("explorer")) {
     const mobileExplorer = explorer.querySelector(".mobile-explorer")
     if (!mobileExplorer) return
 
     if ((mobileExplorer as HTMLElement).checkVisibility()) {
-      explorer.classList.remove("panel-open")
       document.documentElement.classList.remove("mobile-no-scroll")
     }
 
     mobileExplorer.classList.remove("hide-until-loaded")
   }
+  closeAllPanels(".explorer")
   // [커스텀 끝]
 })
 
-// [커스텀] resize 핸들러: panel-open 드로어는 zoom/resize에 반응하지 않음
-// 원본은 모바일 진입 시 collapsed 추가 → 드로어가 zoom에 닫히는 문제 있어 비움
-window.addEventListener("resize", function () {
-  // intentionally empty: panel-open state is managed only by button clicks and nav events
-})
+// [커스텀] 의도적 no-op: zoom/resize에 패널이 닫히지 않게 함. _drawer.ts 참조.
+window.addEventListener("resize", function () {})
 
-// [커스텀] 오버레이(배경) 클릭 시 드로어 닫기
-// 클릭 target이 .sidebar.left/.right 바깥이면 해당 패널 닫음
-document.addEventListener("click", (e) => {
-  const target = e.target as HTMLElement
-  const leftSidebar = document.querySelector(".sidebar.left")
-  const rightSidebar = document.querySelector(".sidebar.right")
-
-  if (leftSidebar && !leftSidebar.contains(target)) {
-    for (const explorer of document.getElementsByClassName("explorer")) {
-      explorer.classList.remove("panel-open")
-    }
-  }
-  if (rightSidebar && !rightSidebar.contains(target)) {
-    for (const toc of document.getElementsByClassName("toc")) {
-      toc.classList.remove("panel-open")
-    }
-  }
-})
+// [커스텀] 오버레이(배경) 클릭 시 드로어 닫기 — _drawer.ts에 위임 (멱등)
+registerOverlayClickHandler()
 // [커스텀 끝]
 
 function setFolderState(folderElement: HTMLElement, collapsed: boolean) {

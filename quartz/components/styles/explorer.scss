@@ -171,6 +171,11 @@ button.desktop-explorer {
   align-items: center;
   user-select: none;
 
+  & > div {
+    display: flex;
+    align-items: center;
+  }
+
   & div > a {
     color: var(--secondary);
     font-family: var(--headerFont);
@@ -208,6 +213,8 @@ button.desktop-explorer {
   }
 }
 
+// ── [커스텀 BEGIN] folder count + recent dot ─────────────────────
+// .folder-count: 폴더 옆 전체 파일 수 (explorer.inline.ts countFiles)
 .folder-count {
   font-size: 0.75rem;
   color: var(--darkgray);
@@ -216,27 +223,28 @@ button.desktop-explorer {
   flex-shrink: 0;
 }
 
-.folder-count-recent {
-  display: inline-flex;
-  align-items: center;
+// .folder-recent-dot: RecentNotes 기준 최근 파일 포함 폴더 표시
+.folder-recent-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #e9313a;
   margin-left: 0.3rem;
-  padding: 0 0.3rem;
-  font-size: 0.6rem;
-  font-weight: 700;
-  color: var(--light);
-  background-color: var(--secondary);
-  border-radius: 999px;
-  line-height: 1.5;
   flex-shrink: 0;
+  vertical-align: middle;
 }
+// ── [커스텀 END] ──
 
 .folder-icon {
-  margin-right: 5px;
+  margin-right: 3px;
   color: var(--secondary);
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.15s ease, color 0.15s ease;
   backface-visibility: visible;
   flex-shrink: 0;
+  padding: 4px;
+  border-radius: 4px;
 }
 
 li:has(> .folder-outer:not(.open)) > .folder-container > svg {
@@ -245,33 +253,7 @@ li:has(> .folder-outer:not(.open)) > .folder-container > svg {
 
 .folder-icon:hover {
   color: var(--tertiary);
-}
-
-.folder-link-icon-wrap {
-  display: inline-flex;
-  align-items: center;
-  margin-left: 0.3rem;
-  opacity: 0.4;
-  transition: opacity 0.15s ease;
-  flex-shrink: 0;
-
-  & > a {
-    display: inline-flex;
-    align-items: center;
-    color: var(--darkgray);
-
-    svg {
-      pointer-events: none;
-    }
-
-    &:hover {
-      color: var(--tertiary);
-    }
-  }
-}
-
-.folder-container:hover .folder-link-icon-wrap {
-  opacity: 0.8;
+  background-color: var(--highlight);
 }
 
 .explorer {
@@ -332,5 +314,13 @@ li:has(> .folder-outer:not(.open)) > .folder-container > svg {
     .explorer-content > .explorer-ul {
       overscroll-behavior: contain;
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .explorer-content .folder-outer,
+  .explorer .fold,
+  .folder-icon {
+    transition: none !important;
   }
 }

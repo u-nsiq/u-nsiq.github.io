@@ -11,6 +11,7 @@ content/assets 에 있지만 더 이상 참조되지 않는 파일은 삭제.
 실행: python sync_assets.py
 """
 
+import filecmp
 import re
 import shutil
 from pathlib import Path
@@ -80,7 +81,8 @@ def sync_assets() -> None:
             missing.append(img_ref)
             continue
 
-        if dst.exists() and src.stat().st_mtime <= dst.stat().st_mtime:
+        # 복사 여부는 내용 비교로 판단 (mtime 무시 — 동기화 폴더 mtime 갱신 영향 배제)
+        if dst.exists() and filecmp.cmp(src, dst, shallow=False):
             skipped.append(filename)
             continue
 

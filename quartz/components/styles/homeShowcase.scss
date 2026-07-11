@@ -50,7 +50,9 @@ body[data-slug="index"] .center > hr {
     align-items: stretch;
 
     @media all and ($mobile) {
-      grid-template-columns: 1fr;
+      // minmax(0,·) 없으면 1fr의 auto-min이 Notes nowrap 항목의 min-content로 커져
+      // 390px 뷰포트에서 수평 오버플로 발생 (리뷰 검증됨)
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 

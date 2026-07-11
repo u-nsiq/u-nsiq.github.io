@@ -1,66 +1,88 @@
 ---
 title: About Me
 date: 2026-07-11
+description: "Junsik Kim is a Software Engineering student at Kwangwoon University interested in efficient and reliable machine learning, medical imaging, and model quantization."
 ---
 
-_Last updated · July 2026_
+<div class="about-updated"><span>🕓 Last updated · July 2026</span></div>
 
-광운대학교 소프트웨어학부에 재학 중인 김준식입니다.
-모델 경량화와 의료 AI를 중심으로 공부하고 있습니다.
+<div class="about-header">
+<div class="about-header-top">
+<div class="about-name">Junsik Kim</div>
+<div class="about-links"><a class="about-pill" href="https://github.com/u-nsiq">GitHub</a> <a class="about-pill" href="mailto:wnstlr0830@gmail.com">Email</a></div>
+</div>
+<div class="about-tagline">B.S. student in Software Engineering @ Kwangwoon University</div>
+<div class="about-loc">📍 Seoul, South Korea</div>
+<div class="about-intro">My recent work spans clinical EHR data, temporal bone CT imaging, and model quantization. Across these projects, I have learned to care as much about how a problem is defined and validated as about the final model itself.</div>
+</div>
 
-## Now I'm focusing on
+## 🎯 Now focusing on...
 
-- Preparing for graduate school in AI
-- Short-budget QAT for low-bit vision model recovery (capstone project)
-- Turning my otitis media CT classification project into a paper
+<div class="about-focus">
+<div class="about-focus-item"><span class="about-focus-num">01</span><div>Preparing for graduate school in AI</div></div>
+<div class="about-focus-item"><span class="about-focus-num">02</span><div>Short-budget QAT for low-bit vision model recovery · capstone project</div></div>
+<div class="about-focus-item"><span class="about-focus-num">03</span><div>Refining a temporal bone CT classification pipeline toward a manuscript</div></div>
+</div>
 
----
+<div class="about-sep">· · ·</div>
 
-## Research Interests
+## 🔬 Research interests
 
-- Model Quantization
-- Efficient Deep Learning
-- Biomedical AI
-- Multimodal Learning
+<div class="about-pills">
+<span class="about-pill-tag">Efficient Deep Learning · Model Quantization</span>
+<span class="about-pill-tag">Biomedical AI · Medical Imaging</span>
+<span class="about-pill-tag">Data Representation · Reliable ML</span>
+</div>
 
-## Education
+<div class="about-sep">· · ·</div>
 
-**Kwangwoon University** — B.S. in Software Engineering, 2023.03 – 2027.02 (expected)
+## 🎓 Journey
 
-- GPA 4.20 / 4.50 (Major: 4.29)
+<div class="about-timeline">
+<div class="about-when">2025.07 – 2026.02</div>
+<div class="about-node"></div>
+<div class="about-what"><strong>Data Analytics Lab, Kwangwoon University</strong><span class="about-role">Undergraduate Researcher</span>Built clinical event logs from MIMIC-IV and eICU-CRD ICU records for process mining<div class="about-more"><a class="internal" href="./Posts/Research/DataLab/">Read the 6-part series →</a></div></div>
+<div class="about-when">2023.03 –</div>
+<div class="about-node"></div>
+<div class="about-what"><strong>Kwangwoon University</strong><span class="about-role">B.S. in Software Engineering · expected 2027.02</span><div class="about-meta">GPA 4.20 / 4.50 (Major 4.29)</div></div>
+</div>
 
-## Research Experience
+<div class="about-sep">· · ·</div>
 
-**Data Analytics Lab, Kwangwoon University** — Undergraduate Researcher, 2025.07 – 2026.02
+## ✍️ Writing in progress
 
-- Built clinical event logs from MIMIC-IV and eICU-CRD ICU records for process mining → [[Part 01_Sepsis Cohort Definition과 연구 범위 설정|read the 6-part series]]
+<div class="about-card about-paper">
+<em>A Survey on Explainable Fake Image Detection: From Traditional XAI Techniques to Large Multimodal Model</em>
+<div class="about-badge-row"><span class="about-badge">in preparation</span></div>
+<div class="about-meta">KW-VIP research program · 2026</div>
+</div>
 
-## Publications
+<div class="about-card about-paper">
+<em>Landmark-Aware Sequence Modeling for Otitis Media Classification in Temporal Bone CT</em>
+<div class="about-badge-row"><span class="about-badge">in preparation</span></div>
+<div class="about-meta">working title · 2026</div>
+</div>
 
-- *A Survey on Explainable Fake Image Detection: From Traditional XAI Techniques to Large Multimodal Model* — manuscript in preparation, 2026 (KW-VIP research program)
-- *Landmark-Aware Sequence Modeling for Otitis Media Classification in Temporal Bone CT* — manuscript in preparation, 2026 (working title)
+<div class="about-sep">· · ·</div>
 
-## Selected Projects
+## 🛠️ Selected projects
 
-**Short-Budget QAT for Low-Bit Vision Model Recovery** — capstone project, 2026.01 – ongoing
-
-- Studying how low-bit quantized vision models recover accuracy when the fine-tuning budget is small
-
-**Otitis Media CT Classification** — 2026.05 – 06
-
-- Classifying otitis media from temporal bone CT scans with a deep learning pipeline
-
-**Embedded AI-Based Autonomous Driving Car** — 2026.04 – 06
-
-- An autonomous driving car on Raspberry Pi 5: lane following, sign recognition, and quantized on-device inference → [[Log 01_개발환경 세팅하기|dev logs]]
-
-**Real-Time KSL Recognition System** — 2026.04 – 06
-
-- Real-time Korean Sign Language word recognition from webcam keypoint sequences
-
----
-
-## Contact
-
-- GitHub — [github.com/u-nsiq](https://github.com/u-nsiq)
-- Email — wnstlr0830@gmail.com
+<div class="about-projects">
+<div class="about-card about-featured">
+<strong>Short-Budget QAT for Low-Bit Vision Model Recovery</strong> <span class="about-badge badge-live">ongoing</span>
+<div class="about-meta">capstone project · 2026.01 –</div>
+<div class="about-desc">Studying how low-bit quantized vision models recover accuracy when the fine-tuning budget is small.</div>
+</div>
+<div class="about-card">
+<strong>Otitis Media CT Classification</strong>
+<div class="about-badge-row"><span class="about-badge badge-live">manuscript ongoing</span></div>
+<div class="about-meta">2026.05 – 06</div>
+<div class="about-desc">Completed the original landmark-aware classification pipeline; currently extending its validation and modeling toward a manuscript.</div>
+</div>
+<div class="about-card">
+<strong>Embedded AI-Based Autonomous Driving Car</strong>
+<div class="about-meta">2026.04 – 06</div>
+<div class="about-desc">Lane following, sign recognition, and quantized on-device inference on Raspberry Pi 5.</div>
+<div class="about-more"><a class="internal" href="./Posts/Projects/Embedded-AI-Car/">View project overview →</a></div>
+</div>
+</div>

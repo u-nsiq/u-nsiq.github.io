@@ -106,7 +106,11 @@ export const defaultContentPageLayout: PageLayout = {
       component: Component.ContentMeta(), // 글 정보 (날짜, 읽는 시간)
       condition: (page) => page.fileData.slug !== "about",
     }),
-    Component.TagList(), // 태그 목록 (#CS #OS)
+    // [커스텀] 홈은 상태 태그를 설명에만 쓰므로 상단 태그 목록은 숨김
+    Component.ConditionalRender({
+      component: Component.TagList(),
+      condition: (page) => page.fileData.slug !== "index",
+    }),
   ],
 
   // 왼쪽 사이드바 (Left Sidebar)

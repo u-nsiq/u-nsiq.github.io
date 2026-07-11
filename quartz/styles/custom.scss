@@ -143,6 +143,18 @@ a.home-about-btn {
   }
 }
 
+// [커스텀] 홈 상태 필 (17차) — content/index.md의 <span class="home-status-tag">
+// 태그 문법(#🌱seedling)의 필 모양만 복제한 비링크 span. 실제 태그를 만들지 않아
+// /tags 인덱스 오염·막다른 태그 페이지가 생기지 않는다 (업스트림 tag-link 실측값 복제)
+.home-status-tag {
+  padding: 0.2rem 0.4rem;
+  margin: 0 0.1rem;
+  border-radius: 8px;
+  background-color: var(--highlight);
+  color: var(--dark);
+  font-weight: 550;
+}
+
 // Bulleted + Numbered list: indent guide (Obsidian 스타일 — 중첩 목록 왼쪽 세로 라인)
 article ul > li,
 article ol > li {
@@ -253,5 +265,343 @@ article ol > li:has(> ul)::after {
 @media all and not ($mobile) {
   .sidebar.left > .recent-notes {
     margin-top: auto;
+  }
+}
+
+// ================================================================
+// § 5. ABOUT PAGE (13차, 14차 개선) — 스탬프·프로필·뱃지·타임라인·카드
+// 원칙: 홈의 디자인 언어(보더 카드·pill·회색 위계) 확장 + 섹션별 시각 리듬
+// 14차: 보더 시인성(color-mix)·상태 뱃지 액센트화·타임라인 노드·featured 카드
+// ================================================================
+
+// 공용 보더: lightgray 단독은 라이트 테마에서 흐릿 → gray 45% 혼합 (양 테마 자동 대응)
+$about-border: color-mix(in srgb, var(--lightgray) 55%, var(--gray) 45%);
+// 카드 배경: 페이지 배경에서 살짝 들뜬 톤
+$about-bg: color-mix(in srgb, var(--light) 97%, var(--dark) 3%);
+
+// Last updated 스탬프: 타이틀 아래 우측 정렬, 점선 보더(도장 느낌)
+.about-updated {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 0.9rem 0;
+
+  span {
+    border: 1px dashed $about-border;
+    border-radius: 999px;
+    padding: 0.1rem 0.7rem;
+    font-size: 0.75rem;
+    color: var(--gray);
+    white-space: nowrap;
+    user-select: none;
+  }
+}
+
+// 프로필 헤더 카드 (Contact 흡수): 상단 액센트 스트립 + [이름 | 연락 pill] 2존 + 위치 줄
+// 페이지 유일의 hero 카드 — 그라데이션 스트립이 다른 카드와의 차별 신호
+.about-header {
+  position: relative;
+  overflow: hidden; // 스트립을 둥근 모서리 안으로 클리핑
+  border: 1px solid $about-border;
+  border-radius: 10px;
+  background-color: $about-bg;
+  padding: 1.25rem 1.35rem 1.15rem;
+  margin: 0 0 1.2rem 0;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--secondary), var(--tertiary) 45%, transparent 90%);
+  }
+  .about-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .about-name {
+    font-family: var(--headerFont);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+  .about-tagline {
+    color: var(--darkgray);
+    opacity: 0.85;
+    font-size: 0.92rem;
+    margin-top: 0.3rem;
+  }
+  .about-loc {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 0.45rem;
+  }
+  // 짧은 introduction (16차 — Codex 문안): tagline보다 작고 차분하게, 줄 길이 제한
+  .about-intro {
+    max-width: 34rem;
+    margin-top: 0.75rem;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: var(--darkgray);
+    opacity: 0.9;
+  }
+  .about-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+}
+
+// 연락 pill (홈 About 버튼과 같은 문법의 소형)
+a.about-pill {
+  display: inline-block;
+  padding: 0.1rem 0.75rem;
+  border: 1px solid $about-border;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--secondary);
+  background-color: transparent;
+
+  &:hover {
+    background-color: var(--highlight);
+    color: var(--tertiary);
+    border-color: var(--gray);
+  }
+}
+
+// 섹션 디바이더 (--- 대신 미니멀 점 셋)
+.about-sep {
+  text-align: center;
+  color: var(--gray);
+  letter-spacing: 0.8em;
+  margin: 1.8rem 0 1.2rem 0;
+  user-select: none;
+}
+
+// 정보 카드 (홈 Browse 카드 문법 + 배경 톤)
+.about-card {
+  border: 1px solid $about-border;
+  border-radius: 8px;
+  background-color: $about-bg;
+  padding: 0.8rem 1.1rem;
+  margin: 0.8rem 0;
+
+  ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+  li {
+    margin: 0.35rem 0;
+  }
+}
+
+// Now focusing on: 에디토리얼 넘버드 리스트 (15차 — 카드+불릿 대체)
+// 모노 고스트 번호(01/02/03)는 타임라인의 모노 기간과 같은 시각 언어
+.about-focus {
+  margin: 0.9rem 0;
+
+  .about-focus-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    padding: 0.6rem 0.15rem;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--lightgray);
+    }
+  }
+  .about-focus-num {
+    flex-shrink: 0;
+    font-family: var(--codeFont);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--secondary);
+    opacity: 0.7;
+    user-select: none;
+  }
+}
+
+// 타임라인 안 보조 링크 버튼 (고스트 pill) — a.internal 필 배경을 무력화
+.about-more {
+  margin-top: 0.45rem;
+
+  a.internal {
+    display: inline-block;
+    border: 1px solid $about-border;
+    border-radius: 999px;
+    padding: 0.05rem 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--darkgray);
+    background-color: transparent;
+
+    &:hover {
+      background-color: var(--highlight);
+      color: var(--secondary);
+      border-color: var(--gray);
+    }
+  }
+}
+
+// 상태 뱃지 (ongoing / in preparation): 액센트 틴트로 시인성 확보 (14차)
+.about-badge {
+  display: inline-block;
+  border: 1px solid rgba(119, 151, 192, 0.45);
+  border-radius: 999px;
+  background-color: rgba(119, 151, 192, 0.12);
+  padding: 0.05rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--tertiary);
+  white-space: nowrap;
+  vertical-align: 1px;
+}
+:root[saved-theme="dark"] .about-badge {
+  border-color: rgba(97, 175, 239, 0.45);
+  background-color: rgba(97, 175, 239, 0.15);
+  color: var(--secondary);
+}
+// 뱃지 전용 줄 (16차): 제목 아랫줄에 뱃지 배치 (paper 카드·otitis 카드 공통 위계)
+.about-badge-row {
+  margin: 0.4rem 0 0.05rem;
+}
+
+// 진행 중(live) 뱃지: 초록 status dot
+.about-badge.badge-live::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #2f9e44;
+  margin-right: 0.35em;
+  vertical-align: 0.5px;
+}
+:root[saved-theme="dark"] .about-badge.badge-live::before {
+  background-color: #69db7c;
+}
+
+// 회색 메타 줄 (기간·부가정보)
+.about-meta {
+  font-size: 0.78rem;
+  color: var(--gray);
+  margin-top: 0.15rem;
+}
+
+// 관심사 pill 뱃지
+.about-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.8rem 0 1rem 0;
+
+  .about-pill-tag {
+    border: 1px solid $about-border;
+    border-radius: 999px;
+    padding: 0.15rem 0.8rem;
+    font-size: 0.85rem;
+    color: var(--darkgray);
+  }
+}
+
+// Journey 타임라인: 기간(모노) | 노드(dot+연결선) | 내용
+.about-timeline {
+  display: grid;
+  grid-template-columns: 118px 14px minmax(0, 1fr);
+  gap: 1.2rem 0.8rem;
+  margin: 0.9rem 0;
+
+  .about-when {
+    font-family: var(--codeFont);
+    font-size: 0.74rem;
+    font-weight: 500;
+    color: var(--darkgray);
+    text-align: right;
+    padding-top: 0.22rem;
+    white-space: nowrap;
+  }
+  .about-node {
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 7px;
+      transform: translateX(-50%);
+      width: 9px;
+      height: 9px;
+      border: 2px solid var(--secondary);
+      border-radius: 50%;
+      background-color: var(--light);
+    }
+    &::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 22px;
+      bottom: -1.7rem; // row-gap 구간을 건너 다음 dot까지 연결 (dot가 위에 그려져 끝단을 덮음)
+      transform: translateX(-50%);
+      width: 2px;
+      background-color: var(--lightgray);
+    }
+    // 마지막 노드(뒤에서 2번째 child = 마지막 .about-node)는 연결선 생략
+    &:nth-last-child(2)::after {
+      display: none;
+    }
+  }
+  .about-what {
+    min-width: 0;
+  }
+  .about-role {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--darkgray);
+    opacity: 0.85;
+    margin: 0.1rem 0 0.15rem 0;
+  }
+
+  @media all and ($mobile) {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+
+    .about-node {
+      display: none;
+    }
+    .about-when {
+      text-align: left;
+      padding-top: 0;
+    }
+    .about-what {
+      margin-bottom: 0.9rem;
+    }
+  }
+}
+
+// 프로젝트 카드: 대표(featured) 1장 전폭 + 나머지 2열
+.about-projects {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 0.9rem 0;
+
+  .about-card {
+    margin: 0;
+  }
+  .about-card.about-featured {
+    grid-column: 1 / -1;
+  }
+  .about-desc {
+    font-size: 0.88rem;
+    margin-top: 0.35rem;
+  }
+
+  @media all and ($mobile) {
+    grid-template-columns: 1fr;
   }
 }

@@ -1,44 +1,22 @@
 ---
-title: Junsik.io
+title: JunSik.io
+date: 2026-01-30
 ---
 
-# Hello, I'm Junsik Kim
+# Welcome
 
-> **Kwangwoon University** | *B.S. in Software Engineering (2023.03 - 2027.02 Expected)*
-> **Data Analytics Lab** | *Undergraduate Researcher (2025.07 - 2026.02)*
+안녕하세요, 광운대학교 소프트웨어학부에 재학 중인 **김준식**입니다.
+이곳은 공부하며 배운 것들을 기록하는 블로그이자 Digital Garden입니다.
 
----
-
-## Blog Category
-
-📝 **Posts** | *Polished articles on projects, research and technical insights.*
-
-🌱 **Notes** | *A digital garden of atomic, permanent notes for my learning journey.*
+> 저에 대한 더 자세한 정보는 오른쪽 버튼에서 확인하실 수 있습니다. <a class="home-about-btn" href="./about">About me →</a>
 
 ---
 
-## Interests
+## About this blog
 
-- **Artificial Intelligence** | *Deep Learning, Computer Vision, Model Quantization*
-- **Data Science & Process Mining** | *Healthcare Data Analysis, Event Abstraction*
+이 블로그는 공부의 부산물을 기록해 나갑니다.
+모든 글은 제 [Obsidian](https://obsidian.md) vault에서 작성되어 [Quartz](https://quartz.jzhao.xyz)로 배포됩니다.
+공부하면서 만난 개념은 노트 하나에 개념 하나씩, 항상 제 언어로 기록하려 노력합니다.
 
----
-
-## Selected Projects
-
-- **Quantization-Aware Training for CPU-Based Deep Learning Inference** | *Capstone Design, 2026.01 - Present*
-  - Researching **QAT** techniques to optimize deep learning model inference on CPUs.
-  - CPU 환경 내 딥러닝 모델 추론 최적화를 위한 양자화 인식 학습(QAT) 기법 연구
-- **Survey on LMM-Based Explainable Fake Image Detection** | *KW-VIP Project, 2026.03 - Present*
-  - Conducting a survey on explainable fake image detection, comparing traditional XAI techniques with Large Multimodal Model-based approaches.
-  - 설명 가능한 합성 이미지 탐지에 대한 조사 및 기존의 XAI 기법과 LMM 기반 접근법 비교
-- **Clinical Event Log Construction for Process Mining** | *Data Analytics Lab, 2025.07 - 2026.02*
-  - Analyzed MIMIC-IV clinical records to design event abstraction and grouping strategies for optimized process modeling
-  -  Established a high-integrity event log baseline by implementing data filtering rules and quality benchmarks from academic literature.
-
-
----
-
-## Contact
-
-- [GitHub](https://github.com/u-nsiq) | wnstlr0830@gmail.com
+**Posts**에는 완성된 글을 모아둡니다 — 연구 기록, 논문 리뷰, 프로젝트 회고.
+**Notes**는 공부하며 쌓아가는 개념 노트입니다. 미완성 노트도 공개하며, 자란 정도를 🌱 seedling → 🌿 budding → 🌲 evergreen으로 표시합니다.

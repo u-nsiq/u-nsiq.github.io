@@ -240,11 +240,15 @@ button.desktop-explorer {
   margin-right: 3px;
   color: var(--secondary);
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.15s ease, color 0.15s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.15s ease;
   backface-visibility: visible;
   flex-shrink: 0;
-  padding: 4px;
-  border-radius: 4px;
+  // [12차] 아이콘 축소(제목 글씨보다 작게) + 개별 네모 hover 제거 — row 통합 hover는 custom.scss §3
+  width: 11px;
+  height: 11px;
+  padding: 1px;
 }
 
 li:has(> .folder-outer:not(.open)) > .folder-container > svg {
@@ -253,7 +257,6 @@ li:has(> .folder-outer:not(.open)) > .folder-container > svg {
 
 .folder-icon:hover {
   color: var(--tertiary);
-  background-color: var(--highlight);
 }
 
 .explorer {

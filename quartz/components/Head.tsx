@@ -65,10 +65,10 @@ export default (() => {
               rel="stylesheet"
               href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@700;900&display=swap"
             />
-            {/* IBM Plex Mono (code) */}
+            {/* IBM Plex Mono (code) — 500은 인라인 코드 가독성용 (custom.scss 9차) */}
             <link
               rel="stylesheet"
-              href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap"
+              href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap"
             />
           </>
         )}

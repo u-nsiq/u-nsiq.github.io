@@ -10,8 +10,8 @@ import { togglePanel, closeAllPanels, registerOverlayClickHandler } from "./_dra
 //   3. nav 리스너: panel-open close (← _drawer.ts.closeAllPanels)
 //   4. resize 리스너: 의도적 no-op
 //   5. overlay click: _drawer.ts.registerOverlayClickHandler에 위임
-//   6. recentSlugs: RecentNotes 기준 폴더 빨간 dot
-//   7. folder-title-link: index.md 보유 폴더 제목을 링크로 교체
+//   6. recentSlugs: 최근 14일 업데이트 기준 폴더 빨간 dot
+//   7. (6차에서 제거) folder-title-link — 홈 쇼케이스가 폴더 index 진입을 담당, 제목 클릭은 토글로 복원
 // ════════════════════════════════════════════════════════════════
 
 type MaybeHTMLElement = HTMLElement | undefined
@@ -104,9 +104,10 @@ function countFiles(node: FileTrieNode): number {
   return node.children.reduce((sum, child) => sum + countFiles(child), 0)
 }
 
-// [커스텀] 날짜 내림차순 상위 N개 파일 포함 폴더에 dot 표시
-// RecentNotes 표시 개수(3)와 별개 — dot은 더 넓은 범위를 커버
-const DOT_LIMIT = 3
+// [커스텀] 최근 RECENT_DOT_DAYS일 내 업데이트된 파일을 포함한 폴더에 dot 표시
+// RecentNotes(항상 최근 3개 목록)와 달리 시간 기준 — 최근에 실제로 갱신이 있을 때만 켜진다
+const RECENT_DOT_DAYS = 14
+const RECENT_DOT_CUTOFF_MS = RECENT_DOT_DAYS * 24 * 60 * 60 * 1000
 
 function hasRecentFile(node: FileTrieNode, recentSlugs: Set<string>): boolean {
   if (!node.isFolder) return recentSlugs.has(node.slug as string)
@@ -167,22 +168,12 @@ function createFolderNode(
     button.replaceWith(a)
     titleContainer.appendChild(countSpan)
   } else {
-    // [커스텀] index.md 있는 폴더: 제목을 링크로 교체 / 없는 폴더: 버튼(토글) 유지
-    if (node.data !== undefined) {
-      const button = titleContainer.querySelector(".folder-button") as HTMLElement
-      const a = document.createElement("a")
-      a.href = resolveRelative(currentSlug, folderPath)
-      a.dataset.for = folderPath
-      a.className = "folder-title-link"
-      a.textContent = node.displayName
-      button.replaceWith(a)
-    } else {
-      const span = titleContainer.querySelector(".folder-title") as HTMLElement
-      span.textContent = node.displayName
-    }
-    // [커스텀 끝]
+    // 4차의 folder-title-link 커스텀은 6차에서 제거 — 폴더 index 진입은 홈 쇼케이스가 담당,
+    // 제목 클릭은 upstream 기본대로 접기/펼치기 토글 (키보드 접근성도 회복)
+    const span = titleContainer.querySelector(".folder-title") as HTMLElement
+    span.textContent = node.displayName
     titleContainer.appendChild(countSpan)
-    // [커스텀] RecentNotes 기준 빨간 dot
+    // [커스텀] 최근 업데이트(14일) 빨간 dot
     if (hasRecentFile(node, recentSlugs)) {
       const dot = document.createElement("span")
       dot.className = "folder-recent-dot"
@@ -251,17 +242,16 @@ async function setupExplorer(currentSlug: FullSlug) {
     const entries = [...Object.entries(data)] as [FullSlug, ContentDetails][]
     const trie = FileTrieNode.fromEntries(entries)
 
-    // [커스텀] 날짜 내림차순 상위 DOT_LIMIT개 slug Set
-    // index 페이지(폴더 노드로 흡수됨)는 빌드 타임 날짜로 항상 상위에 오므로 제외
+    // [커스텀] 최근 RECENT_DOT_DAYS일 내 date를 가진 slug Set
+    // index 페이지는 date가 없으면 빌드 타임 날짜가 부여돼 항상 최신으로 잡히므로 제외
+    const now = Date.now()
     const recentSlugs = new Set(
       [...Object.entries(data)]
         .filter(([slug]) => slug !== "index" && !slug.endsWith("/index"))
-        .sort(([, a], [, b]) => {
-          const aDate = a.date ? new Date(a.date).getTime() : 0
-          const bDate = b.date ? new Date(b.date).getTime() : 0
-          return bDate - aDate
+        .filter(([, details]) => {
+          if (!details.date) return false
+          return now - new Date(details.date).getTime() <= RECENT_DOT_CUTOFF_MS
         })
-        .slice(0, DOT_LIMIT)
         .map(([slug]) => slug),
     )
     // [커스텀 끝]

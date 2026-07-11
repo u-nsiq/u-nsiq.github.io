@@ -1,0 +1,167 @@
+@use "../../styles/variables.scss" as *;
+
+// [커스텀] 홈 섹션 쇼케이스 (HomeShowcase.tsx)
+// "Browse" 헤더 → 투컬럼 [Posts 그룹(서브카드 1열) | Notes 그룹(리스트)].
+// $mobile 이하에서는 1단으로 쌓인다.
+
+// 홈에서는 article과 afterBody 사이의 구조적 <hr>을 숨긴다
+body[data-slug="index"] .center > hr {
+  display: none;
+}
+
+.home-showcase {
+  margin: 0.5rem 0 1.5rem 0;
+
+  .showcase-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin-bottom: 0.8rem;
+
+    .showcase-heading {
+      margin: 0;
+    }
+
+    .garden-stats {
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+  }
+
+  // "all posts →" / "more →" 공통 링크 스타일 (11차: 회색 + hover 액센트)
+  .showcase-more {
+    font-size: 0.75rem;
+    color: var(--gray);
+    background-color: transparent;
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--secondary);
+    }
+  }
+
+  // 투컬럼: Posts 그룹 | Notes 그룹 (stretch로 높이 동일)
+  .showcase-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: stretch;
+
+    @media all and ($mobile) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  // 그룹 박스 (Posts / Notes)
+  .showcase-group {
+    border: 1px solid var(--lightgray);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem 1rem 1.1rem;
+
+    .group-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
+
+      .group-title {
+        margin: 0;
+        font-size: 1.05rem;
+        color: var(--dark);
+      }
+    }
+  }
+
+  // Posts 그룹 내부 서브카드 — 투컬럼에서는 1열 스택
+  // (minmax(0,·)이 없으면 nowrap 제목의 min-content가 트랙을 밀어 오버플로됨)
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.8rem;
+  }
+
+  .showcase-section {
+    border: 1px solid var(--lightgray);
+    border-radius: 6px;
+    padding: 0.55rem 0.85rem 0.6rem 0.85rem;
+
+    .showcase-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.15rem;
+
+      .showcase-title {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--dark);
+      }
+    }
+  }
+
+  // 카드/그룹 공용 글 목록 — 항목은 한 줄(말줄임), 날짜는 오른쪽 인라인
+  .showcase-ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    & > li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin: 0.4rem 0;
+
+      a.internal {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        background-color: transparent;
+        color: var(--darkgray); // 11차: 목록 링크는 본문색 + hover 액센트
+        opacity: 0.8; // 12차: 카드 제목과의 위계
+
+        &:hover {
+          color: var(--secondary);
+          opacity: 1;
+        }
+      }
+
+      .meta {
+        margin: 0;
+        font-size: 0.72rem;
+        opacity: 0.6;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  // Notes 그룹: Posts 그룹 높이에 맞춰 리스트를 균등 분배
+  .notes-group {
+    display: flex;
+    flex-direction: column;
+
+    & > .showcase-ul {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      gap: 0.35rem;
+
+      & > li {
+        margin: 0;
+
+        a.internal {
+          font-size: 0.88rem;
+        }
+      }
+    }
+  }
+}

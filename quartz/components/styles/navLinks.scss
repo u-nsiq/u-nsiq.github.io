@@ -1,0 +1,27 @@
+@use "../../styles/variables.scss" as *;
+
+// [커스텀] 사이드바 내비 링크 (NavLinks.tsx) — Explorer 폴더 제목과 같은 톤
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--dark);
+    font-family: var(--headerFont);
+    font-size: 0.95rem;
+    font-weight: $semiBoldWeight;
+    line-height: 1.5rem;
+
+    &:hover {
+      color: var(--tertiary);
+    }
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+}

@@ -15,21 +15,43 @@
 
 // 본문 폰트 굵기: Pretendard Variable의 450 무게(기본보다 살짝 가볍게)
 // strong은 700으로 올려 본문(450)과 명확한 대비.
+// line-height 1.6: Obsidian Style Settings의 line-height-normal 값 이식 (8차)
 article {
   font-weight: 450;
+  line-height: 1.6;
 }
 article strong {
   font-weight: 700;
 }
 
-// [[내부 링크]] (a.internal): 라이트모드에서 secondary(#7797C0)는
-// 흰 배경 대비 부족 → var(--dark)로 교체하면
-// 라이트(#202020)/다크(#ebebec) 모두 가독성 확보.
+// [[내부 링크]] (a.internal): 본문색 + 전용 필 배경(액센트 틴트) + 굵기 550 (11차 A안)
+// 색 대신 "필 + 굵기" 2중 신호 — 액센트 절제 정책과 가독성 양립. 색은 hover에서만.
+// (8차에 --highlight가 6%로 낮아지며 업스트림 필이 안 보이게 된 문제의 해결)
 article a.internal {
   color: var(--dark);
+  font-weight: 550;
+  background-color: rgba(119, 151, 192, 0.13);
+
+  &:hover {
+    color: var(--secondary);
+  }
+}
+:root[saved-theme="dark"] article a.internal {
+  background-color: rgba(97, 175, 239, 0.15);
 }
 
-// 마크다운 하이라이트(==text==): font-weight 600
+// 리스트 마커: 회색 (9차 — 액센트 50%는 너무 연해서 교체, --gray가 양 모드 자동 대응)
+article li::marker {
+  color: var(--gray);
+}
+
+// [9차] 외부 링크: 밑줄로 내부 링크(회색 필 배경)와 구분 (↗ 아이콘은 업스트림 externalLinkIcon)
+article a.external {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+// 마크다운 하이라이트(==text==): 하늘색 배경 + font-weight 600 (10차 — 이식 전 원안 복구)
 .text-highlight {
   font-weight: 600;
 }
@@ -38,22 +60,87 @@ article a.internal {
   font-weight: 600;
 }
 
-// Inline code: 빨간색 (Velocity 스타일)
+// Inline code: 빨간색 (Velocity --code-special = --color-red)
+// weight 500: IBM Plex Mono 400이 작게 보일 때 가늘어 가독성 저하 → 미디엄 (9차, Head.tsx에서 500 로드)
 :not(pre) > code {
   color: rgb(233, 49, 58);
+  font-weight: 500;
 }
 :root[saved-theme="dark"] :not(pre) > code {
   color: rgb(255, 110, 110);
 }
 
-// 텍스트 선택 색상 오버라이드
+// ── [11차] 액센트 다이어트 ─────────────────────────────────
+// 정책: 액센트는 브랜드(사이트 타이틀)·하이라이트·외부 링크·버튼·hover·상태(dot, active)에만.
+// 정적인 내비·목록·아이콘은 회색/본문색.
+
+// 사이트 타이틀: 브랜드 앵커로 유일하게 상시 액센트
+.page-title a {
+  color: var(--secondary);
+}
+
+// breadcrumbs: 회색, 현재 페이지 세그먼트만 본문색
+.breadcrumb-container a {
+  color: var(--gray);
+
+  &:hover {
+    color: var(--secondary);
+  }
+}
+.breadcrumb-container .breadcrumb-element:last-child a {
+  color: var(--darkgray);
+}
+
+// 사이드바 목록 링크(최근 노트·백링크): 본문색 + 항목은 살짝 연하게(위계, 12차) + hover 액센트
+// opacity 방식은 Explorer 파일 항목(업스트림 0.75)과 같은 문법 — 다크 모드 자동 대응
+.recent-notes a.internal,
+.backlinks a.internal {
+  color: var(--dark);
+  opacity: 0.75;
+
+  &:hover {
+    color: var(--secondary);
+    opacity: 1;
+  }
+}
+// ── [11차 끝] ──────────────────────────────────────────────
+
+// 텍스트 선택 색상: 액센트 25% (Velocity --text-selection, 8차)
 ::selection {
-  background: rgba(0, 0, 0, 0.12);
+  background: rgba(119, 151, 192, 0.25);
   color: var(--darkgray);
 }
 :root[saved-theme="dark"] ::selection {
   background: rgba(255, 255, 255, 0.15);
   color: var(--darkgray);
+}
+
+// [커스텀] 홈 About 버튼 (pill) — content/index.md의 <a class="home-about-btn">
+a.home-about-btn {
+  display: inline-block;
+  padding: 0.25rem 0.9rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 999px;
+  color: var(--secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  background-color: transparent;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease;
+
+  &:hover {
+    background-color: var(--highlight);
+    color: var(--tertiary);
+    border-color: var(--gray);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.home-about-btn {
+    transition: none !important;
+  }
 }
 
 // Bulleted + Numbered list: indent guide (Obsidian 스타일 — 중첩 목록 왼쪽 세로 라인)
@@ -96,6 +183,60 @@ article ol > li:has(> ul)::after {
 .explorer-content ul li {
   margin-bottom: 0.1rem;
 }
+
+// 폴더 제목 색상: secondary(파랑) → 본문색 (6차)
+// 업스트림 explorer.scss의 .folder-container div > {button span, a} secondary 지정을 덮어씀
+.explorer .folder-container div > button span,
+.explorer .folder-container div > a {
+  color: var(--dark);
+}
+.explorer .folder-container div > button:hover span,
+.explorer .folder-container div > a:hover {
+  color: var(--tertiary);
+}
+
+// 접기 화살표: 폴더 제목과 색 정책 싱크 (11차 — 기능이 같아졌으니 색도 통일, hover는 업스트림 tertiary 유지)
+.explorer .folder-container .folder-icon {
+  color: var(--dark);
+}
+
+// ── [12차] 폴더 row 통합 hover ─────────────────────────────
+// 화살표·제목의 기능이 같아졌으므로(6차) 둘을 하나의 직사각형으로 묶어 통째로 반응.
+// 펼쳐진(open) 폴더의 헤더 row는 배경을 유지해 열림 상태를 표시.
+.explorer .folder-container {
+  border-radius: 4px;
+  padding: 0.1rem 0.25rem;
+  transition: background-color 100ms ease;
+
+  // 제목 영역이 row의 남은 폭을 전부 차지 → 클릭 영역 확장 (count·dot은 오른쪽 끝 정렬)
+  & > div {
+    flex: 1;
+    min-width: 0;
+  }
+  & div > button {
+    width: 100%;
+  }
+
+  &:hover {
+    background-color: var(--highlight);
+
+    div > button span,
+    div > a,
+    .folder-icon {
+      color: var(--tertiary);
+    }
+  }
+}
+.explorer li:has(> .folder-outer.open) > .folder-container {
+  background-color: var(--highlight);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .explorer .folder-container {
+    transition: none !important;
+  }
+}
+// ── [12차 끝] ──────────────────────────────────────────────
 
 @media (prefers-reduced-motion: reduce) {
   .explorer-content ul li > a {

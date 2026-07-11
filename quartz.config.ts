@@ -57,20 +57,21 @@ const config: QuartzConfig = {
         code: "IBM Plex Mono", // 코드 블록(Code)용 폰트
       },
 
-      // [커스텀] 색상 팔레트 — Light: Velocity / Dark: Nord.
-      //   각 키 의미와 선택 근거는 _myDocs/커스텀 변경사항.md §1-3 참고.
+      // [커스텀] 색상 팔레트 — Light: Velocity "Anniversary" 페인트 실측 이식 / Dark: Nord.
+      //   Obsidian Velocity theme.css의 .theme-light.anniversary 변수(oklch)를 hex로 변환한 값.
+      //   각 키 의미와 대응 근거는 _myDocs/커스텀 변경사항.md §1-3 참고.
       colors: {
-        // [Velocity Style]
+        // [Velocity Anniversary — 실측 이식 (8차)]
         lightMode: {
-          light: "#FAFAFA", // 배경: Velocity 오프화이트
-          lightgray: "#e0e0e0", // 테두리: 아주 은은한 회색
-          gray: "#d1d1d1", // 그래프 선
-          darkgray: "#3b3b3b", // 본문: 스크린샷처럼 너무 검지 않은, 부드러운 진회색
-          dark: "#202020", // 제목: 깔끔한 검정
-          secondary: "#7797C0",
-          tertiary: "#4A6FA5", // 링크 호버
-          highlight: "rgba(108, 122, 150, 0.15)", // 형광펜: 포인트 컬러의 연한 버전
-          textHighlight: "#CCE9FF", // 마크다운 강조 (Velocity blue, H=208°)
+          light: "#FBFBFC", // 배경: --bg-main-inner = oklch(98.75% 0.00125 290)
+          lightgray: "#D8D8D8", // 테두리: color-base-25 = oklch(88.25% 0 ·)
+          gray: "#A3A3A3", // muted(날짜·그래프 선): color-base-50 = oklch(71.5% 0 ·)
+          darkgray: "#222222", // 본문: text-normal = color-base-90 = oklch(25% 0 ·)
+          dark: "#191919", // 제목: h1-color = color-base-100 = oklch(21.25% 0 ·)
+          secondary: "#7797C0", // 액센트: Obsidian 사용자 지정 accentColor (anniversary 기본 레드를 override)
+          tertiary: "#4A6FA5", // 링크 호버 (액센트 어두운 변형)
+          highlight: "rgba(70, 70, 76, 0.06)", // hover/active 배경: --background-modifier-hover (뉴트럴 저알파)
+          textHighlight: "#CCE9FF", // ==강조== 배경: 하늘색 (10차 — 8·9차 실험 후 이식 전 원안 복구, 글자 600은 custom.scss)
         },
 
         // [Nord Style]

@@ -63,6 +63,8 @@ function generateRSSFeed(cfg: GlobalConfiguration, idx: ContentIndexMap, limit?:
   </item>`
 
   const items = Array.from(idx)
+    // [커스텀] 홈·About·폴더 index 페이지는 RSS에서 제외 — 피드에는 실제 글만 노출
+    .filter(([slug]) => slug !== "index" && slug !== "about" && !slug.endsWith("/index"))
     .sort(([_, f1], [__, f2]) => {
       if (f1.date && f2.date) {
         return f2.date.getTime() - f1.date.getTime()
@@ -145,7 +147,7 @@ export const ContentIndex: QuartzEmitterPlugin<Partial<Options>> = (opts) => {
           // for the RSS feed
           delete content.description
           // [커스텀] 원본은 여기서 `delete content.date`도 수행하지만 삭제하지 않음 —
-          // explorer.inline.ts의 sortFn(날짜 내림차순) 및 countRecentFiles(+N 배지)가
+          // explorer.inline.ts의 sortFn(날짜 내림차순)과 폴더 최근 업데이트 dot(recentSlugs)이
           // 클라이언트에서 date 필드를 필요로 함.
           return [slug, content]
         }),

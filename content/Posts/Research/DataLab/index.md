@@ -1,5 +1,6 @@
 ---
 title: DataLab
+date: 2026-04-29
 ---
 
 2025년 7월부터 2026년 2월까지 Data Analytics Lab에서 진행한 학부연구생 활동을 정리한 공간입니다.

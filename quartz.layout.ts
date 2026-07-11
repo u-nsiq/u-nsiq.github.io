@@ -36,6 +36,8 @@ const explorerCommonOptions = {
   useSavedState: true, // 사용자 토글 상태 localStorage 기억
   folderStateOverrides: explorerFolderStateOverrides,
   sortFn: explorerSortFn,
+  // [커스텀] 기본 필터(tags 제외)에 about 제외 추가 — About 진입은 사이드바 NavLinks가 담당
+  filterFn: (node: any) => node.slugSegment !== "tags" && node.slug !== "about",
 }
 // [커스텀 끝]
 
@@ -45,17 +47,31 @@ export const sharedPageComponents: SharedLayout = {
   head: Component.Head(), // HTML <head> 태그 (SEO, 메타데이터 처리)
   header: [], // 페이지 최상단 가로 메뉴바 (현재 비어있음)
   afterBody: [
-    Component.Comments({
-      provider: "giscus",
-      options: {
-        // Giscus 사이트에서 받은 값들을 여기에 넣으세요
-        repo: "u-nsiq/u-nsiq.github.io",
-        repoId: "R_kgDOREaiJg",
-        category: "Announcements",
-        categoryId: "DIC_kwDOREaiJs4C1pbd",
-        // 한국어 사용자라면 'ko'로 설정
-        lang: "ko",
-      },
+    // [커스텀] 홈 전용 섹션 쇼케이스 — 폴더별 최근 글 그리드 (Explore 블록, HomeShowcase.tsx)
+    Component.ConditionalRender({
+      component: Component.HomeShowcase(),
+      condition: (page) => page.fileData.slug === "index",
+    }),
+    // [커스텀] 댓글은 콘텐츠 페이지에만 — 홈·폴더 index·태그·404 페이지에는 표시하지 않음
+    Component.ConditionalRender({
+      component: Component.Comments({
+        provider: "giscus",
+        options: {
+          // Giscus 사이트에서 받은 값들을 여기에 넣으세요
+          repo: "u-nsiq/u-nsiq.github.io",
+          repoId: "R_kgDOREaiJg",
+          category: "Announcements",
+          categoryId: "DIC_kwDOREaiJs4C1pbd",
+          // 한국어 사용자라면 'ko'로 설정
+          lang: "ko",
+        },
+      }),
+      condition: (page) =>
+        page.fileData.slug !== "index" &&
+        page.fileData.slug !== "about" &&
+        page.fileData.slug !== "404" &&
+        !page.fileData.slug?.endsWith("/index") &&
+        !page.fileData.slug?.startsWith("tags/"),
     }),
   ], // 본문 내용이 끝난 직후 공간 (보통 댓글창(Giscus)을 여기에 넣음)
 
@@ -80,8 +96,16 @@ export const defaultContentPageLayout: PageLayout = {
       // 'index' (홈) 페이지가 아닐 때만 경로를 보여줌
       condition: (page) => page.fileData.slug !== "index",
     }),
-    Component.ArticleTitle(), // 글의 거대한 제목 (H1)
-    Component.ContentMeta(), // 글 정보 (날짜, 읽는 시간)
+    // [커스텀] 홈은 본문 H1이 제목 역할 — frontmatter title(JunSik.io) 이중 표시 방지
+    Component.ConditionalRender({
+      component: Component.ArticleTitle(), // 글의 거대한 제목 (H1)
+      condition: (page) => page.fileData.slug !== "index",
+    }),
+    // [커스텀] About 페이지는 본문의 "Last updated" 표기가 날짜를 담당 — 자동 메타 숨김
+    Component.ConditionalRender({
+      component: Component.ContentMeta(), // 글 정보 (날짜, 읽는 시간)
+      condition: (page) => page.fileData.slug !== "about",
+    }),
     Component.TagList(), // 태그 목록 (#CS #OS)
   ],
 
@@ -101,13 +125,18 @@ export const defaultContentPageLayout: PageLayout = {
       ],
     }),
 
+    Component.NavLinks(), // [커스텀] 사이드바 내비 (Home·About — 폴더 제목이 토글 전용이라 명시적 진입점)
     Component.Explorer({ ...explorerCommonOptions }), // [커스텀] 옵션 단일 출처 = explorerCommonOptions
     // [커스텀] 최근 업데이트 노트 목록 — 사이드바 하단 고정 (custom.scss .recent-notes)
     Component.RecentNotes({
       title: "최근 노트",
       limit: 3,
       showTags: false,
-      filter: (f) => !f.frontmatter?.draft && f.slug !== "index" && !f.slug?.endsWith("/index"),
+      filter: (f) =>
+        !f.frontmatter?.draft &&
+        f.slug !== "index" &&
+        f.slug !== "about" &&
+        !f.slug?.endsWith("/index"),
     }),
   ],
 
@@ -145,13 +174,18 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() }, // 리스트 페이지엔 리더모드가 굳이 필요 없어서 빠져있음
       ],
     }),
+    Component.NavLinks(), // [커스텀] 사이드바 내비 (Home·About — 폴더 제목이 토글 전용이라 명시적 진입점)
     Component.Explorer({ ...explorerCommonOptions }), // [커스텀] 옵션 단일 출처 = explorerCommonOptions
     // [커스텀] 최근 업데이트 노트 목록 — 사이드바 하단 고정 (custom.scss .recent-notes)
     Component.RecentNotes({
       title: "최근 노트",
       limit: 3,
       showTags: false,
-      filter: (f) => !f.frontmatter?.draft && f.slug !== "index" && !f.slug?.endsWith("/index"),
+      filter: (f) =>
+        !f.frontmatter?.draft &&
+        f.slug !== "index" &&
+        f.slug !== "about" &&
+        !f.slug?.endsWith("/index"),
     }),
   ],
 

@@ -155,6 +155,74 @@ a.home-about-btn {
   font-weight: 550;
 }
 
+// [커스텀] 홈 About this blog 정체성 패널 (19차, 20차 row 전환) — 파랑=Posts · 초록=Notes
+// 전폭 row 스택: [헤드(좌)+칩(우)] → 리드 → 서브. 좌측 바 + 옅은 워시가 두 정체성을 구분하고,
+// 아래 Browse 그룹의 헤더 밴드 색과 호응한다 (2단은 문장이 애매하게 끊겨 폐기)
+.home-id-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.9rem;
+  margin: 1rem 0 1.2rem;
+}
+.home-id-panel {
+  border-left: 3px solid;
+  padding: 0.55rem 0.7rem 0.55rem 0.95rem;
+
+  .panel-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin-bottom: 0.35rem;
+  }
+  .panel-head {
+    font-size: 1.02rem;
+    color: var(--dark);
+  }
+  .panel-lead {
+    margin: 0 0 0.3rem 0;
+    font-size: 0.92rem;
+  }
+  .panel-sub {
+    margin: 0;
+    font-size: 0.84rem;
+    color: var(--darkgray);
+    opacity: 0.78;
+  }
+  .panel-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--gray);
+  }
+  .home-chip {
+    border: 1px solid color-mix(in srgb, var(--lightgray) 55%, var(--gray) 45%);
+    border-radius: 999px;
+    padding: 0.02rem 0.55rem;
+    font-size: 0.76rem;
+    color: var(--darkgray);
+    white-space: nowrap;
+  }
+}
+.home-id-panel.panel-posts {
+  border-left-color: var(--secondary);
+  background: linear-gradient(90deg, rgba(119, 151, 192, 0.07), transparent 65%);
+}
+.home-id-panel.panel-notes {
+  border-left-color: #2f9e44;
+  background: linear-gradient(90deg, rgba(47, 158, 68, 0.06), transparent 65%);
+}
+:root[saved-theme="dark"] .home-id-panel.panel-posts {
+  background: linear-gradient(90deg, rgba(97, 175, 239, 0.09), transparent 65%);
+}
+:root[saved-theme="dark"] .home-id-panel.panel-notes {
+  border-left-color: #69db7c;
+  background: linear-gradient(90deg, rgba(105, 219, 124, 0.07), transparent 65%);
+}
+
 // Bulleted + Numbered list: indent guide (Obsidian 스타일 — 중첩 목록 왼쪽 세로 라인)
 article ul > li,
 article ol > li {

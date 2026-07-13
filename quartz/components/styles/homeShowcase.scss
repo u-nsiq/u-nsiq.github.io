@@ -24,9 +24,36 @@ body[data-slug="index"] .center > hr {
       margin: 0;
     }
 
+    // 가든 현황 스탯 칩 (20차): 숫자는 모노 강조, posts=파랑·notes=초록 틴트 — 2색 시스템 확장
     .garden-stats {
-      font-size: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      font-size: 0.72rem;
       color: var(--gray);
+
+      .stat-chip {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.28rem;
+        border: 1px solid;
+        border-radius: 999px;
+        padding: 0.05rem 0.55rem;
+        white-space: nowrap;
+      }
+      .stat-num {
+        font-family: var(--codeFont);
+        font-weight: 600;
+        color: var(--darkgray);
+      }
+      .stat-posts {
+        border-color: rgba(119, 151, 192, 0.45);
+        background-color: rgba(119, 151, 192, 0.08);
+      }
+      .stat-notes {
+        border-color: rgba(47, 158, 68, 0.35);
+        background-color: rgba(47, 158, 68, 0.06);
+      }
     }
   }
 
@@ -56,24 +83,34 @@ body[data-slug="index"] .center > hr {
     }
   }
 
-  // 그룹 박스 (Posts / Notes)
+  // 그룹 박스 (Posts / Notes): 헤더 밴드(그룹별 정체성 색) + 페이지색 본문 (19차)
+  // 파랑=Posts · 초록=Notes — About this blog 패널의 좌측 바와 호응.
+  // 18차 단색 틴트는 회색 단조 문제로 폐기, 색은 밴드에만 깐다
   .showcase-group {
-    border: 1px solid var(--lightgray);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid color-mix(in srgb, var(--lightgray) 55%, var(--gray) 45%);
     border-radius: 8px;
-    padding: 0.9rem 1.1rem 1rem 1.1rem;
+    overflow: hidden; // 밴드를 둥근 모서리 안으로 클리핑
 
     .group-head {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
       gap: 0.5rem;
-      margin-bottom: 0.6rem;
+      padding: 0.55rem 1.1rem;
+      border-bottom: 1px solid color-mix(in srgb, var(--lightgray) 55%, var(--gray) 45%);
 
       .group-title {
         margin: 0;
         font-size: 1.05rem;
         color: var(--dark);
       }
+    }
+
+    // Posts 밴드: 액센트 블루 틴트
+    &:not(.notes-group) > .group-head {
+      background-color: rgba(119, 151, 192, 0.1);
     }
   }
 
@@ -83,10 +120,12 @@ body[data-slug="index"] .center > hr {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 0.8rem;
+    margin: 0.85rem 1.1rem 1rem; // 밴드 구조에서 본문 여백은 그리드가 담당
   }
 
   .showcase-section {
-    border: 1px solid var(--lightgray);
+    // 페이지색 본문 위의 셀 — 보더만으로 구획 (배경 투명)
+    border: 1px solid color-mix(in srgb, var(--lightgray) 55%, var(--gray) 45%);
     border-radius: 6px;
     padding: 0.55rem 0.85rem 0.6rem 0.85rem;
 
@@ -145,10 +184,11 @@ body[data-slug="index"] .center > hr {
     }
   }
 
-  // Notes 그룹: Posts 그룹 높이에 맞춰 리스트를 균등 분배
+  // Notes 그룹: 밴드는 초록(가든), 리스트는 Posts 그룹 높이에 맞춰 균등 분배
   .notes-group {
-    display: flex;
-    flex-direction: column;
+    & > .group-head {
+      background-color: rgba(47, 158, 68, 0.08);
+    }
 
     & > .showcase-ul {
       flex: 1 1 auto;
@@ -156,14 +196,48 @@ body[data-slug="index"] .center > hr {
       flex-direction: column;
       justify-content: space-evenly;
       gap: 0.35rem;
+      padding: 0.55rem 1.1rem 0.9rem;
 
       & > li {
         margin: 0;
 
         a.internal {
           font-size: 0.88rem;
+          flex: 0 1 auto; // 리더가 남은 폭을 차지 (긴 제목은 여전히 말줄임)
+          order: 1;
+        }
+        // 목차식 점선 리더: 제목-날짜 사이를 이어 행마다 '칸'을 만든다 (20차: 세로 중앙 정렬)
+        &::before {
+          content: "";
+          order: 2;
+          flex: 1 1 auto;
+          min-width: 0.9rem;
+          align-self: center;
+          border-bottom: 1px dotted var(--gray);
+          opacity: 0.55;
+        }
+        .meta {
+          order: 3;
         }
       }
     }
+  }
+}
+
+// 다크 모드 밴드·스탯 칩 틴트 (라이트 rgba는 다크 배경에서 너무 어두움)
+:root[saved-theme="dark"] .home-showcase {
+  .showcase-group:not(.notes-group) > .group-head {
+    background-color: rgba(97, 175, 239, 0.12);
+  }
+  .notes-group > .group-head {
+    background-color: rgba(105, 219, 124, 0.09);
+  }
+  .garden-stats .stat-posts {
+    border-color: rgba(97, 175, 239, 0.45);
+    background-color: rgba(97, 175, 239, 0.1);
+  }
+  .garden-stats .stat-notes {
+    border-color: rgba(105, 219, 124, 0.4);
+    background-color: rgba(105, 219, 124, 0.07);
   }
 }

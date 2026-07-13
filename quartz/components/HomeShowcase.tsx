@@ -99,8 +99,17 @@ export default (() => {
         <div class="showcase-header">
           <h2 class="showcase-heading">{SHOWCASE_TITLE}</h2>
           <span class="garden-stats">
-            {postCount} posts · {noteFiles.length} notes
-            {stageCounts.map(([emoji, n]) => ` · ${emoji} ${n}`).join("")}
+            <span class="stat-chip stat-posts">
+              <span class="stat-num">{postCount}</span> posts
+            </span>
+            <span class="stat-chip stat-notes">
+              <span class="stat-num">{noteFiles.length}</span> notes
+            </span>
+            {stageCounts.map(([emoji, n]) => (
+              <span class="stat-chip stat-notes">
+                {emoji} <span class="stat-num">{n}</span>
+              </span>
+            ))}
           </span>
         </div>
 

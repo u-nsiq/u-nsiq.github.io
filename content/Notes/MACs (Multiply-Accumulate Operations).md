@@ -39,7 +39,7 @@ MAC 한 번 = 곱셈 1번 + 덧셈 1번 = FLOPs 2번. 따라서 같은 연산에
 일반적으로 MACs 계산에 포함되지 않는 연산들이 있다.
 
 - **Pooling** (Max Pooling, Average Pooling 등): 단순 비교나 평균 계산으로, 곱셈이 없다.
-- **Activation Function** (ReLU, Sigmoid 등): 비선형 함수 계산이지만, 연산 비중이 작아 통상 제외한다.
-- **Batch Normalization**: 별도 계산이 필요하지만, 모델 비교 시 자주 제외된다.
+- Activation Function (ReLU, Sigmoid 등): 비선형 함수 계산이지만, 연산 비중이 작아 통상 제외한다.
+- Batch Normalization: 별도 계산이 필요하지만, 모델 비교 시 자주 제외된다.
 
 포함 여부는 문헌마다 다를 수 있으므로, 값을 비교할 때 기준을 확인하는 것이 좋다.

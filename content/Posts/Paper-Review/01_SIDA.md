@@ -38,11 +38,11 @@ draft: false
 
 논문은 기존 딥페이크 탐지 연구가 데이터셋과 방법론 두 측면에서 공통적으로 두 가지 한계를 가진다고 지적한다.
 
-#### 한계 1. Insufficient Diversity(다양성 부족)
+==한계 1. Insufficient Diversity(다양성 부족)==
 
 기존 데이터셋들은 facial 이미지에 편중되어 있고, 소셜 미디어에 특화된 대규모 non-facial 딥페이크 데이터셋이 사실상 없다. 있더라도 구형 생성 모델로 만들어져 사람이 보기에도 티가 나는 수준이라 현실을 반영하지 못한다.
 
-#### 한계 2. Limited Comprehensiveness(포괄성 부족) + Explanation 부재
+==한계 2. Limited Comprehensiveness(포괄성 부족) + Explanation 부재==
 
 기존 방법론과 데이터셋은 아래 두 task 중 하나에만 특화된 경우가 대부분이다.
 
@@ -168,8 +168,8 @@ Tampered 이미지 10만 장을 **어떻게** 자동으로 대량 생성했는�
 참고로 Language-SAM은 Meta의 SAM(Segment Anything Model)에 텍스트 모듈을 붙인 것으로, "cat"이라는 텍스트만 입력하면 사진 속에서 해당 객체를 찾아 픽셀 단위 마스크를 반환한다. 이 마스크가 곧 Localization task의 정답 레이블(Ground Truth)이 된다. 즉, 이미지를 조작하기 전에 "어디를 조작했는지"에 대한 정답지를 먼저 자동으로 만들어두는 구조다.
 
 **Stage 3**에서는 그 객체를 어떻게 바꿀지에 대한 규칙을 정한다. 조작 방식은 두 종류로 나뉜다.
-1. **Object replacement**는 "dog"를 "cat"으로 바꾸는 식의 객체 자체를 교체하는 방식으로, 80,000장을 생성했다.
-2. **Attribute modification**은 "dog"를 "angry dog"으로 바꾸는 식의 속성만 수정하는 방식으로, 20,000장을 생성했다.
+1. Object replacement는 "dog"를 "cat"으로 바꾸는 식의 객체 자체를 교체하는 방식으로, 80,000장을 생성했다.
+2. Attribute modification은 "dog"를 "angry dog"으로 바꾸는 식의 속성만 수정하는 방식으로, 20,000장을 생성했다.
 
 **Stage 4**에서는 수정된 캡션과 Stage 2의 마스크를 Latent Diffusion 모델에 입력한다.
 Latent Diffusion은 이미지를 압축된 잠재 공간(latent space)으로 변환한 뒤 그 위에서 생성 작업을 수행하는 이미지 생성 방식이다. 여기서는 이미지 전체를 새로 그리는 게 아니라, 마스크로 지정된 영역만 수정된 캡션 조건에 맞게 다시 그려 채운다(inpainting). "cat → dog"로 바꾸는 경우라면, 고양이가 있던 픽셀 영역만 "dog"라는 조건으로 새로 생성되는 식이다.
@@ -204,7 +204,7 @@ SID-Set의 30만 장은 세 종류의 정답 레이블을 갖는다.
 > *Figure 5. SIDA 파이프라인. 이미지 $x_i$와 텍스트 $x_t$가 입력되면, VLM이 텍스트 설명 $\hat{y}_{des}$ 를 출력하고, 마지막 은닉층에서 `<DET>`와 `<SEG>` 토큰의 hidden state를 추출해 Detection과 Localization을 수행한다.*
 
 
-#### 4.1.1 (Preliminaries) 베이스라인: LLaVA에서 SIDA까지
+==(Preliminaries) 베이스라인: LLaVA에서 SIDA까지==
 
 SIDA의 구조를 더 잘 이해하기 위해 그 계보를 먼저 알아보자.
 
@@ -235,7 +235,7 @@ LLaVA가 ViT와 LLM을 연결한 기반 위에, LISA가 `<SEG>` 토큰과 SAM De
 ![[Pasted image 20260406050425.png]]
 > _Figure 3 (LISA). 이미지와 텍스트 질문이 입력되면, Multimodal LLM이 텍스트를 생성하고, `<SEG>` 토큰의 마지막 Layer embedding이 SAM Decoder를 통해 픽셀 마스크로 변환된다._
 
-#### 4.1.2 토큰 확장과 VLM 입출력 (수식 1)
+==토큰 확장과 VLM 입출력 (수식 1)==
 
 SIDA는 기존 VLM 단어장에 두 개의 특수 토큰을 추가한다.
 
@@ -248,10 +248,10 @@ $$
 \hat{y}_{des} = \text{VLM}(x_i, x_t)
 $$
 
-하나는 겉으로 보이는 **텍스트 설명** $\hat{y}_{des}$고, 다른 하나는 모델 내부 마지막 은닉층에 저장된 **`<DET>`와 `<SEG>` 토큰의 hidden state**다.
+하나는 겉으로 보이는 **텍스트 설명** $\hat{y}_{des}$고, 다른 하나는 모델 내부 마지막 은닉층에 저장된 `<DET>`와 `<SEG>` 토큰의 hidden state다.
 두 토큰은 모든 트랜스포머 Layer를 거치면서 이미지 토큰, 텍스트 토큰들과 Self-Attention으로 상호작용하며 각자 필요한 정보를 흡수한다. 마지막 Layer의 hidden state가 가장 풍부한 표현을 담고 있기 때문에, 여기서 두 토큰의 벡터를 추출해 각각의 task에 활용한다.
 
-#### 4.1.3 Detection (수식 2)
+==Detection (수식 2)==
 
 마지막 은닉층에서 `<DET>` 토큰의 hidden state $h_{det}$를 뽑아낸다.
 이를 Detection Head $F_{det}$ (FC Layer × 2)에 통과시켜 이미지를 세 클래스 중 하나로 판별한다.
@@ -265,7 +265,7 @@ LLM이 텍스트로 "tampered"라는 단어를 생성하는 것과 달리, FC La
 판별 결과 $\hat{D}$가 **Tampered**일 때만 다음 Localization 단계로 넘어간다.
 
 
-#### 4.1.4 Localization: Attention Module (수식 3)
+==Localization: Attention Module (수식 3)==
 
 `<SEG>` hidden state $h_{seg}$만으로 마스크를 그리면 부정확하다. $h_{det}$에는 "왜 이 이미지가 조작됐는지"에 대한 판별 정보가 담겨 있으니, 이걸 마스킹에도 반영하면 더 정확한 마스크를 기대할 수 있다.
 
@@ -288,10 +288,10 @@ $$
 $$
 
 마지막엔 원래 $h_{seg}$를 더한다.
-이건 **Residual Connection**인데, Attention으로 얻은 새 정보를 추가하되 원래 $h_{seg}$가 갖고 있던 정보도 그대로 보존하는 역할이다.
+이건 Residual Connection인데, Attention으로 얻은 새 정보를 추가하되 원래 $h_{seg}$가 갖고 있던 정보도 그대로 보존하는 역할이다.
 논문의 Ablation 실험에서 이 Attention Module을 제거하거나 FC Layer로 대체했을 때 성능이 유의미하게 하락했는데, 이는 단순히 두 벡터의 차원을 맞춰 섞는 것만으로는 부족하고 Detection 정보가 Segmentation을 가이드하는 구조가 핵심임을 보여준다.
 
-#### 4.1.5 최종 마스크 생성 (수식 4)
+==최종 마스크 생성 (수식 4)==
 
 SIDA도 LISA와 마찬가지로 이미지를 **두 경로**로 처리한다.
 
@@ -309,7 +309,7 @@ $\tilde{h}_{seg}$는 "어디를 마스킹해야 하는지"에 대한 의미적 �
 
 ### 4.2 Training
 
-#### 4.2.1 2단계 학습 전략
+==2단계 학습 전략==
 
 SIDA는 학습을 두 단계로 나눠서 진행한다:
 
@@ -319,7 +319,7 @@ SIDA는 학습을 두 단계로 나눠서 진행한다:
 한 번에 세 가지를 동시에 학습하지 않는 이유는, Explanation을 위한 텍스트 레이블이 전체 30만 장 중 3,000장에만 있기 때문이다. 모든 데이터에 텍스트 정답이 있는 Detection과 Segmentation을 먼저 충분히 학습한 뒤, 텍스트 생성 능력만 추가로 fine-tuning하는 전략이다.
 
 
-#### 4.2.2 1단계: Detection + Segmentation 학습 (수식 5)
+==1단계: Detection + Segmentation 학습 (수식 5)==
 
 SAM ViT(이미지 인코더)는 **Frozen 상태**로 두고, 나머지 모듈을 **end-to-end**로 학습한다.
 
@@ -339,11 +339,11 @@ $$
 
 탐지는 3개 클래스 중 하나를 맞추는 문제라 **CrossEntropy**를 쓴다.
 
-마스크는 픽셀마다 조작 여부(0 or 1)를 맞추는 문제라 **Binary CrossEntropy**와 **DICE Loss**를 섞어 쓴다.
+마스크는 픽셀마다 조작 여부(0 or 1)를 맞추는 문제라 Binary CrossEntropy와 **DICE Loss**를 섞어 쓴다.
 
 참고로 DICE Loss는 예측 마스크와 정답 마스크의 겹치는 영역 비율을 기준으로 Loss를 계산하는 방식으로, 마스크 크기가 작거나 불균형할 때도 안정적으로 학습할 수 있게 해준다.
 
-#### 4.2.3 2단계: Explanation Fine-tuning (수식 6)
+==2단계: Explanation Fine-tuning (수식 6)==
 
 1단계가 끝난 모델에 "왜 가짜인지 설명하는 능력"을 **추가로 학습**한다.
 
@@ -362,7 +362,7 @@ $$
 기존 Loss에 텍스트 생성 손실 $\mathcal{L}_{txt}$가 추가된다.
 텍스트 생성은 Auto-regressive 방식으로 토큰을 하나씩 예측하므로, 각 토큰의 예측 확률 분포와 정답 토큰 간의 **CrossEntropy**를 Loss로 사용한다.
 
-#### 4.2.4 학습 데이터
+==학습 데이터==
 
 주요 학습 데이터는 SID-Set 30만 장이다.
 여기에 외부 데이터셋인 MagicBrush를 저품질 이미지를 걸러낸 뒤 추가로 섞어서 다양성을 높였다.
@@ -493,17 +493,17 @@ FC와 w/o Attention 모두 SIDA 대비 Detection과 Localization 성능이 하�
 
 논문은 세 가지 한계를 언급한다.
 
-#### 한계 1. 데이터셋 규모
+==한계 1. 데이터셋 규모==
 
 SID-Set이 30만 장 규모지만, 실제 소셜미디어 환경의 복잡성을 완전히 커버하기엔 여전히 부족하다. 데이터 규모 확장이 향후 과제다.
 
-#### 한계 2. 데이터 편향
+==한계 2. 데이터 편향==
 
 Synthetic 이미지를 FLUX 하나로만 생성했기 때문에 데이터 편향(skew)이 잠재적으로 존재한다.
 실험에서 크게 드러나진 않았지만, 다양한 생성 모델로 만든 가짜 이미지가 섞인 다른 벤치마크에서는 성능이 저하될 가능성이 있다.
 3절에서 FLUX를 선택한 이유가 "전문가 블라인드 테스트에서 가장 현실적인 이미지"였는데, 퀄리티와 다양성 사이의 트레이드오프가 여기서 한계로 돌아온 셈이다.
 
-#### 한계 3. Localization 정밀도
+==한계 3. Localization 정밀도==
 
 SIDA가 Localization에서 SOTA를 달성했지만, IoU 43.8%라는 수치는 여전히 놓치는 조작 영역이 많다는 뜻이다.
 특히 매우 미세한 조작이나 복잡한 장면에서 정밀도가 떨어진다. 5.7절의 실패 사례가 이를 직접 보여준다.

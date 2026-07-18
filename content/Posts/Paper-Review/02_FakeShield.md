@@ -28,7 +28,7 @@ FakeShield는 이미지가 조작됐는지 탐지하고, 조작 위치를 픽셀
 
 이 **설명 가능성(explainable)** 확장이 왜 필요한지는, 최근 이미지 조작 기술이 어디까지 왔는지에서 출발한다.
 
-특히 **diffusion 기반 inpainting** 같은 AIGC(AI Generated Content) editing 도구는 원본 이미지의 일부 영역만 거의 흔적 없이 다시 그려 넣을 수 있게 됐다. 조작 영역이 주변과 매끄럽게 섞여 사람 눈에도 의심스럽지 않다. 거짓 정보를 진짜 사진 안에 자연스럽게 심어둘 수 있다는 뜻이고, 가짜뉴스나 법적 증거 같은 맥락에서 이 신뢰성 손상은 가벼운 문제가 아니다.
+특히 diffusion 기반 inpainting 같은 AIGC(AI Generated Content) editing 도구는 원본 이미지의 일부 영역만 거의 흔적 없이 다시 그려 넣을 수 있게 됐다. 조작 영역이 주변과 매끄럽게 섞여 사람 눈에도 의심스럽지 않다. 거짓 정보를 진짜 사진 안에 자연스럽게 심어둘 수 있다는 뜻이고, 가짜뉴스나 법적 증거 같은 맥락에서 이 신뢰성 손상은 가벼운 문제가 아니다.
 
 이미지 진위 판별의 사회적 비중은 그만큼 커지는데, 본 논문은 이를 담당해 온 IFDL 분야 자체에 두 가지 한계가 있다고 말한다.
 
@@ -39,19 +39,19 @@ FakeShield는 이미지가 조작됐는지 탐지하고, 조작 위치를 픽셀
 ![[image-2-x98-y551.png]]
 > _Figure 1. 기존 IFDL 프레임워크(a)와 FakeShield의 explainable IFDL 프레임워크(b) 비교. 기존 방법은 detection 결과와 tampered area mask만 출력하지만, FakeShield는 판단 근거 설명과 multimodal 인터랙션까지 함께 제공한다._
 
-#### 한계 1. Black-box
+==한계 1. Black-box==
 
 Figure 1(a)의 conventional IFDL 모델은 detector와 locator를 거쳐 두 가지를 출력한다.
 
 - 조작 여부 **confidence**
-- **tampered area mask**
+- tampered area mask
 
 가짜인지 여부를 알려주고 어디가 가짜인지도 함께 표시해준다. 그러나 기존 IFDL 모델의 정확도가 만족스러운 수준이 아니기 때문에, 모델 출력만 보고 판단을 끝낼 수 없고 결국 사람이 다시 검증해야 한다.
 
 문제는 그 검증 과정에서 모델이 **어떤 근거로 그렇게 판단했는지**를 알 수 없다는 점이다.
 의심 영역을 받아도 어디부터 어떻게 봐야 할지 단서가 없으니, 검증 과정에서 어려움을 겪게 된다. 모델이 본 단서는 mask 안에 묻혀버린다. 이게 **explanation**을 핵심 출력으로 끌어올려야 하는 이유다.
 
-#### 한계 2. Generalization
+==한계 2. Generalization==
 
 위조 이미지(fake image)는 단일 종류가 아니다. 사용된 조작 도구와 방식에 따라 성격이 크게 다른데, 이 논문은 IFDL이 다뤄야 할 조작을 세 가지 도메인으로 묶어 정리한다.
 
@@ -62,7 +62,7 @@ Figure 1(a)의 conventional IFDL 모델은 detector와 locator를 거쳐 두 가
 검출 모델 입장에서 이 세 도메인은 **분포가 다른 데이터**다.
 한 도메인에서만 잘 작동하는 모델로는 부족하고, 학습 때 본 도메인을 넘어 다른 도메인에서도 안정적으로 작동하는 능력이 필요하다. 이 능력이 **generalization**이고, 두 번째 한계가 가리키는 지점이다.
 
-그런데 기존 IFDL 방법은 보통 한 도메인만 다루도록 설계되어, 다른 도메인에서는 성능이 떨어진다. 그렇다고 한 모델로 세 도메인을 동시에 학습시키면 도메인 간 학습 신호가 충돌해 어느 쪽도 제대로 못 잡는 상황이 벌어진다. 논문은 이를 **data domain conflict**라고 부른다.
+그런데 기존 IFDL 방법은 보통 한 도메인만 다루도록 설계되어, 다른 도메인에서는 성능이 떨어진다. 그렇다고 한 모델로 세 도메인을 동시에 학습시키면 도메인 간 학습 신호가 충돌해 어느 쪽도 제대로 못 잡는 상황이 벌어진다. 논문은 이를 data domain conflict라고 부른다.
 
 > 같은 "Fake" 라벨이라도 PS와 DeepFake, AIGC는 서로 다른 종류의 흔적으로 가짜가 된다. 한 모델이 셋을 동시에 학습하면 어디에 집중해야 할지 결정하지 못하고, 결국 어느 도메인에도 안정적으로 작동하지 못한다.
 
@@ -81,12 +81,12 @@ Figure 1(a)의 conventional IFDL 모델은 detector와 locator를 거쳐 두 가
 |---|---|
 |Authenticity judgment|조작 여부 판단|
 |Tampered area mask|조작 영역 mask|
-|**Judgment basis**|**왜 그렇게 판단했는지에 대한 자연어 설명** (NEW)|
+|**Judgment basis**|왜 그렇게 판단했는지에 대한 자연어 설명 (NEW)|
 
 결국 추가되는 게 이 세 번째 출력이다. 단순히 "fake입니다"라고 답하는 게 아니라, 모델이 어떤 단서를 보고 그렇게 판단했는지 풀어내야 한다. 논문은 이 설명이 두 층위의 단서를 모두 담아야 한다고 본다.
 
-1. **Pixel-level artifact**: object edge, resolution consistency 같은 저수준 시각 흔적
-2. **Image-level semantic error**: 조명 방향, 원근 관계, 물리 법칙 위반 같은 의미 수준 이상함
+1. Pixel-level artifact: object edge, resolution consistency 같은 저수준 시각 흔적
+2. Image-level semantic error: 조명 방향, 원근 관계, 물리 법칙 위반 같은 의미 수준 이상함
 
 이미지 위조는 픽셀만 봐서도, 장면 상식만 봐서도 잡히지 않는다. 두 층위를 함께 봐야 한다.
 
@@ -100,7 +100,7 @@ Figure 1(a)의 conventional IFDL 모델은 detector와 locator를 거쳐 두 가
 
 논문이 내놓는 기여는 데이터와 모델 두 갈래다. 둘 다 두 가지 한계(Black-box와 Generalization)를 동시에 겨냥하도록 설계됐다.
 
-#### MMTD-Set: 설명 학습을 위한 데이터셋
+==MMTD-Set: 설명 학습을 위한 데이터셋==
 
 M-LLM에게 "왜 가짜인지 설명하라"고 학습시키려면 **텍스트 정답 레이블**이 필요하다. 기존 IFDL 데이터셋은 image와 mask까지만 갖고 있어서 이 학습이 불가능하다.
 
@@ -111,7 +111,7 @@ M-LLM에게 "왜 가짜인지 설명하라"고 학습시키려면 **텍스트 �
 - **Black-box 해결**: 설명 학습용 텍스트 레이블을 데이터셋 차원에서부터 제공
 - **Generalization 해결**: PhotoShop / DeepFake / AIGC editing 세 도메인을 분리해 구성하고, GPT-4o에 도메인별로 다른 prompt를 주어 도메인 특성에 맞는 설명을 생성
 
-#### FakeShield: 두 모듈 파이프라인
+==FakeShield: 두 모듈 파이프라인==
 
 모델은 두 모듈로 분리된다.
 
@@ -147,7 +147,7 @@ MMTD-Set은 두 한계를 데이터 차원에서 같이 풀려는 시도다. Bla
 | **AIGC editing** | SD-inpainting 기반 부분 재생성      | COCO 베이스                   | 자체 생성             |
 
 > [!info] 소스 데이터셋 정보
-> - **CASIAv2 / Fantastic Reality (FR)**: PhotoShop 기반 조작 이미지와 원본 쌍을 제공하는 기존 IFDL 표준 벤치마크.
+> - CASIAv2 / Fantastic Reality (FR): PhotoShop 기반 조작 이미지와 원본 쌍을 제공하는 기존 IFDL 표준 벤치마크.
 > - **FFHQ**: NVIDIA가 공개한 고화질 실제 얼굴 데이터셋. 여기서는 DeepFake의 real face source.
 > - **FaceApp**: 수염, 헤어, 메이크업 등 얼굴 속성을 바꾸는 모바일 앱. FFHQ 얼굴에 적용해 fake face를 만든다.
 > - **COCO**: 일상 사물 사진과 객체 위치 레이블이 있는 데이터셋. AIGC editing의 base image source.
@@ -176,13 +176,13 @@ AIGC editing은 자체 생성이다. COCO에서 일부 객체 영역을 SAM으�
 
 > _Figure 2. MMTD-Set 구축 프로세스. 세 도메인의 tampered image와 대응 real image를 모은 뒤, 도메인별로 다른 prompt를 GPT-4o에 주입해 detection result, localization description, judgment basis를 생성한다. 출력은 expert proofreading을 거쳐 MMTD-Set에 들어간다._
 
-#### 결정 1. mask를 함께 준다
+==결정 1. mask를 함께 준다==
 
 GPT-4o가 받는 입력은 tampered image 하나가 아니라 image와 forgery mask 쌍이다. 왜 mask까지 같이 주냐면, mask 없이 이미지만 주면 GPT-4o가 조작 위치를 스스로 추정해야 하고, 이 추정이 부정확하면 그 뒤의 artifact 분석도 어긋나기 때문이다.
 
 단순하게 생각하면, GPT-4o는 조작 영역을 새로 찾는 detector가 아니라 이미 주어진 mask를 기준으로 설명을 만드는 annotator인 셈이다.
 
-#### 결정 2. 도메인별로 다른 prompt를 준다
+==결정 2. 도메인별로 다른 prompt를 준다==
 
 세 도메인은 남기는 artifact의 종류가 다르다.
 
@@ -195,7 +195,7 @@ GPT-4o가 받는 입력은 tampered image 하나가 아니라 image와 forgery m
 
 수집 단계에서 도메인을 셋으로 분리한 데 더해, 텍스트 생성 단계에서도 도메인별 cue가 살아나게 prompt를 다르게 둔다. Generalization을 데이터 안에서 한 번 더 챙기는 셈이고, 텍스트 GT 자체가 Black-box 대응의 본체다.
 
-#### Real sample 처리
+==Real sample 처리==
 
 Real sample은 두 가지가 다르다.
 
@@ -231,17 +231,18 @@ MMTD-Set이 두 한계를 데이터 차원에서 풀려는 답이었다면, Fake
 
 ### 3.1 어떻게 풀 것인가
 
-#### 문제를 단순하게 보기
-아키텍처를 들여다보기 전에 한 번 거리를 두고 보자.
-이 논문이 풀려는 건 결국 **IFDL에 설명을 추가한 task**(e-IFDL)다. 출력 세 가지를 다시 짚으면 다음과 같다.
+==문제를 단순하게 보기==
 
-- **Authenticity judgment**: 조작 여부
-- **Tampered area mask**: 조작 영역 픽셀 mask
+아키텍처를 들여다보기 전에 한 번 거리를 두고 보자.
+이 논문이 풀려는 건 결국 IFDL에 설명을 추가한 task(e-IFDL)다. 출력 세 가지를 다시 짚으면 다음과 같다.
+
+- Authenticity judgment: 조작 여부
+- Tampered area mask: 조작 영역 픽셀 mask
 - **Judgment basis**: 자연어 판단 근거
 
 이 세 가지를 어떻게 만들어낼 것인가. 단순하게 생각해보자.
 
-> ***설명(judgment basis)을 만드는 일은, 사실 LLM을 가져오는 것만으로 큰 틀에서는 해결된다.***
+> *설명(judgment basis)을 만드는 일은, 사실 LLM을 가져오는 것만으로 큰 틀에서는 해결된다.*
 
 LLM은 입력 텍스트로부터 출력 텍스트를 생성하는 모델이고, 이미 강력한 자연어 생성 능력을 가지고 있다. M-LLM을 쓰면 이미지도 입력으로 받을 수 있다.
 
@@ -253,17 +254,18 @@ LLM에 들어가는 입력 후보를 정리해보면 이렇게 된다.
 
 - **이미지**: 분석 대상이니 당연히 들어간다. M-LLM이라면 image token 형태로.
 - **사용자 instruction**: "이 이미지가 조작됐는지 분석해달라" 같은 prompt. 이것도 당연히 필요하다.
-- **추가로 줄 수 있는 게 있다면?**: 여기서 method의 변주 point를 생각해볼 수 있다.
+- 추가로 줄 수 있는 게 있다면?: 여기서 method의 변주 point를 생각해볼 수 있다.
 
-#### 변주 Point: 사전 지식의 제공
+==변주 Point: 사전 지식의 제공==
+
 논문은 여기서 **도메인 정보**를 추가로 주입한다.
 *data domain conflict*, 즉 PS / DeepFake / AIGC가 남기는 단서가 서로 달라 생기는 문제에 대한 대응이다. 이미지를 보고 "이건 PS 조작으로 의심된다" 같은 도메인 힌트를 짧은 텍스트로 만들어서 LLM 입력에 함께 넣어주면, LLM은 그 도메인 특유의 단서에 집중해서 분석을 풀어낼 수 있다.
 
 이 도메인 힌트를 만드는 게 **DTG** (Domain Tag Generator)다. 이미지를 받아 PS / DeepFake / AIGC 중 하나로 분류하는 단순한 3-way classifier에 가깝다.
 
-여기서 알아야 할 것은, **DTG가 제공한 도메인 힌트와 함께 LLM이 출력을 만들면, 그 출력 안에 이미 detection 결과가 자연스럽게 포함된다.** "이 이미지는 조작된 것으로 판단되며, 조작 영역은 ..." 같은 식의 텍스트로 나오기 때문이다. 즉, detection을 별도 분류 head로 처리할 필요가 없고, LLM이 자연어로 풀어낸 답 안에서 함께 해결된다.
+여기서 알아야 할 것은, DTG가 제공한 도메인 힌트와 함께 LLM이 출력을 만들면, 그 출력 안에 이미 detection 결과가 자연스럽게 포함된다. "이 이미지는 조작된 것으로 판단되며, 조작 영역은 ..." 같은 식의 텍스트로 나오기 때문이다. 즉, detection을 별도 분류 head로 처리할 필요가 없고, LLM이 자연어로 풀어낸 답 안에서 함께 해결된다.
 
-요약하면, e-IFDL의 세 출력 중 처음 두 가지(detection, explanation)는 **LLM 하나로 처리할 수 있는 task**고, FakeShield는 그 LLM에 도메인 힌트라는 추가 입력을 더해 정확도를 끌어올리는 식으로 접근한다.
+요약하면, e-IFDL의 세 출력 중 처음 두 가지(detection, explanation)는 LLM 하나로 처리할 수 있는 task고, FakeShield는 그 LLM에 도메인 힌트라는 추가 입력을 더해 정확도를 끌어올리는 식으로 접근한다.
 
 이 묶음이 **DTE-FDM**(Domain Tag-guided Explainable Forgery Detection Module)이고, DTG와 LLM 두 컴포넌트로 구성된다.
 
@@ -274,9 +276,10 @@ LLM에 들어가는 입력 후보를 정리해보면 이렇게 된다.
 이미지와 prompt를 받아 mask를 픽셀 단위로 그리는 일에는 SAM이 강력하다.
 하지만 SAM이 받는 prompt는 LLM과 달리 점이나 박스 같은 짧고 직접적인 신호다.
 
-이 구도에서 변주 지점은 **prompt를 무엇으로 줄 것인가**다. 이미지는 원본을 그대로 넣으면 되니까 고민할 필요가 없다.
+이 구도에서 변주 지점은 prompt를 무엇으로 줄 것인가다. 이미지는 원본을 그대로 넣으면 되니까 고민할 필요가 없다.
 
-#### SAM의 prompt: 무엇을 입력으로?
+==SAM의 prompt: 무엇을 입력으로?==
+
 DTE-FDM이 만든 텍스트 출력 $O_{det}$를 다시 생각해 보자.
 이 텍스트 안에는 이미 "이미지 어디가 조작됐는지", "어떤 단서로 그렇게 판단했는지" 같은 의미 정보가 풍부하게 담겨 있을 것이다. LLM이 이미지와 도메인 힌트를 종합해서 자연어로 풀어낸 결과물이기 때문이다.
 
@@ -318,7 +321,7 @@ FakeShield
 논문이 두 모듈을 별도로 놓는 이유도 이 표를 보면 알 수 있다.
 위 두 task는 LLM의 자연어 생성 능력으로 풀리고, 아래 task는 SAM의 segmentation 능력으로 풀린다. 언어 이해와 시각적 분할은 성격이 다른 일이다. 논문은 이 둘을 한 모델에 동시에 학습시키면 서로 간섭해서 양쪽 다 충분히 학습되지 않는다고 본다. 그래서 task 성격에 맞는 모델을 각각 가져다 붙이고, 사이를 텍스트($O_{det}$)와 prompt embedding으로 연결한다.
 
-이 연결 방식이 FakeShield의 특징이다. **DTE-FDM의 출력은 사용자에게 보여주는 최종 답이면서, 동시에 MFLM의 입력이기도 하다.** Explanation이 단순한 부가 출력이 아니라 다음 단계의 의미적 가이드로 재사용된다는 것, 이 발상이 FakeShield의 핵심 설계라고 봐도 될 것 같다.
+이 연결 방식이 FakeShield의 특징이다. DTE-FDM의 출력은 사용자에게 보여주는 최종 답이면서, 동시에 MFLM의 입력이기도 하다. Explanation이 단순한 부가 출력이 아니라 다음 단계의 의미적 가이드로 재사용된다는 것, 이 발상이 FakeShield의 핵심 설계라고 봐도 될 것 같다.
 
 ---
 
@@ -330,7 +333,7 @@ FakeShield
 
 DTE-FDM의 task는 단순하다. 이미지를 받아서 detection 결과 + 조작 위치 설명 + 판단 근거를 텍스트로 출력하는 것이다. 이걸 위해 DTG와 LLM 두 컴포넌트가 협력한다.
 
-#### 4.1.1 DTG가 하는 일
+==DTG가 하는 일==
 
 DTG는 이름이 generator지만, 실제로는 **단순 이미지 분류기**에 가깝다.
 입력 이미지 $I_{ori}$를 받아 PS / DeepFake / AIGC 중 어느 도메인의 조작인지 판별하고, 그 결과를 LLM이 읽을 수 있는 짧은 텍스트로 변환한다.
@@ -341,7 +344,7 @@ DTG는 이름이 generator지만, 실제로는 **단순 이미지 분류기**에
 
 이 한 줄이 $T_{tag}$가 된다. 이미지를 한 번 분류해서 정해진 템플릿에 끼워넣는 것뿐이라 별다른 텍스트 생성 능력이 필요하지 않다. 학습도 단순 3-class CE로 끝난다.
 
-#### 4.1.2 수식 (1): LLM에 들어가는 두 가지 정보
+==수식 (1): LLM에 들어가는 두 가지 정보==
 
 같은 이미지 $I_{ori}$에서 LLM에 들어갈 두 가지 정보가 만들어진다.
 
@@ -354,7 +357,7 @@ $$
 
 $T_{img}$를 만드는 이 경로는 LLaVA 계열 M-LLM의 표준 구성이다. FakeShield의 베이스 모델이 LLaVA 계열이라 이 부분은 그대로 가져왔다.
 
-#### 4.1.3 수식 (2): LLM이 출력을 만든다
+==수식 (2): LLM이 출력을 만든다==
 
 $$
 O_{det} = \mathrm{LLM}(T_{ins}, T_{tag} \mid T_{img}) \tag{2}
@@ -383,7 +386,7 @@ O_det 예시:
 
 MFLM이 맡은 일은 mask를 그리는 것 하나다. SAM을 그냥 가져다 붙이는 게 아니라, DTE-FDM이 만든 텍스트 $O_{det}$를 SAM이 쓸 수 있게 연결하는 것이 이 모듈의 과제다.
 
-#### 4.2.1 TCM이 하는 일
+==TCM이 하는 일==
 
 SAM이 받는 prompt는 점·박스 같은 짧은 신호인 반면, $O_{det}$는 긴 자연어 설명이다. 이 간극을 메우는 게 TCM의 역할이다.
 
@@ -395,7 +398,7 @@ TCM은 LLM을 encoder로 쓴다. image token $T_{img}$와 텍스트 설명 $O_{d
 > *Reasoning Segmentation via Large Language Model*. 객체 이름을 직접 주는 대신, 추론이 필요한 자연어 질의를 이해해서 해당 영역을 분할하는 reasoning segmentation task를 제안한 연구다. M-LLM 어휘에 `<SEG>` 토큰을 추가하고, 그 토큰의 hidden state(embedding)를 SAM이 디코딩해 mask를 만드는 "embedding-as-mask" 방식을 처음 도입했다.
 > arXiv: https://arxiv.org/abs/2308.00692
 
-#### 4.2.2 수식 (3): MFLM의 흐름
+==수식 (3): MFLM의 흐름==
 
 $$
 E_{mid} = \mathcal{S}_{enc}(I_{ori}), \quad h_{\texttt{<SEG>}} = \text{Extract}(\mathcal{C}_{t}(T_{img}, O_{det}))
@@ -424,7 +427,7 @@ TCM이 하는 일은 새로운 설명을 길게 생성하는 게 아니다. 학�
 
 SAM Decoder $\mathcal{S}_{dec}$가 두 입력을 받아 최종 mask를 그린다. $E_{mid}$는 어디에 픽셀이 있는지 정보를 주고, $h_{<\text{SEG}>}$는 그중 어디를 mask로 칠해야 하는지 의미적 가이드를 준다. 둘이 결합되어 최종 픽셀 mask $M_{loc}$가 나온다.
 
-#### 4.2.3 두 경로로 처리되는 이미지
+==두 경로로 처리되는 이미지==
 
 MFLM의 수식을 따라가다 보면, 같은 이미지가 두 경로로 들어간다는 게 보인다.
 
@@ -476,9 +479,9 @@ DTE-FDM과 MFLM을 따로 따라가봤으니, 이제 둘을 나란히 놓고 보
 | MFLM    | SAM Decoder   | LoRA           | SAM의 사전학습 segmentation 능력 활용                    |
 | MFLM    | SAM Encoder   | Frozen         | SAM ViT. 픽셀 단위 시각 특징 추출에 이미 강함                  |
 
-학습 방식이 셋으로 갈린다. **DTG와 projection layer**는 크기가 작아 full parameter로 학습한다. DTG는 새로 추가하는 분류기라 사전학습 가중치가 아예 없고, projection layer도 ViT 출력을 LLM 공간에 맞추는 작은 FC layer다.
+학습 방식이 셋으로 갈린다. DTG와 projection layer는 크기가 작아 full parameter로 학습한다. DTG는 새로 추가하는 분류기라 사전학습 가중치가 아예 없고, projection layer도 ViT 출력을 LLM 공간에 맞추는 작은 FC layer다.
 
-**LLM, TCM, SAM Decoder**는 거대한 사전학습 모델을 베이스로 가져온 것들이다. 전체 파라미터를 다 업데이트하면 비용도 크고 기존 능력을 망가뜨릴 위험도 있어서 LoRA를 쓴다. **Image Encoder와 SAM Encoder**는 이미 좋은 시각 표현을 갖고 있어 frozen으로 둔다.
+LLM, TCM, SAM Decoder는 거대한 사전학습 모델을 베이스로 가져온 것들이다. 전체 파라미터를 다 업데이트하면 비용도 크고 기존 능력을 망가뜨릴 위험도 있어서 LoRA를 쓴다. Image Encoder와 SAM Encoder는 이미 좋은 시각 표현을 갖고 있어 frozen으로 둔다.
 
 > [!info] LoRA가 하는 일
 > LoRA(Low-Rank Adaptation)는 사전학습된 가중치 $W$를 그대로 두고, 작은 보조 행렬 두 개만 추가로 학습하는 방식이다.
@@ -542,13 +545,13 @@ $$
 
 세 항인데, 첫 번째와 나머지 둘이 성격이 다르다.
 
-#### 5.3.1 $y_{txt}$는 $O_{det}$가 아니다
+==y_txt는 O_det가 아니다==
 
 수식 (5)의 $y_{txt}$를 $O_{det}$로 착각하기 쉬운데, 둘은 다른 텍스트다. $O_{det}$는 DTE-FDM LLM이 만든 긴 forensic report이고, $y_{txt}$는 TCM이 내는 짧은 prompt text("It is `<SEG>`.")다. TCM의 목적은 새 설명을 쓰는 게 아니라 `<SEG>` 토큰을 출력에 등장시키는 것이라, 정답 $\hat{y}_{txt}$도 짧은 고정 템플릿이다.
 
 그래서 첫 번째 항 $\ell_{ce}(\hat{y}_{txt}, y_{txt})$는 (4)의 첫 항과 같은 LLM 텍스트 생성 CE지만, 정답 시퀀스가 훨씬 짧고 단순하다.
 
-#### 5.3.2 BCE와 Dice를 함께 쓰는 이유
+==BCE와 Dice를 함께 쓰는 이유==
 
 $\ell_{bce}$는 픽셀별 binary cross-entropy다. mask의 각 픽셀에 대해 "조작/비조작"을 분류하는 셈이다. 이것만으로는 부족한 이유가 있다. **클래스 불균형**.
 
@@ -603,7 +606,7 @@ BCE는 픽셀 단위 정확도를, Dice는 mask 전체의 겹침을 본다. 둘�
 
 ### 6.1 평가 조건
 
-#### 6.1.1 데이터셋
+==데이터셋==
 
 학습은 MMTD-Set, 테스트는 외부 공개 벤치마크가 기본 구도다.
 
@@ -622,7 +625,7 @@ BCE는 픽셀 단위 정확도를, Dice는 mask 전체의 겹침을 본다. 둘�
 | DSO      | 실제 인터넷 수집 조작 이미지                    |
 | Korus    | 다양한 PS 조작 혼합, 고해상도                  |
 
-#### 6.1.2 비교군
+==비교군==
 
 비교군은 세 그룹으로 나뉘는데, 각 그룹마다 학습 조건이 다르다는 게 중요하다.
 
@@ -636,7 +639,7 @@ IFDL 모델과 DeepFake 전용 모델은 모두 MMTD-Set으로 재학습 후 비
 
 문제는 **범용 M-LLM 비교군**이다. 이 모델들은 사전학습 가중치 그대로 비교에 들어간다. 재학습하지 않은 이유는 짐작할 수 있는데, M-LLM을 MMTD-Set으로 fine-tuning하면 사실상 FakeShield와 같은 모델이 되어 비교 의미가 없어지기 때문이다. 일리는 있지만, 결과적으로 fine-tuning된 FakeShield와 fine-tuning 안 된 GPT-4o를 비교하는 셈이 된다.
 
-#### 6.1.3 평가 지표
+==평가 지표==
 
 | Task         | 지표      | 의미                     |
 | ------------ | ------- | ---------------------- |
@@ -646,7 +649,7 @@ IFDL 모델과 DeepFake 전용 모델은 모두 MMTD-Set으로 재학습 후 비
 
 **CSS**(Cosine Semantic Similarity)는 예측 설명과 GT 설명을 고차원 임베딩 공간에서 비교해 코사인 유사도를 계산한다. 단어가 정확히 일치하지 않아도 의미가 비슷하면 높게 나오는 지표다. "edge artifact"와 "unnatural boundary"가 다른 표현이지만 의미가 가까우면 CSS가 높게 나오는 식이다.
 
-이 비교의 GT는 **GPT-4o가 mask와 도메인별 prompt를 받아 생성한 텍스트**다. 사람이 작성한 forensic 정답이 아니다. CSS가 높다는 건 "GPT-4o가 만든 설명 스타일과 의미적으로 가깝다"는 뜻이지, 실제 forensic 판단이 정확한지를 보장하진 않는다.
+이 비교의 GT는 GPT-4o가 mask와 도메인별 prompt를 받아 생성한 텍스트다. 사람이 작성한 forensic 정답이 아니다. CSS가 높다는 건 "GPT-4o가 만든 설명 스타일과 의미적으로 가깝다"는 뜻이지, 실제 forensic 판단이 정확한지를 보장하진 않는다.
 
 ---
 
@@ -654,7 +657,7 @@ IFDL 모델과 DeepFake 전용 모델은 모두 MMTD-Set으로 재학습 후 비
 
 논문은 detection 결과를 두 표로 나눠서 보여준다. 일반 IFDL 모델과의 비교(Table 1), DeepFake 전용 모델과의 비교(Table 2).
 
-#### 6.2.1 Table 1: 일반 IFDL 비교
+==Table 1: 일반 IFDL 비교==
 
 ![[image-7-x100-y550.png]]
 > _Table 1. 일반 IFDL 모델과 FakeShield의 detection 비교. PS 5개 벤치마크, DeepFake, AIGC editing에 대한 ACC와 F1._
@@ -665,7 +668,7 @@ baseline IFDL 모델들은 모두 MMTD-Set으로 재학습된 상태다. 그런�
 
 분명한 건 어느 baseline도 세 도메인을 FakeShield만큼 고르게 잡지 못한다는 점이다. 논문은 이 안정성을 DTG의 효과로 본다. 도메인을 먼저 분류해 LLM에 힌트를 주면, 한 모델이 여러 도메인을 뭉뚱그릴 때 생기는 data domain conflict가 줄어든다는 설명이다.
 
-#### 6.2.2 Table 2: DeepFake 전용 모델 비교
+==Table 2: DeepFake 전용 모델 비교==
 
 DeepFake 전용 모델과의 비교는 다른 의미가 있다. FakeShield는 DeepFake에 특화된 모델이 아닌데, 특화 모델들과 비교해서 어떻게 나오는지 보려는 것이다.
 
@@ -698,7 +701,7 @@ Explanation 결과는 설계상 가장 비판적으로 봐야 하는 부분이�
 
 다만 이 결과를 그대로 "FakeShield가 GPT-4o보다 똑똑하다"로 읽으면 안 된다. 평가 조건 자체에 두 가지 기울기가 있다.
 
-#### 6.3.1 GPT-4o가 낮게 나오는 이유
+==GPT-4o가 낮게 나오는 이유==
 
 GT 생성 시점과 평가 시점에서 GPT-4o가 받는 입력이 다르다.
 
@@ -709,9 +712,9 @@ GT 생성 시: 이미지 + mask + 도메인별 전용 prompt
 
 GT를 만든 GPT-4o는 mask를 보고 조작 위치를 정확히 알면서 분석을 했다. 평가 받는 GPT-4o는 mask 없이 이미지만 보고 조작 위치부터 추정해야 한다. 같은 모델이지만 다른 조건이다. 그래서 GPT-4o의 CSS가 다른 모델들보다도 낮게 나오는 게 이상한 결과는 아니다.
 
-#### 6.3.2 비교 자체의 비대칭성
+==비교 자체의 비대칭성==
 
-더 근본적인 문제가 있다. **FakeShield만 MMTD-Set으로 fine-tuning됐고, 나머지 M-LLM들은 사전학습 가중치 그대로다.**
+더 근본적인 문제가 있다. FakeShield만 MMTD-Set으로 fine-tuning됐고, 나머지 M-LLM들은 사전학습 가중치 그대로다.
 
 당연히 도메인 특화 학습을 거친 모델이 범용 모델보다 도메인 특화 task에서 잘 나온다. 이건 비교라기보다 fine-tuning의 효과를 보여주는 실험에 가깝다.
 
@@ -720,9 +723,9 @@ GT를 만든 GPT-4o는 mask를 보고 조작 위치를 정확히 알면서 분�
 - GPU 비용 (34B, 26B 모델 fine-tuning은 자원 부담이 크다)
 - 그렇게 비교했을 때 13B 베이스의 FakeShield가 이긴다는 보장이 없다
 
-그래서 이 결과의 메시지는 "FakeShield가 다른 모든 M-LLM보다 똑똑하다"가 아니라, **"범용 M-LLM을 IFDL에 그냥 던져 넣으면 안 된다, 도메인 특화 fine-tuning이 필요하다"** 정도로 읽는 게 정확하다.
+그래서 이 결과의 메시지는 "FakeShield가 다른 모든 M-LLM보다 똑똑하다"가 아니라, "범용 M-LLM을 IFDL에 그냥 던져 넣으면 안 된다, 도메인 특화 fine-tuning이 필요하다" 정도로 읽는 게 정확하다.
 
-#### 6.3.3 그럼에도 의미 있는 부분
+==그럼에도 의미 있는 부분==
 
 비교의 비대칭성을 인정하더라도, 범용 M-LLM이 잘 못하는 게 무엇인지는 이 표에서 드러난다.
 
@@ -815,7 +818,7 @@ M-LLM 기반 (의미 정보 의존):
 
 ### 7.1 DTG가 정말 필요한가 (Table 6)
 
-> **DTG를 제거하고 LLM에 도메인 힌트 없이 이미지와 instruction만 주면 어떻게 될까.**
+> DTG를 제거하고 LLM에 도메인 힌트 없이 이미지와 instruction만 주면 어떻게 될까.
 
 ```
 원본:    T_tag(DTG 힌트) + T_img + T_ins → LLM → O_det
@@ -832,7 +835,7 @@ w/o DTG:                 T_img + T_ins → LLM → O_det
 | DeepFake | -0.09  | -0.09 | 얼굴 특화 아티팩트 → 어느 정도 인식 가능         |
 | AIGC     | -0.21  | -0.15 | 새로운 아티팩트 패턴 → DTG 의존도 가장 큼       |
 
-**도메인 아티팩트가 불명확할수록 DTG의 효과가 크다**.
+도메인 아티팩트가 불명확할수록 DTG의 효과가 크다.
 - PS는 edge artifact가 비교적 명확해서 DTG 없어도 어느 정도 잡히지만,
 - AIGC는 모델이 익숙하지 않은 패턴이라 도메인 힌트 없이는 길을 잃는다.
 
@@ -840,7 +843,7 @@ DTG가 단순 보조 텍스트가 아니라 LLM이 어떤 forensic cue를 우선
 
 ### 7.2 LLM in DTE-FDM은 정말 필요한가 (Figure 6)
 
-> **DTE-FDM의 LLM을 통째로 빼면 어떻게 되는가**.
+> DTE-FDM의 LLM을 통째로 빼면 어떻게 되는가.
 
 LLM을 빼면 누군가 그 자리를 메워야 하는데, 논문은 TCM이 그 일까지 수행하도록 만들어서 실험한다.
 
@@ -861,29 +864,29 @@ w/o LLM:
 ![[image-10-x311-y525.png|600]]
 > _Figure 6. DTE-FDM LLM 제거 시 localization IoU 변화 (25 epochs)._
 
-결과는 명확하다. w/o LLM은 **전체 학습 과정 내내 IoU가 원본보다 낮고, 더 일찍 수렴한다**.
+결과는 명확하다. w/o LLM은 전체 학습 과정 내내 IoU가 원본보다 낮고, 더 일찍 수렴한다.
 모델 용량이 줄어 학습이 일찍 한계에 도달한 것으로 볼 수 있다.
 
 이 결과를 두 가지 손실로 나눠서 해석할 수 있다.
 
-**손실 1. $O_{det}$의 의미적 정보가 사라진다**
+손실 1. $O_{det}$의 의미적 정보가 사라진다
 
 원본 구조에서 TCM은 "어디가 어떻게 조작됐는지" 분석된 자연어 설명을 받아서 그 의미를 활용했다.
 LLM을 빼면 TCM이 받는 입력은 도메인 태그와 이미지 토큰뿐이다.
 "조명 방향이 안 맞는다", "경계 해상도가 다르다" 같은 **forensic cue**가 텍스트로 정리되지 않은 상태에서, TCM이 image token만 보고 mask를 그려내야 한다. 그 의미 정보의 빈자리가 그대로 성능 차이로 나타난다.
 
-**손실 2. 디커플링이 깨진다**
+손실 2. 디커플링이 깨진다
 
-TCM 하나가 텍스트 생성과 mask 생성을 동시에 떠안게 된다. 성격이 다른 두 task를 한 모델에 묶으면 학습 신호가 서로 간섭한다는 것, 그게 두 모듈을 나눈 이유였다. 이 ablation은 정확히 그 상황을 만들어 보인다. **디커플링 설계의 정당성이 실험으로 직접 확인되는 결과**다.
+TCM 하나가 텍스트 생성과 mask 생성을 동시에 떠안게 된다. 성격이 다른 두 task를 한 모델에 묶으면 학습 신호가 서로 간섭한다는 것, 그게 두 모듈을 나눈 이유였다. 이 ablation은 정확히 그 상황을 만들어 보인다. 디커플링 설계의 정당성이 실험으로 직접 확인되는 결과다.
 
 ### 7.3 부록의 두 실험
 
 본문 두 ablation으로 DTG와 디커플링의 정당성은 확인됐다.
-부록의 두 실험은 더 미세한 질문을 다룬다. **MFLM이 $O_{det}$를 어떻게 활용해야 하는가**에 대한 질문이다.
+부록의 두 실험은 더 미세한 질문을 다룬다. MFLM이 $O_{det}$를 어떻게 활용해야 하는가에 대한 질문이다.
 
-#### 7.3.1 Error Correction을 추가하면? (Table 8)
+==Error Correction을 추가하면? (Table 8)==
 
-> **DTE-FDM의 LLM이 만든 $O_{det}$는 틀릴 수 있다. 그렇다면 TCM에서 이 오류를 명시적으로 교정하게 만들면 더 좋아지지 않을까?**
+> DTE-FDM의 LLM이 만든 $O_{det}$는 틀릴 수 있다. 그렇다면 TCM에서 이 오류를 명시적으로 교정하게 만들면 더 좋아지지 않을까?
 
 
 ```
@@ -907,15 +910,15 @@ Error Correction 추가:
 | FakeShield (원본)                 | **0.54 / 0.60** |
 
 
-논문의 해석은 **두 최적화 목표가 서로 간섭한다**는 것이다.
+논문의 해석은 두 최적화 목표가 서로 간섭한다는 것이다.
 mask 최적화(BCE + Dice)와 텍스트 교정 최적화(CE)가 같은 모델에 동시에 걸리면, 한쪽을 잘하려고 하면 다른 쪽이 흔들리는 trade-off가 생긴다.
 
-여기서 더 나아가서 해석해보면, **MFLM은 이미 자체적인 error correction 능력을 가지고 있다**고 볼 수 있다.
+여기서 더 나아가서 해석해보면, MFLM은 이미 자체적인 error correction 능력을 가지고 있다고 볼 수 있다.
 학습 과정을 다시 보면, TCM은 부정확할 수 있는 $O_{det}$를 입력으로 받는데 정답은 GT mask다. 즉, $O_{det}$가 약간 틀려도 GT mask를 맞히도록 학습되니까, 자연스럽게 $O_{det}$의 사소한 오류를 무시하고 mask 생성에 필요한 부분만 골라 쓰는 능력이 생긴다.
 
 명시적 교정 메커니즘을 추가하면 이 자연스러운 능력을 오히려 방해한다는 게 이 ablation이 보여주는 것이다. "더 정교하게 만들어주면 더 좋아질 거야"라는 직관이 항상 맞는 건 아닌 셈이다.
 
-#### 7.3.2 TCM에 무엇을 넣어야 하는가 (Table 9)
+==TCM에 무엇을 넣어야 하는가 (Table 9)==
 
 마지막 ablation은 TCM의 입력 조합을 바꾼다. $O_{det}$가 정말 localization에 핵심적인 입력인지를 직접 검증한다.
 
@@ -931,7 +934,7 @@ mask 최적화(BCE + Dice)와 텍스트 교정 최적화(CE)가 같은 모델에
 
 세 가지 시각이 보인다.
 
-**$O_{det}$는 다른 입력으로 대체되지 않는다**.
+$O_{det}$는 다른 입력으로 대체되지 않는다.
 - 조합 1~3은 모두 $O_{det}$ 없이 원래 입력 요소만 다른 조합으로 넣은 것이다. 도메인 태그도 있고, 이미지 토큰도 있고, instruction도 있다. 그런데 전부 원본보다 낮다.
 - DTE-FDM의 LLM이 만든 $O_{det}$가 단순 이미지+태그 조합으로는 대체되지 않는다는 직접 증거다.
 
@@ -940,7 +943,7 @@ mask 최적화(BCE + Dice)와 텍스트 교정 최적화(CE)가 같은 모델에
 - 도메인 태그 텍스트만 있고 이미지 토큰이 없으면 TCM이 mask 그릴 시각 정보가 부족해서 더 어려워진다.
 - DTG가 효과를 발휘하려면 LLM이 그 태그를 가지고 이미지를 함께 보고 분석을 풀어내는 과정이 필요하다.
 
-**AIGC에서 차이가 가장 크다**.
+AIGC에서 차이가 가장 크다.
 - 조합 1~3에서 AIGC IoU는 0.11~0.12인데 원본은 0.18이다. 0.06~0.07의 격차로 다른 도메인보다 차이가 크다.
 - 아티팩트 패턴이 불명확한 도메인일수록 LLM이 정리한 의미적 설명에 더 많이 의존한다고 읽을 수 있다.
 
@@ -948,28 +951,28 @@ mask 최적화(BCE + Dice)와 텍스트 교정 최적화(CE)가 같은 모델에
 
 지금까지 본 네 ablation의 결론을 모아보면 일관된 메시지가 나온다.
 
-**메시지 1. 디커플링 설계가 일관되게 정당화된다**
+메시지 1. 디커플링 설계가 일관되게 정당화된다
 
 - 7.2 (LLM 제거): 한 모델이 텍스트와 mask를 동시에 처리하면 학습 신호가 서로 간섭한다
 - 7.3.1 (Error Correction): 한 모듈에 두 최적화 목표를 걸면 trade-off가 생긴다
 
 두 실험 모두 "task를 분리해서 각자 최적화하는 게 낫다"는 결론으로 모인다.
 
-**메시지 2. $O_{det}$가 localization 성능을 좌우한다**
+메시지 2. $O_{det}$가 localization 성능을 좌우한다
 
 - 7.2 (LLM 제거): LLM 없이 만든 mask는 전 학습 과정에서 낮은 IoU
 - 7.3.2 (TCM 입력 조합): $O_{det}$를 다른 입력 조합으로 대체할 수 없다
 
 DTE-FDM이 만든 텍스트는 사용자에게 보여주는 부가 출력에 그치지 않는다. MFLM이 mask를 그리려면 반드시 받아야 하는 입력이고, 이 점이 두 실험에서 직접 확인된다.
 
-**메시지 3. AIGC가 DTG와 $O_{det}$의 의존도를 가장 명확히 드러낸다**
+메시지 3. AIGC가 DTG와 $O_{det}$의 의존도를 가장 명확히 드러낸다
 
 - DTG ablation: AIGC 낙폭 가장 큼
 - TCM 입력 조합: AIGC에서 $O_{det}$ 유무 차이 가장 큼
 
 도메인 아티팩트가 모델에게 익숙하지 않을수록 텍스트로 정리된 도메인 힌트와 forensic 분석이 더 중요해진다. 거꾸로 말하면, FakeShield의 LLM 활용 전략이 가장 빛을 발하는 영역이 AIGC라는 뜻이다. PS처럼 edge artifact가 명확한 도메인은 기존 IFDL도 어느 정도 잡지만, AIGC처럼 새롭고 미묘한 도메인에서 LLM의 의미적 분석이 결정적인 차이를 만든다.
 
-**메시지 4. 더 정교한 메커니즘이 항상 답은 아니다**
+메시지 4. 더 정교한 메커니즘이 항상 답은 아니다
 
 "$O_{det}$가 틀릴 수 있으니 명시적으로 교정하자"는 합리적인 직관이지만, 결과는 반대로 나왔다. 모델이 학습 과정에서 자연스럽게 형성한 능력(불완전한 입력을 무시하고 정답을 맞히는 능력)을, 명시적 메커니즘이 오히려 방해할 수 있다.
 
@@ -989,18 +992,18 @@ DTE-FDM이 만든 텍스트는 사용자에게 보여주는 부가 출력에 그
 
 ## 9. Limitation
 
-논문이 직접 짚는 한계는 **복잡한 DeepFake 조작에서의 성능 부족**이다.
+논문이 직접 짚는 한계는 복잡한 DeepFake 조작에서의 성능 부족이다.
 
 구체적으로:
 
-- **Identity switching** (한 사람의 얼굴을 다른 사람으로 바꾸는 조작)
-- **Full-face generation** (얼굴 전체를 새로 생성하는 조작)
+- Identity switching (한 사람의 얼굴을 다른 사람으로 바꾸는 조작)
+- Full-face generation (얼굴 전체를 새로 생성하는 조작)
 
 이런 조작들은 부분적인 속성 변경(FaceApp 같은)과 달리 얼굴 전체나 큰 영역이 바뀌어서, FakeShield가 사용한 부분적 단서(입·눈 주변의 국소 blur 같은)로는 잡기 어렵다. 학습 데이터 자체도 FaceApp 기반 부분 조작 위주로 구성되어 있어서, 더 복잡한 DeepFake 조작에 대한 일반화에 한계가 있다.
 
 논문이 제시하는 향후 개선 방향은 세 가지다.
 
-**Chain-of-Thought 메커니즘 도입**. 현재 FakeShield는 이미지를 받아 한 번에 분석 결과를 출력하는 구조다. CoT를 도입하면 단계별 추론이 가능해서 미묘한 조작도 잡아낼 수 있다는 게 논문의 기대다.
+Chain-of-Thought 메커니즘 도입. 현재 FakeShield는 이미지를 받아 한 번에 분석 결과를 출력하는 구조다. CoT를 도입하면 단계별 추론이 가능해서 미묘한 조작도 잡아낼 수 있다는 게 논문의 기대다.
 
 > [!info] Chain-of-Thought (CoT)
 > 일반적인 LLM 추론은 질문을 받으면 바로 답을 낸다.
@@ -1044,11 +1047,11 @@ SIDA와 FakeShield는 닮은 출발선에 서 있다. 둘 다 "새 데이터셋 
 | mask loss | BCE + Dice | 동일 | [[02_FakeShield#5.3.2 BCE와 Dice를 함께 쓰는 이유\|5.3.2절]] |
 | 화질 열화 robustness | SIDA-7B가 6개 열화 조건에 안정적 | 4개 조건, 동일 경향 | [[02_FakeShield#6.5 Robustness\|6.5절]] |
 
-**통합 대 분리, 그러나 의도는 같다.** 가장 큰 대비는 핵심 설계다. SIDA는 detection과 segmentation을 한 VLM 안에서 `<DET>`·`<SEG>` 토큰으로 함께 처리하고, FakeShield는 두 task를 별도 모듈로 떼어놓는다. 다만 두 논문 모두 "detection 정보가 localization을 가이드해야 한다"는 생각은 공유한다. SIDA는 그것을 Attention Module로 푼다. detection 토큰의 hidden state를 Query로 삼아 segmentation 토큰에서 필요한 정보를 끌어오는 구조다. FakeShield는 같은 일을 모듈 사이로 텍스트 $O_{det}$를 넘기는 방식으로 한다. 의도는 같고 메커니즘이 정반대인 셈이다.
+통합 대 분리, 그러나 의도는 같다. 가장 큰 대비는 핵심 설계다. SIDA는 detection과 segmentation을 한 VLM 안에서 `<DET>`·`<SEG>` 토큰으로 함께 처리하고, FakeShield는 두 task를 별도 모듈로 떼어놓는다. 다만 두 논문 모두 "detection 정보가 localization을 가이드해야 한다"는 생각은 공유한다. SIDA는 그것을 Attention Module로 푼다. detection 토큰의 hidden state를 Query로 삼아 segmentation 토큰에서 필요한 정보를 끌어오는 구조다. FakeShield는 같은 일을 모듈 사이로 텍스트 $O_{det}$를 넘기는 방식으로 한다. 의도는 같고 메커니즘이 정반대인 셈이다.
 
-**문제를 자르는 축이 다르다.** SIDA는 fake를 real·완전 합성·부분 조작으로 나누고(조작의 정도), FakeShield는 PS·DeepFake·AIGC로 나눈다(조작의 도구). SIDA가 완전 합성 이미지까지 품을 수 있는 건 detection을 중심에 두기 때문이고, FakeShield가 부분 조작만 다루는 건 localization을 핵심에 두기 때문이다. 완전히 생성된 이미지에는 조작 경계가 없어 mask 자체를 정의할 수 없다. 데이터셋의 범위 차이가 곧 두 모델이 무엇을 1순위 task로 보는지를 드러낸다.
+문제를 자르는 축이 다르다. SIDA는 fake를 real·완전 합성·부분 조작으로 나누고(조작의 정도), FakeShield는 PS·DeepFake·AIGC로 나눈다(조작의 도구). SIDA가 완전 합성 이미지까지 품을 수 있는 건 detection을 중심에 두기 때문이고, FakeShield가 부분 조작만 다루는 건 localization을 핵심에 두기 때문이다. 완전히 생성된 이미지에는 조작 경계가 없어 mask 자체를 정의할 수 없다. 데이터셋의 범위 차이가 곧 두 모델이 무엇을 1순위 task로 보는지를 드러낸다.
 
-**explanation을 데이터에 얼마나 무겁게 싣나.** SIDA의 텍스트 설명 라벨은 30만 장 중 3천 장뿐이고, 학습도 detection·segmentation을 먼저 끝낸 뒤 explanation을 나중에 fine-tuning으로 얹는다. FakeShield는 MMTD-Set의 모든 샘플이 description을 갖는 삼중항이다. e-IFDL의 'explainable'을 데이터 차원에서 얼마나 핵심으로 가져가느냐가 갈린다.
+explanation을 데이터에 얼마나 무겁게 싣나. SIDA의 텍스트 설명 라벨은 30만 장 중 3천 장뿐이고, 학습도 detection·segmentation을 먼저 끝낸 뒤 explanation을 나중에 fine-tuning으로 얹는다. FakeShield는 MMTD-Set의 모든 샘플이 description을 갖는 삼중항이다. e-IFDL의 'explainable'을 데이터 차원에서 얼마나 핵심으로 가져가느냐가 갈린다.
 
 두 설계 모두 자기 방식의 ablation으로 정당화되어 있어, 어느 쪽이 정답이라기보다 e-IFDL이 가진 설계 자유도를 보여주는 두 사례로 읽힌다. 한편 두 논문 모두 explanation GT를 GPT-4o로 만든다는 점은 같다. GPT-4o GT가 안고 있는 한계는 FakeShield만의 문제가 아니라 이 접근 계열이 공통으로 안고 가는 과제인 셈이다.
 
@@ -1058,7 +1061,7 @@ SIDA와 FakeShield는 닮은 출발선에 서 있다. 둘 다 "새 데이터셋 
 
 ### Pros
 
-읽는 내내 든 생각은, 이 논문이 **LLM의 의미 해석 능력을 어떻게든 끝까지 활용하고 싶어 한다**는 것이었다.
+읽는 내내 든 생각은, 이 논문이 LLM의 의미 해석 능력을 어떻게든 끝까지 활용하고 싶어 한다는 것이었다.
 
 기존 IFDL은 픽셀 단위 아티팩트를 신호로 삼는다. 반면 이 논문은 "조명 방향이 안 맞는다", "경계 해상도가 다르다" 같은 단서를 자연어로 이해하고 풀어내는 LLM의 강점을, e-IFDL의 거의 모든 자리에 끌어다 쓴다. detection과 explanation은 LLM이 자연어로 처리하고, localization도 SAM에 곧장 가지 않고 TCM이라는 LLM을 한 번 더 거쳐 $O_{det}$의 의미를 옮겨준다. 도메인 힌트(DTG)마저 결국 LLM에게 줄 텍스트다.
 
@@ -1067,30 +1070,31 @@ SIDA와 FakeShield는 닮은 출발선에 서 있다. 둘 다 "새 데이터셋 
 ---
 
 ### Cons
-#### GPT-4o 기반 GT(Ground Truth)의 본질적 한계
+==GPT-4o 기반 GT(Ground Truth)의 본질적 한계==
 
 MMTD-Set의 텍스트 GT는 사람이 작성한 forensic 정답이 아니라 GPT-4o가 mask와 도메인별 prompt를 받아 만든 설명이다. 그래서 이 데이터셋으로 학습한 모델의 explanation 능력은 "사람의 forensic 판단과 얼마나 맞는가"가 아니라 "GPT-4o의 설명 스타일과 의미적으로 얼마나 가까운가"를 학습한 결과에 가깝다.
 평가 지표인 CSS도 GPT-4o GT와의 의미 유사도를 보는 거라, 이 한계가 그대로 평가에도 들어간다. FakeShield가 진짜 forensic cue를 잘 분석하는지, 아니면 GPT-4o의 분석 스타일을 잘 모사하는지를 구분하기 어렵다.
 
 _관련 본문: [[02_FakeShield#2.2 GPT-4o로 텍스트 GT 만들기|2.2절]]_
 
-#### M-LLM 비교의 비대칭성
+==M-LLM 비교의 비대칭성==
 
 Explanation 비교(Table 3)에서 FakeShield만 MMTD-Set으로 fine-tuning된 상태고, 비교군 M-LLM들(GPT-4o, LLaVA-34B, InternVL2-26B 등)은 사전학습 가중치 그대로다. 결과 자체는 명확한 우위지만, 이건 "FakeShield가 다른 M-LLM보다 똑똑하다"기보다 "도메인 특화 fine-tuning의 효과"를 보여주는 비교에 가깝다. 진짜 공정한 비교는 더 큰 M-LLM들도 MMTD-Set으로 fine-tuning한 후 비교하는 것일 텐데, GPU 비용 부담과 결과 불확실성 때문에 시도되지 않은 것으로 보인다.
 
 _관련 본문: [[02_FakeShield#6.3.2 비교 자체의 비대칭성|6.3.2절]]_
 
-#### DTG에 대한 추가 분석 부재
+==DTG에 대한 추가 분석 부재==
+
 Ablation에서 DTG 제거 시 detection 성능이 떨어진다는 건 보였지만, 두 가지가 빠져 있다고 생각했다.
 
-1) DTG 제거 시 **localization 성능 변화**가 보고되지 않아서 파이프라인 전체에서의 DTG 영향을 완결성 있게 보기 어렵고,
+1) DTG 제거 시 localization 성능 변화가 보고되지 않아서 파이프라인 전체에서의 DTG 영향을 완결성 있게 보기 어렵고,
 2) **DTG 자체의 분류 정확도**도 보고되지 않아서 DTG 오분류 시 downstream에 미치는 영향을 따져볼 수 없다.
 
 DTG는 파이프라인 앞단에 있어서 오분류가 $O_{det}$ 품질과 mask까지 전파될 가능성이 있는데, 이 민감도 분석이 없는 게 아쉽다. 특히 DeepFake 훈련 데이터가 7,300장 정도로 다른 도메인보다 적어서, DTG가 DeepFake를 다른 도메인으로 오분류할 가능성도 따져봐야 한다.
 
 _관련 본문: [[02_FakeShield#7.1 DTG가 정말 필요한가 (Table 6)|7.1절]]_
 
-#### Localization 절대 성능의 한계
+==Localization 절대 성능의 한계==
 
 Localization에서 FakeShield가 기존 모델 대비 우위를 보이긴 하지만, 절대 IoU 수치로 보면 여전히 낮은 영역들이 있다. CASIA1+ 0.54, IMD2020 0.50 정도는 괜찮은 편이지만, Korus 0.17, DeepFake 0.14, AIGC 0.18은 픽셀 단위 정확도로 봤을 때 실용적 수준에 못 미친다.
 
@@ -1098,7 +1102,8 @@ Localization에서 FakeShield가 기존 모델 대비 우위를 보이긴 하지
 
 _관련 본문: [[02_FakeShield#6.4 Localization|6.4절]]_
 
-#### 도메인 정의
+==도메인 정의==
+
 MMTD-Set은 PS / DeepFake / AIGC 세 도메인으로 fake를 정의한다. 하지만 실제 소셜 미디어에서 마주치는 fake는 이 세 도메인의 혼합이거나 그 어느 쪽에도 정확히 들어맞지 않는 경우가 많다.
 
 예를 들어 DeepFake로 얼굴을 바꾼 뒤 PS로 배경을 합성하는 식의 다단계 조작은 DTG가 어떤 도메인으로 분류해야 할지 모호하다. 도메인 분류 자체를 가정하는 구조가 미래의 더 복잡한 조작에 어떻게 대응할지가 불투명하다.
@@ -1111,15 +1116,15 @@ _관련 본문: [[02_FakeShield#4.1.1 DTG가 하는 일|4.1.1절]]_
 
 위의 한계들과 논문이 직접 제시한 방향을 묶어보면, 자연스럽게 몇 가지 향후 연구 방향이 보인다.
 
-**데이터 품질의 본질적 개선.** GPT-4o 기반 GT의 한계가 가장 근본적인 문제다. 사람이 검증한 forensic GT를 일부라도 확보해서 평가셋으로 사용하면, 현재 CSS 기반 평가의 모호함을 줄일 수 있다. 또는 GPT-4o 외의 다른 M-LLM이 만든 설명과의 일치도까지 함께 보는 식으로 평가 지표를 다각화하는 것도 한 방향이다. 적어도 평가 단계에서만이라도 GPT-4o 의존성을 줄이는 게 신뢰성 확보에 필요해 보인다.
+데이터 품질의 본질적 개선. GPT-4o 기반 GT의 한계가 가장 근본적인 문제다. 사람이 검증한 forensic GT를 일부라도 확보해서 평가셋으로 사용하면, 현재 CSS 기반 평가의 모호함을 줄일 수 있다. 또는 GPT-4o 외의 다른 M-LLM이 만든 설명과의 일치도까지 함께 보는 식으로 평가 지표를 다각화하는 것도 한 방향이다. 적어도 평가 단계에서만이라도 GPT-4o 의존성을 줄이는 게 신뢰성 확보에 필요해 보인다.
 
-**도메인 분류 구조의 유연화.** 현재 DTG는 PS / DeepFake / AIGC 중 하나를 강제 할당하는 3-way classifier다. 실제 조작은 도메인이 혼합되거나 모호한 경우가 많은데, 단일 도메인으로 강제 분류하는 구조가 이런 케이스를 포착하기 어렵다. **다중 도메인 가중치를 출력하는 soft classification**, 또는 **도메인 자체를 미리 정의하지 않고 LLM이 단서 종류를 자율적으로 식별하는 구조**가 대안이 될 수 있다. 후자가 더 야심찬 방향이지만, "edge artifact가 보인다"와 "facial blur가 보인다"가 한 이미지에 공존할 수 있는 환경을 다룰 수 있다.
+도메인 분류 구조의 유연화. 현재 DTG는 PS / DeepFake / AIGC 중 하나를 강제 할당하는 3-way classifier다. 실제 조작은 도메인이 혼합되거나 모호한 경우가 많은데, 단일 도메인으로 강제 분류하는 구조가 이런 케이스를 포착하기 어렵다. 다중 도메인 가중치를 출력하는 soft classification, 또는 도메인 자체를 미리 정의하지 않고 LLM이 단서 종류를 자율적으로 식별하는 구조가 대안이 될 수 있다. 후자가 더 야심찬 방향이지만, "edge artifact가 보인다"와 "facial blur가 보인다"가 한 이미지에 공존할 수 있는 환경을 다룰 수 있다.
 
-**Localization 정확도 개선.** 현재 SAM 기반 접근은 객체 단위 조작에는 잘 맞지만 영역 경계가 모호한 조작(DeepFake, AIGC)에서 약하다. 픽셀 단위 정확도를 높이려면 SAM의 segmentation 능력에만 의존하지 말고, **edge artifact나 noise pattern 같은 저수준 단서**를 함께 활용하는 hybrid 구조가 필요할 수 있다. 다만 이렇게 하면 robustness study에서 본 M-LLM 기반의 강점(저수준 노이즈에 덜 민감)이 일부 희석될 수 있어서, trade-off를 어떻게 잡을지가 설계 포인트가 된다.
+Localization 정확도 개선. 현재 SAM 기반 접근은 객체 단위 조작에는 잘 맞지만 영역 경계가 모호한 조작(DeepFake, AIGC)에서 약하다. 픽셀 단위 정확도를 높이려면 SAM의 segmentation 능력에만 의존하지 말고, edge artifact나 noise pattern 같은 저수준 단서를 함께 활용하는 hybrid 구조가 필요할 수 있다. 다만 이렇게 하면 robustness study에서 본 M-LLM 기반의 강점(저수준 노이즈에 덜 민감)이 일부 희석될 수 있어서, trade-off를 어떻게 잡을지가 설계 포인트가 된다.
 
-**CoT 메커니즘 도입.** 논문이 직접 제시한 방향인데, 도메인 유연화 방향과 묶으면 더 설득력이 생긴다. 단계별 추론은 미세한 조작을 잡는 데만 유리한 게 아니라, 추론 과정이 그대로 사용자에게 노출되므로 "왜 그렇게 판단했는가"의 검증 가능성을 높인다. e-IFDL의 explanation을 한 단계 더 신뢰할 수 있게 만드는 방향이다.
+CoT 메커니즘 도입. 논문이 직접 제시한 방향인데, 도메인 유연화 방향과 묶으면 더 설득력이 생긴다. 단계별 추론은 미세한 조작을 잡는 데만 유리한 게 아니라, 추론 과정이 그대로 사용자에게 노출되므로 "왜 그렇게 판단했는가"의 검증 가능성을 높인다. e-IFDL의 explanation을 한 단계 더 신뢰할 수 있게 만드는 방향이다.
 
-**DTG 민감도 분석.** 논문 자체의 분석 부재를 보완하는 후속 연구로, DTG 분류 정확도가 전체 파이프라인 성능에 미치는 영향을 정량화하는 게 의미 있다. 의도적으로 DTG에 잘못된 도메인 태그를 주입했을 때 $O_{det}$ 품질과 mask가 어떻게 망가지는지를 보면, DTG의 robustness 요구치를 명확히 할 수 있다. 이 분석은 실제 배포 환경에서 DTG가 흔들렸을 때의 실패 모드를 예측하는 데도 도움이 된다.
+DTG 민감도 분석. 논문 자체의 분석 부재를 보완하는 후속 연구로, DTG 분류 정확도가 전체 파이프라인 성능에 미치는 영향을 정량화하는 게 의미 있다. 의도적으로 DTG에 잘못된 도메인 태그를 주입했을 때 $O_{det}$ 품질과 mask가 어떻게 망가지는지를 보면, DTG의 robustness 요구치를 명확히 할 수 있다. 이 분석은 실제 배포 환경에서 DTG가 흔들렸을 때의 실패 모드를 예측하는 데도 도움이 된다.
 
 ---
 

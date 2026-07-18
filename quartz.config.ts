@@ -71,7 +71,7 @@ const config: QuartzConfig = {
           secondary: "#7797C0", // 액센트: Obsidian 사용자 지정 accentColor (anniversary 기본 레드를 override)
           tertiary: "#4A6FA5", // 링크 호버 (액센트 어두운 변형)
           highlight: "rgba(70, 70, 76, 0.06)", // hover/active 배경: --background-modifier-hover (뉴트럴 저알파)
-          textHighlight: "#CCE9FF", // ==강조== 배경: 하늘색 (10차 — 8·9차 실험 후 이식 전 원안 복구, 글자 600은 custom.scss)
+          textHighlight: "#FCEFD2", // ==강조== 배경: 노랑 마커 (21차 — Obsidian Velocity 노랑 마커 33%를 라이트 배경에 합성한 실효값. 굵기는 custom.scss)
         },
 
         // [Nord Style]

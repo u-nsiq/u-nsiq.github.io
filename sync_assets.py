@@ -1,11 +1,11 @@
 """
 sync_assets.py
 --------------
-Quartz content/ 에서 참조된 이미지를 찾아 90_Assets → content/assets 에 복사.
+Quartz content/ 에서 참조된 이미지·영상을 찾아 90_Assets → content/assets 에 복사.
 content/assets 에 있지만 더 이상 참조되지 않는 파일은 삭제.
 
 용도:
-  - 포스팅/노트에 이미지를 사용한 뒤 npx quartz sync 전에 실행
+  - 포스팅/노트에 이미지나 영상을 사용한 뒤 npx quartz sync 전에 실행
   - 현재 content/assets 가 빠짐없이 채워져 있는지 확인
 
 실행: python sync_assets.py
@@ -21,41 +21,44 @@ VAULT_ASSETS   = Path(r"C:\Users\junsik\01_Notes\Sync_Obsidian\myObsidian\90_Ass
 QUARTZ_ASSETS  = Path(r"C:\Users\junsik\02_Projects\Blog\myGitpage\content\assets")
 QUARTZ_CONTENT = Path(r"C:\Users\junsik\02_Projects\Blog\myGitpage\content")
 
-IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"}
+ASSET_EXTENSIONS = {
+    ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp",
+    ".mp4", ".webm",
+}
 
 # ![[파일명.ext]] 또는 ![[경로/파일명.ext|300]] 모두 캡처
-IMAGE_PATTERN = re.compile(
-    r'!\[\[([^|\]]+\.(?:png|jpg|jpeg|gif|svg|webp))',
+ASSET_PATTERN = re.compile(
+    r'!\[\[([^|\]]+\.(?:png|jpg|jpeg|gif|svg|webp|mp4|webm))',
     re.IGNORECASE
 )
 
 
-def get_referenced_images() -> set[str]:
-    """content/ 전체 마크다운에서 참조된 이미지 경로(원본 그대로) 수집."""
-    images = set()
+def get_referenced_assets() -> set[str]:
+    """content/ 전체 마크다운에서 참조된 asset 경로(원본 그대로) 수집."""
+    assets = set()
     for md_file in QUARTZ_CONTENT.rglob("*.md"):
         try:
             content = md_file.read_text(encoding="utf-8")
         except Exception:
             continue
-        for match in IMAGE_PATTERN.finditer(content):
-            images.add(match.group(1))
-    return images
+        for match in ASSET_PATTERN.finditer(content):
+            assets.add(match.group(1))
+    return assets
 
 
-def find_source(img_ref: str) -> Path | None:
+def find_source(asset_ref: str) -> Path | None:
     """
-    이미지 참조 문자열로 실제 소스 파일을 찾는다.
+    asset 참조 문자열로 실제 소스 파일을 찾는다.
     1. vault root 기준 전체 경로로 시도 (90_Assets/subfolder/file.png 형태)
     2. 90_Assets 하위 전체에서 파일명으로 재귀 탐색
     """
     # 1. vault root 기준 전체 경로 시도
-    candidate = VAULT_ROOT / img_ref
+    candidate = VAULT_ROOT / asset_ref
     if candidate.exists():
         return candidate
 
     # 2. 90_Assets 하위에서 파일명으로 재귀 탐색
-    filename = Path(img_ref).name
+    filename = Path(asset_ref).name
     for found in VAULT_ASSETS.rglob(filename):
         return found
 
@@ -64,21 +67,21 @@ def find_source(img_ref: str) -> Path | None:
 
 def sync_assets() -> None:
     QUARTZ_ASSETS.mkdir(parents=True, exist_ok=True)
-    referenced = get_referenced_images()
+    referenced = get_referenced_assets()
 
     # 정리용: 파일명만 추출 (content/assets는 flat 구조)
     referenced_names = {Path(img).name for img in referenced}
 
     copied, skipped, missing, removed = [], [], [], []
 
-    # 1. 복사: 참조된 이미지를 90_Assets → content/assets (flat)
-    for img_ref in sorted(referenced):
-        src = find_source(img_ref)
-        filename = Path(img_ref).name
+    # 1. 복사: 참조된 asset을 90_Assets → content/assets (flat)
+    for asset_ref in sorted(referenced):
+        src = find_source(asset_ref)
+        filename = Path(asset_ref).name
         dst = QUARTZ_ASSETS / filename
 
         if src is None:
-            missing.append(img_ref)
+            missing.append(asset_ref)
             continue
 
         # 복사 여부는 내용 비교로 판단 (mtime 무시 — 동기화 폴더 mtime 갱신 영향 배제)
@@ -91,7 +94,7 @@ def sync_assets() -> None:
 
     # 2. 정리: content/assets 에 있지만 더 이상 참조되지 않는 파일 삭제
     for existing in QUARTZ_ASSETS.iterdir():
-        if existing.suffix.lower() in IMAGE_EXTENSIONS:
+        if existing.suffix.lower() in ASSET_EXTENSIONS:
             if existing.name not in referenced_names:
                 existing.unlink()
                 removed.append(existing.name)
@@ -112,7 +115,7 @@ def sync_assets() -> None:
         for f in missing:
             print(f"  ? {f}")
     else:
-        print("\n모든 참조 이미지 정상.")
+        print("\n모든 참조 asset 정상.")
 
 
 if __name__ == "__main__":

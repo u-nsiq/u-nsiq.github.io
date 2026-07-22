@@ -213,26 +213,15 @@ button.desktop-explorer {
   }
 }
 
-// ── [커스텀 BEGIN] folder count + recent dot ─────────────────────
+// ── [커스텀 BEGIN] folder count ─────────────────────
 // .folder-count: 폴더 옆 전체 파일 수 (explorer.inline.ts countFiles)
+// (24차: folder-recent-dot 제거 — 신규 신호는 홈 Browse의 new 칩이 담당)
 .folder-count {
   font-size: 0.75rem;
   color: var(--darkgray);
   margin-left: 0.35rem;
   font-weight: normal;
   flex-shrink: 0;
-}
-
-// .folder-recent-dot: RecentNotes 기준 최근 파일 포함 폴더 표시
-.folder-recent-dot {
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background-color: #e9313a;
-  margin-left: 0.3rem;
-  flex-shrink: 0;
-  vertical-align: middle;
 }
 // ── [커스텀 END] ──
 

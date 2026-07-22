@@ -22,16 +22,21 @@ interface SectionSpec {
   limit?: number
 }
 
-const POST_SECTIONS: SectionSpec[] = [
-  { title: "🔬 Research", prefix: "Posts/Research/", folder: "Posts/Research/" as SimpleSlug },
+// [26차] 두 군으로 나눠 서브 밴드로 묶는다. 카테고리 이모지는 제거 —
+// 제목/자식의 굵기 대비(700 vs 450)가 그 역할을 대신한다.
+// SERIES = 하위 카테고리(폴더 랜딩)를 가진 섹션 / ARTICLES = 글을 바로 쌓는 섹션
+const SERIES_SECTIONS: SectionSpec[] = [
+  { title: "Research", prefix: "Posts/Research/", folder: "Posts/Research/" as SimpleSlug },
+  { title: "Projects", prefix: "Posts/Projects/", folder: "Posts/Projects/" as SimpleSlug },
+  { title: "Lectures", prefix: "Posts/Lectures/", folder: "Posts/Lectures/" as SimpleSlug },
+]
+const FLAT_SECTIONS: SectionSpec[] = [
   {
-    title: "📄 Paper Review",
+    title: "Paper Review",
     prefix: "Posts/Paper-Review/",
     folder: "Posts/Paper-Review/" as SimpleSlug,
   },
-  { title: "🛠️ Projects", prefix: "Posts/Projects/", folder: "Posts/Projects/" as SimpleSlug },
-  { title: "📝 Essays", prefix: "Posts/Essays/", folder: "Posts/Essays/" as SimpleSlug },
-  { title: "📚 Lectures", prefix: "Posts/Lectures/", folder: "Posts/Lectures/" as SimpleSlug },
+  { title: "Essays", prefix: "Posts/Essays/", folder: "Posts/Essays/" as SimpleSlug },
 ]
 
 const NOTES_SECTION: SectionSpec = {
@@ -40,9 +45,11 @@ const NOTES_SECTION: SectionSpec = {
   folder: "Notes/" as SimpleSlug,
 }
 
-// Posts 서브카드는 압축(한 줄 항목 × 2). Notes는 투컬럼에서 Posts 그룹 높이에 맞춰 리스트를 채움
-const POST_CARD_LIMIT = 2
-const NOTES_LIMIT = 10
+// 각 Posts 섹션이 보여줄 자식 줄 수 (하위 카테고리 우선, 남으면 최근 글이 채움)
+const POST_CARD_LIMIT = 3
+// [27차] Posts 두 군을 균등 분할하려면 Posts 컬럼에 여유 공간이 필요하다.
+// space-evenly는 '남는 공간'만 나누므로, Notes를 더 길게 잡아 그 여유를 만든다
+const NOTES_LIMIT = 12
 
 // 가든 성숙도 태그 → 이모지 (vault 규칙: 상태 태그 전용)
 const GROWTH_STAGES: [string, string][] = [
@@ -68,13 +75,90 @@ export default (() => {
         .sort(sorter)
         .slice(0, spec.limit ?? limit)
 
-    // showDate: 항목 오른쪽에 인라인 날짜 표시 여부 (제목은 한 줄 말줄임)
+    const titleOf = (f: QuartzPluginData) =>
+      f.frontmatter?.title ?? i18n(cfg.locale).propertyDefaults.title
+
+    // [25차] 섹션 하위 카테고리(폴더 index.md) 자동 탐색 — 랜딩 페이지가 진입점
+    // 시리즈를 새로 만들면 카드에 저절로 나타난다 (수동 관리 없음)
+    const seriesFor = (spec: SectionSpec) =>
+      allFiles
+        .filter((f) => {
+          const slug = f.slug ?? ""
+          if (!slug.startsWith(spec.prefix) || !slug.endsWith("/index")) return false
+          if (f.frontmatter?.draft) return false
+          // 섹션 바로 아래 1단계 폴더의 index만 (더 깊은 중첩 제외)
+          return slug.slice(spec.prefix.length).split("/").length === 2
+        })
+        .map((indexFile) => {
+          const seriesPrefix = indexFile.slug!.slice(0, -"index".length)
+          const posts = allFiles.filter(isContentFile(seriesPrefix)).sort(sorter)
+          return { indexFile, seriesPrefix, count: posts.length, latest: posts[0] }
+        })
+        .filter((s) => s.count > 0)
+        .sort((a, b) => sorter(a.latest, b.latest)) // 최근 활동순
+
+    // [25차] 섹션 자식 목록 — 규칙 하나로 통일:
+    // 하위 카테고리가 먼저, 남은 자리를 시리즈에 속하지 않은 최근 글이 채운다 (최대 POST_CARD_LIMIT줄)
+    const childList = (spec: SectionSpec) => {
+      const series = seriesFor(spec)
+      const looseFiles = allFiles
+        .filter(isContentFile(spec.prefix))
+        .filter((f) => !series.some((s) => f.slug!.startsWith(s.seriesPrefix)))
+        .sort(sorter)
+        .slice(0, Math.max(0, POST_CARD_LIMIT - series.length))
+
+      return (
+        <ul class="showcase-ul">
+          {series.map(({ indexFile, latest }) => (
+            <li class="series-item">
+              <a href={resolveRelative(fileData.slug!, indexFile.slug!)} class="internal">
+                <span class="series-icon">📁</span>
+                {titleOf(indexFile)}
+              </a>
+              {/* 시리즈 최신 글 날짜 = "이 시리즈는 관리 중"이라는 신호 (30차: 개수 표기를 대체) */}
+              {latest?.dates && (
+                <span class="meta">
+                  <Date date={getDate(cfg, latest)!} locale={cfg.locale} />
+                </span>
+              )}
+            </li>
+          ))}
+          {looseFiles.map((page) => (
+            <li>
+              <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
+                {titleOf(page)}
+              </a>
+              {page.dates && (
+                <span class="meta">
+                  <Date date={getDate(cfg, page)!} locale={cfg.locale} />
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    // [26차] 섹션 블록 — 두 군이 같은 형태를 공유 (제목 + more pill + 자식 목록)
+    const sectionBlock = (spec: SectionSpec) => (
+      <div class="showcase-section">
+        <div class="showcase-head">
+          <h4 class="showcase-title">{spec.title}</h4>
+          <a href={resolveRelative(fileData.slug!, spec.folder)} class="internal showcase-more">
+            more →
+          </a>
+        </div>
+        {childList(spec)}
+      </div>
+    )
+
+    // Notes 목록 — 항목 오른쪽에 인라인 날짜 (제목은 한 줄 말줄임)
     const itemList = (spec: SectionSpec, limit: number, showDate: boolean) => (
       <ul class="showcase-ul">
         {pagesFor(spec, limit).map((page) => (
           <li>
             <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
-              {page.frontmatter?.title ?? i18n(cfg.locale).propertyDefaults.title}
+              {titleOf(page)}
             </a>
             {showDate && page.dates && (
               <span class="meta">
@@ -125,20 +209,14 @@ export default (() => {
               </a>
             </div>
             <div class="showcase-grid">
-              {POST_SECTIONS.map((spec) => (
-                <div class="showcase-section">
-                  <div class="showcase-head">
-                    <h4 class="showcase-title">{spec.title}</h4>
-                    <a
-                      href={resolveRelative(fileData.slug!, spec.folder)}
-                      class="internal showcase-more"
-                    >
-                      more →
-                    </a>
-                  </div>
-                  {itemList(spec, POST_CARD_LIMIT, false)}
-                </div>
-              ))}
+              <div class="post-group">
+                <div class="group-label">Series</div>
+                <div class="post-group-body">{SERIES_SECTIONS.map(sectionBlock)}</div>
+              </div>
+              <div class="post-group">
+                <div class="group-label">Articles</div>
+                <div class="post-group-body">{FLAT_SECTIONS.map(sectionBlock)}</div>
+              </div>
             </div>
           </div>
 

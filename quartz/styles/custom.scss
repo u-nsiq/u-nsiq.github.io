@@ -107,9 +107,9 @@ article a.external {
   color: var(--darkgray);
 }
 
-// 사이드바 목록 링크(최근 노트·백링크): 본문색 + 항목은 살짝 연하게(위계, 12차) + hover 액센트
+// 사이드바 목록 링크(백링크): 본문색 + 항목은 살짝 연하게(위계, 12차) + hover 액센트
 // opacity 방식은 Explorer 파일 항목(업스트림 0.75)과 같은 문법 — 다크 모드 자동 대응
-.recent-notes a.internal,
+// (24차: RecentNotes 제거로 .recent-notes 셀렉터 정리)
 .backlinks a.internal {
   color: var(--dark);
   opacity: 0.75;
@@ -342,15 +342,9 @@ article ol > li:has(> ul)::after {
 
 // ================================================================
 // § 4. SIDEBAR LAYOUT
+// (24차: RecentNotes 하단 고정 규칙 제거 — 컴포넌트 자체가 layout에서 빠짐.
+//  Explorer가 flex로 사이드바 세로 공간을 전부 사용)
 // ================================================================
-
-// 최근 노트를 데스크톱 좌측 사이드바 하단에 고정
-// .sidebar.left는 flex-direction: column; height: 100vh → margin-top: auto로 하단 밀착
-@media all and not ($mobile) {
-  .sidebar.left > .recent-notes {
-    margin-top: auto;
-  }
-}
 
 // ================================================================
 // § 5. ABOUT PAGE (13차, 14차 개선) — 스탬프·프로필·뱃지·타임라인·카드

@@ -57,15 +57,21 @@ body[data-slug="index"] .center > hr {
     }
   }
 
-  // "all posts →" / "more →" 공통 링크 스타일 (11차: 회색 + hover 액센트)
+  // "all posts →" / "more →" 공통 링크 — 고스트 pill (24차: 랜딩 접근성 개선, About .about-more 문법)
   .showcase-more {
-    font-size: 0.75rem;
-    color: var(--gray);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--darkgray);
+    border: 1px solid color-mix(in srgb, var(--lightgray) 55%, var(--gray) 45%);
+    border-radius: 999px;
+    padding: 0.02rem 0.55rem;
     background-color: transparent;
     white-space: nowrap;
 
     &:hover {
+      background-color: var(--highlight);
       color: var(--secondary);
+      border-color: var(--gray);
     }
   }
 
@@ -114,34 +120,108 @@ body[data-slug="index"] .center > hr {
     }
   }
 
-  // Posts 그룹 내부 서브카드 — 투컬럼에서는 1열 스택
-  // (minmax(0,·)이 없으면 nowrap 제목의 min-content가 트랙을 밀어 오버플로됨)
+  // Posts 그룹 내부 — 보더 박스 스택에서 헤어라인 목록으로 (25차)
+  // 사각형이 컬럼당 6개→1개. 구분은 헤어라인 한 줄이 담당한다
   .showcase-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.8rem;
-    margin: 0.85rem 1.1rem 1rem; // 밴드 구조에서 본문 여백은 그리드가 담당
+    display: flex;
+    flex-direction: column;
+    flex: 1; // 그룹 높이를 채워야 아래 두 카드가 균등 분할된다
+    margin: 0.5rem 0.9rem 0.85rem; // 카드가 자체 인셋을 가지므로 그리드 여백은 축소
   }
 
-  .showcase-section {
-    // 페이지색 본문 위의 셀 — 보더만으로 구획 (배경 투명)
+  // [27·28차] Posts 내부를 SERIES / ARTICLES 두 장의 카드로 묶고 균등 분할.
+  // 각 카드 안에서 섹션이 여백을 균등 분배(space-evenly, Notes 리스트와 같은 원리)해서
+  // 섹션 간 헤어라인 없이도 덩어리로 읽힌다
+  .post-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
     border: 1px solid color-mix(in srgb, var(--lightgray) 55%, var(--gray) 45%);
     border-radius: 6px;
-    padding: 0.55rem 0.85rem 0.6rem 0.85rem;
+    // overflow:hidden 금지 — flex 아이템의 자동 최소 높이가 0이 되어 내용이 잘린다.
+    // 밴드 모서리는 .group-label에 직접 radius로 처리
+
+    & + .post-group {
+      margin-top: 0.7rem;
+    }
+
+    .post-group-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      flex: 1;
+      padding: 0.1rem 0.8rem 0.2rem;
+    }
+  }
+
+  // [26차] 군 서브 밴드 (SERIES / ARTICLES)
+  // 메인 밴드 어휘를 절반 농도로 재사용 — 새 사각형·선을 만들지 않으면서 군이 열린다.
+  // 음수 마진으로 그리드 인셋을 뚫고 그룹 좌우 벽까지 닿게 해서 '떠 있는' 느낌을 없앰
+  // 군 카드 헤더 밴드 (29차) — 바깥 그룹의 "박스 + 상단 밴드" 패턴을 한 단계 약하게 반복.
+  // 같은 문법이 두 층위에 쓰이면 노이즈가 아니라 체계로 읽힌다 (밴드 농도 0.1 → 0.06)
+  .group-label {
+    flex-shrink: 0;
+    padding: 0.32rem 0.8rem;
+    background-color: rgba(119, 151, 192, 0.06);
+    border-bottom: 1px solid color-mix(in srgb, var(--lightgray) 55%, var(--gray) 45%);
+    border-radius: 5px 5px 0 0; // 카드 radius 6px − 보더 1px
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em; // 작은 글자에 과한 자간은 오히려 안 읽힘
+    text-transform: uppercase;
+    color: var(--darkgray);
+    user-select: none;
+  }
+
+  // 29차: 카드 안 카테고리끼리는 가로선으로 구분 (여백만으론 경계가 약했음)
+  .showcase-section {
+    padding: 0.55rem 0;
+
+    & + .showcase-section {
+      border-top: 1px solid var(--lightgray);
+    }
 
     .showcase-head {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
       gap: 0.5rem;
-      margin-bottom: 0.15rem;
+      margin-bottom: 0.1rem;
 
+      // 이모지 없이 제목임을 세우는 장치 = 굵기 대비 (자식 450 대비 700)
       .showcase-title {
         margin: 0;
         font-size: 0.9rem;
+        font-weight: 700;
         color: var(--dark);
       }
     }
+
+    // 자식 줄은 섹션 제목보다 한 단 안쪽 (부모-자식 관계를 들여쓰기로)
+    .showcase-ul {
+      padding-left: 0.75rem;
+
+      & > li a.internal {
+        font-weight: 450;
+      }
+    }
+  }
+
+  // [25차] 하위 카테고리 줄 — 클릭하면 그 폴더의 index.md(랜딩)로 간다
+  // 셀렉터에 `.showcase-ul > li`를 포함해야 목록 기본 규칙(0,4,1)을 이긴다
+  .showcase-ul > li.series-item {
+    // 위계 3단: 카테고리 제목(700) > 시리즈(600, 내비 목적지) > 글 제목(450)
+    a.internal {
+      font-weight: 600;
+      opacity: 1;
+      color: var(--dark);
+    }
+    // 작은 노란 폴더 (섹션 이모지 0.9rem보다 확실히 작게)
+    .series-icon {
+      font-size: 0.72rem;
+      margin-right: 0.3rem;
+    }
+    // 30차: 글 수(`n posts`)는 날짜로 대체됨 — 날짜는 공용 `.meta` 규칙이 담당
   }
 
   // 카드/그룹 공용 글 목록 — 항목은 한 줄(말줄임), 날짜는 오른쪽 인라인
@@ -231,6 +311,9 @@ body[data-slug="index"] .center > hr {
   }
   .notes-group > .group-head {
     background-color: rgba(105, 219, 124, 0.09);
+  }
+  .group-label {
+    background-color: rgba(97, 175, 239, 0.07);
   }
   .garden-stats .stat-posts {
     border-color: rgba(97, 175, 239, 0.45);

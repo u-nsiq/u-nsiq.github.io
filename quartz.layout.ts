@@ -130,18 +130,8 @@ export const defaultContentPageLayout: PageLayout = {
     }),
 
     Component.NavLinks(), // [커스텀] 사이드바 내비 (Home·About — 폴더 제목이 토글 전용이라 명시적 진입점)
+    // [커스텀 24차] RecentNotes 제거 — 신규 신호는 홈 Browse의 new 칩이 담당, Explorer가 세로 공간 전부 사용
     Component.Explorer({ ...explorerCommonOptions }), // [커스텀] 옵션 단일 출처 = explorerCommonOptions
-    // [커스텀] 최근 업데이트 노트 목록 — 사이드바 하단 고정 (custom.scss .recent-notes)
-    Component.RecentNotes({
-      title: "최근 노트",
-      limit: 3,
-      showTags: false,
-      filter: (f) =>
-        !f.frontmatter?.draft &&
-        f.slug !== "index" &&
-        f.slug !== "about" &&
-        !f.slug?.endsWith("/index"),
-    }),
   ],
 
   // 오른쪽 사이드바 (Right Sidebar)
@@ -179,18 +169,8 @@ export const defaultListPageLayout: PageLayout = {
       ],
     }),
     Component.NavLinks(), // [커스텀] 사이드바 내비 (Home·About — 폴더 제목이 토글 전용이라 명시적 진입점)
+    // [커스텀 24차] RecentNotes 제거 — 신규 신호는 홈 Browse의 new 칩이 담당
     Component.Explorer({ ...explorerCommonOptions }), // [커스텀] 옵션 단일 출처 = explorerCommonOptions
-    // [커스텀] 최근 업데이트 노트 목록 — 사이드바 하단 고정 (custom.scss .recent-notes)
-    Component.RecentNotes({
-      title: "최근 노트",
-      limit: 3,
-      showTags: false,
-      filter: (f) =>
-        !f.frontmatter?.draft &&
-        f.slug !== "index" &&
-        f.slug !== "about" &&
-        !f.slug?.endsWith("/index"),
-    }),
   ],
 
   // 오른쪽 사이드바 (목록 페이지는 보통 오른쪽을 비워둠)

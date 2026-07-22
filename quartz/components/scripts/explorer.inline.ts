@@ -10,7 +10,7 @@ import { togglePanel, closeAllPanels, registerOverlayClickHandler } from "./_dra
 //   3. nav 리스너: panel-open close (← _drawer.ts.closeAllPanels)
 //   4. resize 리스너: 의도적 no-op
 //   5. overlay click: _drawer.ts.registerOverlayClickHandler에 위임
-//   6. recentSlugs: 최근 14일 업데이트 기준 폴더 빨간 dot
+//   6. (24차에서 제거) recentSlugs 빨간 dot — 신규 신호는 홈 Browse의 new 칩이 담당
 //   7. (6차에서 제거) folder-title-link — 홈 쇼케이스가 폴더 index 진입을 담당, 제목 클릭은 토글로 복원
 // ════════════════════════════════════════════════════════════════
 
@@ -104,17 +104,6 @@ function countFiles(node: FileTrieNode): number {
   return node.children.reduce((sum, child) => sum + countFiles(child), 0)
 }
 
-// [커스텀] 최근 RECENT_DOT_DAYS일 내 업데이트된 파일을 포함한 폴더에 dot 표시
-// RecentNotes(항상 최근 3개 목록)와 달리 시간 기준 — 최근에 실제로 갱신이 있을 때만 켜진다
-const RECENT_DOT_DAYS = 14
-const RECENT_DOT_CUTOFF_MS = RECENT_DOT_DAYS * 24 * 60 * 60 * 1000
-
-function hasRecentFile(node: FileTrieNode, recentSlugs: Set<string>): boolean {
-  if (!node.isFolder) return recentSlugs.has(node.slug as string)
-  return node.children.some((child) => hasRecentFile(child, recentSlugs))
-}
-// [커스텀 끝]
-
 function createFileNode(currentSlug: FullSlug, node: FileTrieNode): HTMLLIElement {
   const template = document.getElementById("template-file") as HTMLTemplateElement
   const clone = template.content.cloneNode(true) as DocumentFragment
@@ -135,7 +124,6 @@ function createFolderNode(
   currentSlug: FullSlug,
   node: FileTrieNode,
   opts: ParsedOptions,
-  recentSlugs: Set<string>,
 ): HTMLLIElement {
   const template = document.getElementById("template-folder") as HTMLTemplateElement
   const clone = template.content.cloneNode(true) as DocumentFragment
@@ -173,14 +161,6 @@ function createFolderNode(
     const span = titleContainer.querySelector(".folder-title") as HTMLElement
     span.textContent = node.displayName
     titleContainer.appendChild(countSpan)
-    // [커스텀] 최근 업데이트(14일) 빨간 dot
-    if (hasRecentFile(node, recentSlugs)) {
-      const dot = document.createElement("span")
-      dot.className = "folder-recent-dot"
-      dot.setAttribute("aria-label", "최근 업데이트 포함")
-      titleContainer.appendChild(dot)
-    }
-    // [커스텀 끝]
   }
 
   // if the saved state is collapsed or the default state is collapsed
@@ -200,7 +180,7 @@ function createFolderNode(
 
   for (const child of node.children) {
     const childNode = child.isFolder
-      ? createFolderNode(currentSlug, child, opts, recentSlugs)
+      ? createFolderNode(currentSlug, child, opts)
       : createFileNode(currentSlug, child)
     ul.appendChild(childNode)
   }
@@ -242,20 +222,6 @@ async function setupExplorer(currentSlug: FullSlug) {
     const entries = [...Object.entries(data)] as [FullSlug, ContentDetails][]
     const trie = FileTrieNode.fromEntries(entries)
 
-    // [커스텀] 최근 RECENT_DOT_DAYS일 내 date를 가진 slug Set
-    // index 페이지는 date가 없으면 빌드 타임 날짜가 부여돼 항상 최신으로 잡히므로 제외
-    const now = Date.now()
-    const recentSlugs = new Set(
-      [...Object.entries(data)]
-        .filter(([slug]) => slug !== "index" && !slug.endsWith("/index"))
-        .filter(([, details]) => {
-          if (!details.date) return false
-          return now - new Date(details.date).getTime() <= RECENT_DOT_CUTOFF_MS
-        })
-        .map(([slug]) => slug),
-    )
-    // [커스텀 끝]
-
     // Apply functions in order
     for (const fn of opts.order) {
       switch (fn) {
@@ -292,7 +258,7 @@ async function setupExplorer(currentSlug: FullSlug) {
     const fragment = document.createDocumentFragment()
     for (const child of trie.children) {
       const node = child.isFolder
-        ? createFolderNode(currentSlug, child, opts, recentSlugs)
+        ? createFolderNode(currentSlug, child, opts)
         : createFileNode(currentSlug, child)
 
       fragment.appendChild(node)

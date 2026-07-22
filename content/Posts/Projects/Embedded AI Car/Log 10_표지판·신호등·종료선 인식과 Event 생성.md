@@ -34,7 +34,7 @@ Lane model은 매 frame마다 연속적인 조향값을 내지만, 표지판과 
 
 ![[embedded_ai_car_log10_roboflow_examples.jpg]]
 
-> 프로젝트 종료 후 Roboflow 프로젝트에서 다시 확인한 레이블 예시. 왼쪽부터 `right`, `horn`, `straight`이며, 실험 당시의 작업 화면을 그대로 보존한 캡처는 아니지만 실제 학습에 사용한 Bounding Box 형태를 보여준다.
+> Roboflow에서 레이블링 작업한 화면. 왼쪽부터 `right`, `horn`, `straight`.
 
 이 레이블 작업은 정말 마우스로 하는 노가다 작업이긴 했는데, Lane model 레이블 파이프라인 구축하고 정책 수정하고 그랬던 걸 생각하면 정말 편하고 쉬운 작업이었다.
 

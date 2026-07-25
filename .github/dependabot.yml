@@ -1,9 +1,19 @@
+# [커스텀] major 업데이트 차단 (2026-07-26)
+# 근거: Quartz 본가(jackyzha0/quartz)가 js-yaml ^4 / typescript ^5 / toml ^3 등
+#   구버전에 고정돼 있는데, dependabot이 major를 올리면 업스트림 코드와 충돌한다.
+#   실제로 2026-07-10과 07-25 두 차례 배포가 깨졌다 (js-yaml 5는 default export를
+#   제거했는데 업스트림 frontmatter.ts가 `import yaml from "js-yaml"`을 사용).
+# 정책: patch·minor(버그 수정·보안 패치)는 계속 자동 수신, major만 차단.
+#   새 major가 필요해지면 `npx quartz update`로 업스트림이 대응한 뒤에 따라간다.
 version: 2
 updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       production-dependencies:
         applies-to: "version-updates"
@@ -13,6 +23,9 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       ci-dependencies:
         applies-to: "version-updates"
